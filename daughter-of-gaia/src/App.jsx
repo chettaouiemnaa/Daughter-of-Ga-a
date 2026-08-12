@@ -304,6 +304,26 @@ function Photo({ src, alt = "", className = "", tone = 0, zoom = false, pos = "c
 
 /* ═══════════ COUCHES DE MOUVEMENT ═══════════ */
 
+/* Bouton d'ouverture du menu, toujours accessible sur mobile.
+   La barre de navigation ne devient visible qu'après avoir défilé 85% de
+   l'écran : placé à l'intérieur, le bouton était invisible et non cliquable
+   en haut de page — sans aucun moyen de revenir depuis la page Tournages. */
+function BoutonMenu({ onClick, label, ouvert, surFondClair, masqueDes = "lg" }) {
+  const trait = surFondClair ? "#2B2118" : "#F6F1E7";
+  return (
+    <button onClick={onClick} aria-label={label} aria-expanded={ouvert}
+      className={`${masqueDes === "sm" ? "sm:hidden" : "lg:hidden"} fixed top-4 right-4 z-[80] flex flex-col items-end justify-center gap-[5px] w-11 h-11 rounded-full transition-all duration-500`}
+      style={{
+        background: surFondClair ? "rgba(237,228,211,.82)" : "rgba(20,14,8,.38)",
+        backdropFilter: "blur(8px)",
+        paddingRight: 11,
+      }}>
+      <span className="block h-px w-[22px] transition-colors duration-500" style={{ background: trait }} />
+      <span className="block h-px w-[15px] transition-colors duration-500" style={{ background: trait }} />
+    </button>
+  );
+}
+
 /* Menu plein écran pour mobile et tablette.
    La navigation de bureau est masquée sous 1024px : sans lui, aucun accès
    aux sections ni au devis depuis un téléphone. */
@@ -1062,6 +1082,15 @@ export default function App() {
          déroulante : c'est text-align-last qui gouverne cette ligne. */
       select{text-align:center;text-align-last:center;}
       select option{text-align:center;}
+
+      /* Les mentions à 9-10px sont illisibles sur téléphone. Relevées au
+         minimum lisible sur petit écran seulement : le rendu bureau,
+         où la distance de lecture est plus grande, reste inchangé. */
+      @media (max-width:640px){
+        .text-\\[8px\\]{font-size:11px;}
+        .text-\\[9px\\]{font-size:11px;}
+        .text-\\[10px\\]{font-size:11px;}
+      }
       input:focus,select:focus,textarea:focus{outline:none;border-color:#6B7355 !important;}
       ::selection{background:#B5654A;color:#F6F1E7;}
       @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none !important;transition-duration:.01ms !important;}}
@@ -1115,7 +1144,7 @@ export default function App() {
                 className="body-font w-full px-0 py-3 bg-transparent" style={{ borderBottom: "1px solid #C7B79A" }} placeholder={t.admin.codePh} />
               {codeError && <p className="body-font text-sm mt-3" style={{ color: "#B5654A" }}>{codeError}</p>}
               <button type="submit" className="btn btn-solid body-font mt-8 px-10 py-3.5 text-sm uppercase tracking-[0.2em]"
-                style={{ background: "#6B7355", color: "#F6F1E7" }}><span>{t.admin.ouvrir}</span></button>
+                style={{ background: "#666E51", color: "#F6F1E7" }}><span>{t.admin.ouvrir}</span></button>
             </form>
           ) : (
             <>
@@ -1193,15 +1222,7 @@ export default function App() {
           style={{ background: navSolid ? "rgba(237,228,211,.94)" : "rgba(237,228,211,0)", backdropFilter: navSolid ? "blur(8px)" : "none" }}>
           <div className="max-w-6xl mx-auto px-8 py-5 flex flex-col items-center gap-3 transition-opacity duration-500"
             style={{ opacity: navSolid ? 1 : 0, pointerEvents: navSolid ? "auto" : "none" }}>
-            <div className="w-full flex items-center justify-center relative">
-              <button onClick={() => allerA("accueil")} className="display text-base tracking-[0.08em] flex items-center min-h-[44px]">Daughter of Gaïa</button>
-              <button onClick={() => setMenuOuvert(true)}
-                className="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 flex flex-col items-end justify-center gap-[5px] w-11 h-11"
-                aria-label={t.nav.ouvrirMenu} aria-expanded={menuOuvert}>
-                <span className="block h-px w-6" style={{ background: "#2B2118" }} />
-                <span className="block h-px w-4" style={{ background: "#2B2118" }} />
-              </button>
-            </div>
+            <button onClick={() => allerA("accueil")} className="display text-base tracking-[0.08em] flex items-center min-h-[44px]">Daughter of Gaïa</button>
             <div className="hidden sm:flex items-center gap-8 mono text-[10px] uppercase tracking-[0.2em] leading-none" style={{ color: "#6B7355" }}>
               <a href="#decors" className="link-u">{t.tournages.nav.decors}</a>
               <a href="#maison" className="link-u">{t.tournages.nav.maison}</a>
@@ -1214,6 +1235,8 @@ export default function App() {
         </nav>
 
         {/* MENU MOBILE — la nav ci-dessus disparaît sous 640px */}
+        <BoutonMenu onClick={() => setMenuOuvert(true)} label={t.nav.ouvrirMenu}
+          ouvert={menuOuvert} surFondClair={navSolid} masqueDes="sm" />
         <MenuMobile ouvert={menuOuvert} fermer={() => setMenuOuvert(false)}
           t={t} lang={lang} setLang={setLang} masqueDes="sm"
           entrees={[
@@ -1414,16 +1437,7 @@ export default function App() {
         <div className="max-w-6xl mx-auto px-8 py-5 flex flex-col items-center gap-3 transition-opacity duration-500"
           style={{ opacity: navSolid ? 1 : 0, pointerEvents: navSolid ? "auto" : "none" }}>
 
-          {/* Sur mobile le nom se décale pour laisser place au bouton menu */}
-          <div className="w-full flex items-center justify-center relative">
-            <a href="#" className="display text-base tracking-[0.08em] flex items-center min-h-[44px]">Daughter of Gaïa</a>
-            <button onClick={() => setMenuOuvert(true)}
-              className="lg:hidden absolute right-0 top-1/2 -translate-y-1/2 flex flex-col items-end justify-center gap-[5px] w-11 h-11"
-              aria-label={t.nav.ouvrirMenu} aria-expanded={menuOuvert}>
-              <span className="block h-px w-6 transition-all duration-500" style={{ background: "#2B2118" }} />
-              <span className="block h-px w-4 transition-all duration-500" style={{ background: "#2B2118" }} />
-            </button>
-          </div>
+          <a href="#" className="display text-base tracking-[0.08em] flex items-center min-h-[44px]">Daughter of Gaïa</a>
 
           <div className="hidden lg:flex items-center gap-8 mono text-[10px] uppercase tracking-[0.2em] leading-none" style={{ color: "#6B7355" }}>
             <a href="#domaine" className="link-u">{t.nav.domaine}</a>
@@ -1440,6 +1454,8 @@ export default function App() {
       </nav>
 
       {/* ── MENU MOBILE ── */}
+      <BoutonMenu onClick={() => setMenuOuvert(true)} label={t.nav.ouvrirMenu}
+        ouvert={menuOuvert} surFondClair={navSolid} />
       <MenuMobile ouvert={menuOuvert} fermer={() => setMenuOuvert(false)}
         t={t} lang={lang} setLang={setLang}
         entrees={[
@@ -1768,7 +1784,7 @@ export default function App() {
                   className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm resize-none text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
               <div className="text-center pt-4">
                 <button type="submit" className="btn btn-solid body-font px-12 py-4 text-[11px] uppercase tracking-[0.28em]"
-                  style={{ background: "#6B7355", color: "#F6F1E7" }}><span>{t.devis.envoyer}</span></button>
+                  style={{ background: "#666E51", color: "#F6F1E7" }}><span>{t.devis.envoyer}</span></button>
               </div>
             </form>
           )}
