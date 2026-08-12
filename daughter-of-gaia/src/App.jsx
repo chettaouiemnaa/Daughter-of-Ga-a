@@ -45,6 +45,13 @@ const JOURS = { fr: ["L","M","M","J","V","S","D"], en: ["M","T","W","T","F","S",
 const STORAGE_KEY = "gaia-dates-bloquees";
 const CODE_ADMIN = "EraErosZelda2024";
 
+/* Relais d'acheminement du formulaire de devis.
+   Une page statique ne peut pas expédier de courrier elle-même : la demande
+   est transmise à ce service, qui la dépose dans la boîte du domaine.
+   L'adresse figure déjà en clair dans le pied de page du site. */
+const ADRESSE_DEVIS = "contact@daughterofgaia.com";
+const RELAIS_DEVIS = `https://formsubmit.co/ajax/${ADRESSE_DEVIS}`;
+
 /* Palette : sable #EDE4D3 · blanc cassé #F6F1E7 · encre #2B2118
    olive #6B7355 · terracotta #B5654A · ligne #C7B79A */
 
@@ -113,6 +120,8 @@ fr: {
     date: "Date souhaitée", datePh: "Sélectionnez une date dans le calendrier", nom: "Nom", email: "Email",
     tel: "Téléphone", invites: "Invités", type: "Type d'expérience", autre: "Autre", projet: "Votre projet",
     projetPh: "Horaires envisagés, ambiance recherchée, besoins particuliers…", envoyer: "Envoyer ma demande",
+    envoiEnCours: "Envoi en cours…",
+    erreur: "L'envoi n'a pas abouti. Réessayez, ou écrivez-nous directement à",
     merci: "Merci.", confirm1: "Votre demande a bien été transmise", confirm2: "pour le",
     confirm3: "Nous revenons vers vous rapidement avec une proposition personnalisée." },
   faqT: { eyebrow: "Questions fréquentes", titre: "Bon à savoir" },
@@ -949,6 +958,8 @@ export default function App() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", guests: "", type: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [envoi, setEnvoi] = useState("repos");   // repos | envoi | erreur
+  const [piege, setPiege] = useState("");         // champ leurre anti-robot
   const [scrollY, setScrollY] = useState(0);
   const [navSolid, setNavSolid] = useState(false);
   const [page, setPage] = useState("accueil");
@@ -965,6 +976,41 @@ export default function App() {
     setMenuOuvert(false);
     window.scrollTo({ top: 0, behavior: "instant" });
   };
+
+  /* Envoi de la demande de devis vers la boîte du domaine.
+     Un site statique ne peut pas expédier de courrier : la demande passe par
+     un relais qui la dépose dans contact@daughterofgaia.com. */
+  async function envoyerDevis(e) {
+    e.preventDefault();
+    if (envoi === "envoi") return;          // évite le double clic
+    if (piege) { setSubmitted(true); return; } // robot : on fait semblant
+    setEnvoi("envoi");
+    try {
+      const r = await fetch(RELAIS_DEVIS, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          _subject: `Demande de devis — ${form.name || "sans nom"}`,
+          _template: "table",
+          _captcha: "false",
+          "Date souhaitée": selectedDate || "non précisée",
+          Nom: form.name,
+          Email: form.email,
+          Téléphone: form.phone || "non précisé",
+          "Nombre d'invités": form.guests || "non précisé",
+          "Type d'expérience": form.type || t.prestations[0].t,
+          Projet: form.message || "non précisé",
+          Langue: lang,
+        }),
+      });
+      if (!r.ok) throw new Error("réponse " + r.status);
+      setEnvoi("repos");
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Envoi du devis impossible :", err);
+      setEnvoi("erreur");
+    }
+  }
 
   /* Filet : si la page change par un autre chemin, on repart du haut avant
      que le navigateur ne peigne la nouvelle page. */
@@ -1774,7 +1820,11 @@ export default function App() {
               </p>
             </div>
           ) : (
-            <form onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }} className="space-y-8 text-left">
+            <form onSubmit={envoyerDevis} className="space-y-8 text-left">
+              {/* Leurre : invisible pour les visiteurs, rempli par les robots */}
+              <input type="text" name="_honey" tabIndex={-1} autoComplete="off"
+                aria-hidden="true" value={piege} onChange={(e) => setPiege(e.target.value)}
+                style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0 }} />
               <div>
                 <label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.date}</label>
                 <input type="text" readOnly value={selectedDate || ""} placeholder={t.devis.datePh}
@@ -1806,8 +1856,22 @@ export default function App() {
                   placeholder={t.devis.projetPh}
                   className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm resize-none text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
               <div className="text-center pt-4">
-                <button type="submit" className="btn btn-solid body-font px-12 py-4 text-[11px] uppercase tracking-[0.28em]"
-                  style={{ background: "#666E51", color: "#F6F1E7" }}><span>{t.devis.envoyer}</span></button>
+                <button type="submit" disabled={envoi === "envoi"}
+                  className="btn btn-solid body-font px-12 py-4 text-[11px] uppercase tracking-[0.28em] disabled:opacity-60"
+                  style={{ background: "#666E51", color: "#F6F1E7" }}>
+                  <span className="inline-flex items-center gap-3">
+                    {envoi === "envoi" && <Loader2 size={13} className="animate-spin" />}
+                    {envoi === "envoi" ? t.devis.envoiEnCours : t.devis.envoyer}
+                  </span>
+                </button>
+                {envoi === "erreur" && (
+                  <p className="body-font text-sm mt-6 max-w-sm mx-auto" style={{ color: "#B5654A" }} role="alert">
+                    {t.devis.erreur}{" "}
+                    <a href={`mailto:${ADRESSE_DEVIS}`} className="link-u" style={{ color: "#B5654A" }}>
+                      {ADRESSE_DEVIS}
+                    </a>
+                  </p>
+                )}
               </div>
             </form>
           )}
