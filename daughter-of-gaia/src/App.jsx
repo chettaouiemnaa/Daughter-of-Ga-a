@@ -42,8 +42,10 @@ const MOIS = {
   en: ["January","February","March","April","May","June","July","August","September","October","November","December"],
 };
 const JOURS = { fr: ["L","M","M","J","V","S","D"], en: ["M","T","W","T","F","S","S"] };
-const STORAGE_KEY = "gaia-dates-bloquees";
-const CODE_ADMIN = "EraErosZelda2024";
+/* Le code propriétaire n'est plus ici : il vivait en clair dans le fichier
+   téléchargé par chaque visiteur, donc lisible par tous. Il est désormais
+   une variable d'environnement sur le serveur, comparée dans /api/dates. */
+const API_DATES = "/api/dates";
 
 /* Relais d'acheminement du formulaire de devis.
    Une page statique ne peut pas expédier de courrier elle-même : la demande
@@ -173,7 +175,11 @@ fr: {
     dispo: "Disponibilités", bloquer: "Bloquer ou libérer une date",
     aide: "Cliquez sur une date pour la rendre indisponible. Cliquez à nouveau pour la libérer.",
     enreg: "enregistrement…", bloquees: "Dates bloquées", aucune: "Aucune date bloquée.",
-    afficher: "Afficher le code", masquer: "Masquer le code" },
+    afficher: "Afficher le code", masquer: "Masquer le code",
+    verification: "Vérification…",
+    erreurServeur: "Connexion au serveur impossible. Réessayez dans un instant.",
+    erreurEnreg: "La date n'a pas pu être enregistrée. Vérifiez votre connexion et réessayez.",
+    baseAbsente: "La base de données n'est pas encore configurée sur le serveur." },
 },
 en: {
   hero: { sur: "Private Experiences \u00a0•\u00a0 By Reservation",
@@ -292,7 +298,11 @@ en: {
     dispo: "Availability", bloquer: "Block or release a date",
     aide: "Click a date to make it unavailable. Click again to release it.",
     enreg: "saving…", bloquees: "Blocked dates", aucune: "No blocked dates.",
-    afficher: "Show code", masquer: "Hide code" },
+    afficher: "Show code", masquer: "Hide code",
+    verification: "Checking…",
+    erreurServeur: "Could not reach the server. Please try again shortly.",
+    erreurEnreg: "The date could not be saved. Check your connection and try again.",
+    baseAbsente: "The database is not configured on the server yet." },
 },
 };
 
@@ -1026,6 +1036,40 @@ export default function App() {
     }
   }
 
+  /* Connexion à l'espace propriétaire.
+     Le code n'est plus comparé dans la page — où il était lisible par tous —
+     mais envoyé au serveur, qui seul connaît la valeur attendue. */
+  async function connexionAdmin(e) {
+    e.preventDefault();
+    if (verif) return;
+    setVerif(true);
+    setCodeError("");
+    try {
+      const r = await fetch(API_DATES, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ code: codeInput, action: "verifier" }),
+      });
+      const data = await r.json().catch(() => null);
+      if (r.status === 401) { setCodeError(t.admin.erreur); return; }
+      if (r.status === 503 || (data && data.erreur === "base_non_configuree")) {
+        setCodeError(t.admin.baseAbsente); return;
+      }
+      if (!r.ok || !data || !data.ok) {
+        setCodeError(t.admin.erreurServeur); return;
+      }
+      setCodeSession(codeInput);        // sert à signer les modifications suivantes
+      setBlocked(new Set(Array.isArray(data.dates) ? data.dates : []));
+      setIsAdmin(true);
+      setCodeInput("");
+    } catch (err) {
+      console.error("Connexion impossible :", err);
+      setCodeError(t.admin.erreurServeur);
+    } finally {
+      setVerif(false);
+    }
+  }
+
   /* Filet : si la page change par un autre chemin, on repart du haut avant
      que le navigateur ne peigne la nouvelle page. */
   useLayoutEffect(() => {
@@ -1244,7 +1288,7 @@ export default function App() {
         </header>
         <div className="max-w-3xl mx-auto px-8 py-16 fu">
           {!isAdmin ? (
-            <form onSubmit={(e) => { e.preventDefault(); codeInput === CODE_ADMIN ? (setIsAdmin(true), setCodeError("")) : setCodeError(t.admin.erreur); }} className="max-w-sm">
+            <form onSubmit={connexionAdmin} className="max-w-sm">
               <Eyebrow>{t.admin.acces}</Eyebrow>
               <h1 className="display text-4xl mb-8" style={{ fontWeight: 300 }}>{t.admin.code}</h1>
               <div className="relative">
@@ -1260,9 +1304,15 @@ export default function App() {
                   {codeVisible ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
               </div>
-              {codeError && <p className="body-font text-sm mt-3" style={{ color: "#B5654A" }}>{codeError}</p>}
-              <button type="submit" className="btn btn-solid body-font mt-8 px-10 py-3.5 text-sm uppercase tracking-[0.2em]"
-                style={{ background: "#666E51", color: "#F6F1E7" }}><span>{t.admin.ouvrir}</span></button>
+              {codeError && <p className="body-font text-sm mt-3" style={{ color: "#B5654A" }} role="alert">{codeError}</p>}
+              <button type="submit" disabled={verif || !codeInput}
+                className="btn btn-solid body-font mt-8 px-10 py-3.5 text-sm uppercase tracking-[0.2em] disabled:opacity-60"
+                style={{ background: "#666E51", color: "#F6F1E7" }}>
+                <span className="inline-flex items-center gap-3">
+                  {verif && <Loader2 size={14} className="animate-spin" />}
+                  {verif ? t.admin.verification : t.admin.ouvrir}
+                </span>
+              </button>
             </form>
           ) : (
             <>
@@ -1273,6 +1323,7 @@ export default function App() {
               </p>
               {loading ? <Loader2 className="animate-spin" color="#B5654A" /> : <Calendrier blocked={blocked} admin lang={lang} onDayClick={toggleBlocked} />}
               {saving && <p className="mono text-[10px] flex items-center gap-2 mt-2" style={{ color: "#6B7355" }}><Loader2 size={11} className="animate-spin" /> {t.admin.enreg}</p>}
+              {adminErreur && <p className="body-font text-sm mt-3" style={{ color: "#B5654A" }} role="alert">{adminErreur}</p>}
               <div className="mt-12 max-w-xl">
                 <p className="mono text-[10px] uppercase tracking-[0.25em] mb-4" style={{ color: "#6B7355" }}>{t.admin.bloquees} — {blocked.size}</p>
                 {blocked.size === 0 ? <p className="body-font text-sm" style={{ color: "#5a4f42" }}>{t.admin.aucune}</p> : (
