@@ -15,8 +15,19 @@ import crypto from "node:crypto";
 
 const CLE = "gaia-dates-bloquees";
 
-const BASE_URL = process.env.KV_REST_API_URL;
-const BASE_TOKEN = process.env.KV_REST_API_TOKEN;
+/* Selon la version de l'intégration, Vercel nomme ces variables KV_… ou
+   UPSTASH_… (ou REDIS_… avec certains connecteurs). On accepte les trois
+   plutôt que de dépendre d'un nom exact. */
+const BASE_URL =
+  process.env.KV_REST_API_URL ||
+  process.env.UPSTASH_REDIS_REST_URL ||
+  process.env.REDIS_REST_API_URL;
+
+const BASE_TOKEN =
+  process.env.KV_REST_API_TOKEN ||
+  process.env.UPSTASH_REDIS_REST_TOKEN ||
+  process.env.REDIS_REST_API_TOKEN;
+
 const CODE = process.env.ADMIN_CODE;
 
 /* Appel à la base clé-valeur via son API REST (aucune dépendance à installer). */
