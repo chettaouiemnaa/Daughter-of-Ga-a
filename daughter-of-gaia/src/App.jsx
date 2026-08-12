@@ -463,16 +463,33 @@ function Magnetique({ children, className = "", style = {}, href, onClick }) {
   );
 }
 
-/* Titre révélé lettre par lettre */
+/* Titre révélé lettre par lettre.
+   Les lettres sont regroupées par mot : chaque lettre étant un inline-block
+   et les espaces insécables, sans ce groupement le navigateur coupait la
+   ligne entre deux lettres quelconques et brisait les mots en deux sur les
+   écrans étroits. */
 function LetterReveal({ children, className = "", style = {}, delay = 0 }) {
-  const chars = String(children).split("");
+  const mots = String(children).split(" ");
+  let rang = 0;
   return (
     <span className={className} style={style}>
-      {chars.map((c, i) => (
-        <span key={i} className="inline-block letter" style={{ animationDelay: `${delay + i * 42}ms` }}>
-          {c === " " ? "\u00A0" : c}
-        </span>
-      ))}
+      {mots.map((mot, im) => {
+        const depart = rang;
+        rang += mot.length + 1;
+        return (
+          <React.Fragment key={im}>
+            <span className="inline-block whitespace-nowrap align-baseline">
+              {mot.split("").map((c, k) => (
+                <span key={k} className="inline-block letter align-baseline"
+                  style={{ animationDelay: `${delay + (depart + k) * 42}ms` }}>
+                  {c}
+                </span>
+              ))}
+            </span>
+            {im < mots.length - 1 && " "}
+          </React.Fragment>
+        );
+      })}
     </span>
   );
 }
