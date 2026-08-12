@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState, useMemo, useEffect, useLayoutEffect, useRef } from "react";
 import {
   ChevronLeft, ChevronRight, ChevronDown, ArrowRight, ArrowLeft, Mail, Phone, MapPin,
   Users, Lock, LogOut, Loader2, Plus, Minus,
@@ -51,6 +51,7 @@ const CODE_ADMIN = "EraErosZelda2024";
 const T = {
 fr: {
   hero: { sur: "Private Experiences \u00a0•\u00a0 By Reservation",
+    sur1: "Private Experiences", sur2: "By Reservation",
     accroche: "Un domaine privé où chaque expérience célèbre le vivant.",
     btn1: "Découvrir le domaine", btn2: "Demander un devis" },
   nav: { domaine: "Le domaine", histoire: "Histoire", experiences: "Expériences", galerie: "Galerie",
@@ -166,6 +167,7 @@ fr: {
 },
 en: {
   hero: { sur: "Private Experiences \u00a0•\u00a0 By Reservation",
+    sur1: "Private Experiences", sur2: "By Reservation",
     accroche: "A private estate where every experience celebrates the living.",
     btn1: "Discover the estate", btn2: "Request a quote" },
   nav: { domaine: "The estate", histoire: "Story", experiences: "Experiences", galerie: "Gallery",
@@ -954,7 +956,21 @@ export default function App() {
   const [menuOuvert, setMenuOuvert] = useState(false);
   const t = T[lang];
 
-  const allerA = (p) => { setPage(p); setMenuOuvert(false); window.scrollTo({ top: 0, behavior: "auto" }); };
+  /* "auto" ne veut pas dire instantané : il suit scroll-behavior, réglé sur
+     smooth. Le changement de page lançait donc une longue animation depuis la
+     position courante — on atterrissait près de la fin de la nouvelle page,
+     plus courte, avant de remonter. "instant" force le saut immédiat. */
+  const allerA = (p) => {
+    setPage(p);
+    setMenuOuvert(false);
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+
+  /* Filet : si la page change par un autre chemin, on repart du haut avant
+     que le navigateur ne peigne la nouvelle page. */
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [page]);
 
   /* Menu mobile : fige le fond, ferme sur Échap, libère au démontage */
   useEffect(() => {
@@ -1399,13 +1415,20 @@ export default function App() {
         <div className="relative h-full flex flex-col items-center justify-center text-center px-6 pb-20 sm:pb-14"
           style={{ opacity: Math.max(0, 1 - scrollY / 620) }}>
           {selecteurHero}
-          <p className="fi mono uppercase tracking-[0.45em] text-[9px] sm:text-[11px] mb-10"
+          {/* Sur mobile, le fort interlettrage faisait revenir la mention à la
+              ligne n'importe où. Les deux membres sont donc empilés
+              volontairement, séparateur retiré ; une seule ligne dès 640px. */}
+          <p className="fi mono uppercase tracking-[0.28em] sm:tracking-[0.45em] text-[9px] sm:text-[11px] mb-10 leading-[1.9]"
             style={{ color: "rgba(246,241,231,.82)", animationDelay: "2.4s" }}>
-            {t.hero.sur}
+            <span className="block sm:inline">{t.hero.sur1}</span>
+            <span className="hidden sm:inline">{" • "}</span>
+            <span className="block sm:inline">{t.hero.sur2}</span>
           </p>
 
           <h1 className="display leading-[0.94] px-2" style={{ color: "#F6F1E7", fontWeight: 300 }}>
-            <LetterReveal className="block text-[15vw] sm:text-[7.5rem] lg:text-[10rem]" delay={2600}
+            {/* 12.5vw : mesuré comme la plus grande taille tenant sur une
+                seule ligne (le titre demandait 377px pour 327px à 15vw). */}
+            <LetterReveal className="block whitespace-nowrap text-[12.5vw] sm:whitespace-normal sm:text-[7.5rem] lg:text-[10rem]" delay={2600}
               style={{ letterSpacing: "-0.015em", textShadow: "0 4px 40px rgba(0,0,0,.35)" }}>
               Daughter of Gaïa
             </LetterReveal>
