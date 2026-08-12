@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { createClient } from "redis";
 
 /* ═══════════════════════════════════════════════════════════════
    Disponibilités du domaine — stockage partagé et vérification du
@@ -15,44 +16,39 @@ import crypto from "node:crypto";
 
 const CLE = "gaia-dates-bloquees";
 
-/* Selon la version de l'intégration, Vercel nomme ces variables KV_… ou
-   UPSTASH_… (ou REDIS_… avec certains connecteurs). On accepte les trois
-   plutôt que de dépendre d'un nom exact. */
-const BASE_URL =
-  process.env.KV_REST_API_URL ||
-  process.env.UPSTASH_REDIS_REST_URL ||
-  process.env.REDIS_REST_API_URL;
-
-const BASE_TOKEN =
-  process.env.KV_REST_API_TOKEN ||
-  process.env.UPSTASH_REDIS_REST_TOKEN ||
-  process.env.REDIS_REST_API_TOKEN;
+/* Selon le connecteur choisi, Vercel expose l'adresse sous des noms
+   différents. On les accepte tous plutôt que d'en imposer un. */
+const URL_BASE =
+  process.env.REDIS_URL ||
+  process.env.KV_URL ||
+  process.env.STORAGE_URL;
 
 const CODE = process.env.ADMIN_CODE;
 
-/* Appel à la base clé-valeur via son API REST (aucune dépendance à installer). */
-async function base(...commande) {
-  if (!BASE_URL || !BASE_TOKEN) {
-    throw new Error("base_non_configuree");
+/* Une fonction serverless peut servir plusieurs requêtes successives :
+   on garde la connexion ouverte entre deux appels plutôt que de la
+   rétablir à chaque fois. */
+let clientPromesse = null;
+
+async function client() {
+  if (!URL_BASE) throw new Error("base_non_configuree");
+  if (!clientPromesse) {
+    const c = createClient({ url: URL_BASE });
+    c.on("error", (e) => {
+      console.error("Redis :", e && e.message);
+      clientPromesse = null;   // la prochaine requête retentera une connexion
+    });
+    clientPromesse = c.connect().then(() => c);
   }
-  const r = await fetch(BASE_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${BASE_TOKEN}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(commande),
-  });
-  if (!r.ok) throw new Error(`base_erreur_${r.status}`);
-  const data = await r.json();
-  return data.result;
+  return clientPromesse;
 }
 
 async function lireDates() {
-  const brut = await base("GET", CLE);
+  const c = await client();
+  const brut = await c.get(CLE);
   if (!brut) return [];
   try {
-    const v = typeof brut === "string" ? JSON.parse(brut) : brut;
+    const v = JSON.parse(brut);
     return Array.isArray(v) ? v : [];
   } catch {
     return [];
@@ -60,7 +56,8 @@ async function lireDates() {
 }
 
 async function ecrireDates(dates) {
-  await base("SET", CLE, JSON.stringify(dates));
+  const c = await client();
+  await c.set(CLE, JSON.stringify(dates));
 }
 
 /* Comparaison à durée constante : une comparaison ordinaire s'arrête au
@@ -70,8 +67,7 @@ function codeValide(fourni) {
   const a = Buffer.from(String(fourni));
   const b = Buffer.from(String(CODE));
   if (a.length !== b.length) {
-    // On compare quand même, pour ne pas révéler la longueur par le temps de réponse
-    crypto.timingSafeEqual(b, b);
+    crypto.timingSafeEqual(b, b);   // durée comparable, ne révèle pas la longueur
     return false;
   }
   return crypto.timingSafeEqual(a, b);
@@ -99,12 +95,8 @@ export default async function handler(req, res) {
     const corps = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
     const { code, action, date } = corps;
 
-    if (!CODE) {
-      return res.status(500).json({ erreur: "code_non_configure" });
-    }
-    if (!codeValide(code)) {
-      return res.status(401).json({ erreur: "code_incorrect" });
-    }
+    if (!CODE) return res.status(500).json({ erreur: "code_non_configure" });
+    if (!codeValide(code)) return res.status(401).json({ erreur: "code_incorrect" });
 
     /* ── Vérification du code seule (écran de connexion) ── */
     if (action === "verifier") {
@@ -113,9 +105,7 @@ export default async function handler(req, res) {
 
     /* ── Bloquer ou libérer une date ── */
     if (action === "basculer") {
-      if (!dateValide(date)) {
-        return res.status(400).json({ erreur: "date_invalide" });
-      }
+      if (!dateValide(date)) return res.status(400).json({ erreur: "date_invalide" });
       const dates = await lireDates();
       const i = dates.indexOf(date);
       if (i === -1) dates.push(date);
