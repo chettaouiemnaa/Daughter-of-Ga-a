@@ -960,6 +960,9 @@ export default function App() {
   const [codeInput, setCodeInput] = useState("");
   const [codeError, setCodeError] = useState("");
   const [codeVisible, setCodeVisible] = useState(false);
+  const [codeSession, setCodeSession] = useState("");   // gardé en mémoire, jamais écrit sur le disque
+  const [verif, setVerif] = useState(false);            // vérification en cours
+  const [adminErreur, setAdminErreur] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", guests: "", type: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
