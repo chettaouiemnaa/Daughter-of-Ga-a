@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useLayoutEffect, useRef } from "react";
 import {
   ChevronLeft, ChevronRight, ChevronDown, ArrowRight, ArrowLeft, Mail, Phone, MapPin,
-  Users, Lock, LogOut, Loader2, Plus, Minus,
+  Users, Lock, LogOut, Loader2, Plus, Minus, Eye, EyeOff,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════
@@ -172,7 +172,8 @@ fr: {
     code: "Entrez votre code", codePh: "Code d'accès", erreur: "Code incorrect.", ouvrir: "Ouvrir",
     dispo: "Disponibilités", bloquer: "Bloquer ou libérer une date",
     aide: "Cliquez sur une date pour la rendre indisponible. Cliquez à nouveau pour la libérer.",
-    enreg: "enregistrement…", bloquees: "Dates bloquées", aucune: "Aucune date bloquée." },
+    enreg: "enregistrement…", bloquees: "Dates bloquées", aucune: "Aucune date bloquée.",
+    afficher: "Afficher le code", masquer: "Masquer le code" },
 },
 en: {
   hero: { sur: "Private Experiences \u00a0•\u00a0 By Reservation",
@@ -290,7 +291,8 @@ en: {
     code: "Enter your code", codePh: "Access code", erreur: "Incorrect code.", ouvrir: "Open",
     dispo: "Availability", bloquer: "Block or release a date",
     aide: "Click a date to make it unavailable. Click again to release it.",
-    enreg: "saving…", bloquees: "Blocked dates", aucune: "No blocked dates." },
+    enreg: "saving…", bloquees: "Blocked dates", aucune: "No blocked dates.",
+    afficher: "Show code", masquer: "Hide code" },
 },
 };
 
@@ -957,6 +959,7 @@ export default function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [codeInput, setCodeInput] = useState("");
   const [codeError, setCodeError] = useState("");
+  const [codeVisible, setCodeVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", guests: "", type: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
@@ -1210,8 +1213,19 @@ export default function App() {
             <form onSubmit={(e) => { e.preventDefault(); codeInput === CODE_ADMIN ? (setIsAdmin(true), setCodeError("")) : setCodeError(t.admin.erreur); }} className="max-w-sm">
               <Eyebrow>{t.admin.acces}</Eyebrow>
               <h1 className="display text-4xl mb-8" style={{ fontWeight: 300 }}>{t.admin.code}</h1>
-              <input type="password" value={codeInput} onChange={(e) => setCodeInput(e.target.value)}
-                className="body-font w-full px-0 py-3 bg-transparent" style={{ borderBottom: "1px solid #C7B79A" }} placeholder={t.admin.codePh} />
+              <div className="relative">
+                <input type={codeVisible ? "text" : "password"} value={codeInput}
+                  onChange={(e) => setCodeInput(e.target.value)} autoComplete="current-password"
+                  className="body-font w-full pl-0 pr-12 py-3 bg-transparent"
+                  style={{ borderBottom: "1px solid #C7B79A" }} placeholder={t.admin.codePh} />
+                <button type="button" onClick={() => setCodeVisible(!codeVisible)}
+                  aria-label={codeVisible ? t.admin.masquer : t.admin.afficher}
+                  aria-pressed={codeVisible}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-11 h-11 transition-opacity hover:opacity-100 opacity-55"
+                  style={{ color: "#6B7355" }}>
+                  {codeVisible ? <EyeOff size={17} /> : <Eye size={17} />}
+                </button>
+              </div>
               {codeError && <p className="body-font text-sm mt-3" style={{ color: "#B5654A" }}>{codeError}</p>}
               <button type="submit" className="btn btn-solid body-font mt-8 px-10 py-3.5 text-sm uppercase tracking-[0.2em]"
                 style={{ background: "#666E51", color: "#F6F1E7" }}><span>{t.admin.ouvrir}</span></button>
