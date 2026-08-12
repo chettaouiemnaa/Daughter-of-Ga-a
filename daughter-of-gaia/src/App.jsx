@@ -238,6 +238,8 @@ en: {
     date: "Preferred date", datePh: "Select a date in the calendar", nom: "Name", email: "Email",
     tel: "Phone", invites: "Guests", type: "Type of experience", autre: "Other", projet: "Your project",
     projetPh: "Timings, atmosphere, particular requirements…", envoyer: "Send my request",
+    envoiEnCours: "Sending…",
+    erreur: "The message could not be sent. Please try again, or write to us directly at",
     merci: "Thank you.", confirm1: "Your request has been sent", confirm2: "for",
     confirm3: "We will come back to you shortly with a personalised proposal." },
   faqT: { eyebrow: "Frequently asked", titre: "Good to know" },
@@ -1003,7 +1005,13 @@ export default function App() {
           Langue: lang,
         }),
       });
+      /* Le relais répond 200 même quand il refuse d'expédier (formulaire non
+         activé, quota…). Le seul indicateur fiable est le champ success. */
       if (!r.ok) throw new Error("réponse " + r.status);
+      const data = await r.json().catch(() => null);
+      if (!data || String(data.success) !== "true") {
+        throw new Error("refus du relais : " + (data && data.message ? data.message : "réponse inattendue"));
+      }
       setEnvoi("repos");
       setSubmitted(true);
     } catch (err) {
