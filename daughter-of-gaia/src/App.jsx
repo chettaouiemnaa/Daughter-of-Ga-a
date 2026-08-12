@@ -1058,6 +1058,10 @@ export default function App() {
       .presta .arr{opacity:0;transform:translateX(-8px);transition:opacity .5s,transform .5s;}
       .presta:hover .arr{opacity:1;transform:translateX(0);}
       input,select,textarea{transition:border-color .4s,background .4s;}
+      /* text-align seul ne centre pas la valeur affichée d'une liste
+         déroulante : c'est text-align-last qui gouverne cette ligne. */
+      select{text-align:center;text-align-last:center;}
+      select option{text-align:center;}
       input:focus,select:focus,textarea:focus{outline:none;border-color:#6B7355 !important;}
       ::selection{background:#B5654A;color:#F6F1E7;}
       @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none !important;transition-duration:.01ms !important;}}
