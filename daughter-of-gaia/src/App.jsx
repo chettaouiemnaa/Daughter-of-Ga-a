@@ -1056,16 +1056,47 @@ export default function App() {
     return () => window.removeEventListener("scroll", on);
   }, []);
 
+  /* Les dates bloquées viennent de la base commune : tous les visiteurs
+     voient les mêmes. Auparavant elles ne vivaient que dans le navigateur
+     de la personne qui les avait saisies. */
   useEffect(() => { (async () => {
-    try { const r = await window.storage.get(STORAGE_KEY, true); if (r?.value) setBlocked(new Set(JSON.parse(r.value))); }
-    catch { /* rien enregistré */ } setLoading(false);
+    try {
+      const r = await fetch(API_DATES, { headers: { Accept: "application/json" } });
+      if (!r.ok) throw new Error("réponse " + r.status);
+      const data = await r.json();
+      setBlocked(new Set(Array.isArray(data.dates) ? data.dates : []));
+    } catch (e) {
+      console.error("Lecture des disponibilités impossible :", e);
+      /* Le calendrier reste affiché, sans date barrée : mieux vaut ne rien
+         barrer que barrer au hasard. */
+    }
+    setLoading(false);
   })(); }, []);
 
+  /* L'écriture passe par le serveur, qui vérifie le code avant d'accepter. */
   async function toggleBlocked(key) {
+    const avant = blocked;
     const next = new Set(blocked);
     next.has(key) ? next.delete(key) : next.add(key);
-    setBlocked(next); setSaving(true);
-    try { await window.storage.set(STORAGE_KEY, JSON.stringify([...next]), true); } catch { setBlocked(blocked); }
+    setBlocked(next);            // retour visuel immédiat
+    setSaving(true);
+    setAdminErreur("");
+    try {
+      const r = await fetch(API_DATES, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ code: codeSession, action: "basculer", date: key }),
+      });
+      const data = await r.json().catch(() => null);
+      if (!r.ok || !data || !data.ok) {
+        throw new Error(data && data.erreur ? data.erreur : "réponse " + r.status);
+      }
+      setBlocked(new Set(data.dates));   // on s'aligne sur la base
+    } catch (e) {
+      console.error("Enregistrement de la date impossible :", e);
+      setBlocked(avant);                 // on annule l'affichage optimiste
+      setAdminErreur(t.admin.erreurEnreg);
+    }
     setSaving(false);
   }
 
