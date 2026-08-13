@@ -47,6 +47,31 @@ const JOURS = { fr: ["L","M","M","J","V","S","D"], en: ["M","T","W","T","F","S",
    une variable d'environnement sur le serveur, comparée dans /api/dates. */
 const API_DATES = "/api/dates";
 
+/* ─── Adresses des pages ───────────────────────────────────────────
+   Chaque page a désormais sa propre adresse. Auparavant tout vivait
+   sous « / » : la page tournages était introuvable par les moteurs de
+   recherche et impossible à partager par un lien direct. */
+const CHEMINS = { accueil: "/", tournages: "/tournages" };
+
+function pageDepuisChemin(chemin) {
+  return chemin.replace(/\/+$/, "") === "/tournages" ? "tournages" : "accueil";
+}
+
+/* Titre et description propres à chaque page : ce que Google affiche
+   dans ses résultats et ce que montrent les aperçus de partage. */
+const META = {
+  accueil: {
+    titre: "Lieu événementiel à Tunis — Daughter of Gaïa, La Soukra",
+    description:
+      "Domaine privé de 4 000 m² à La Soukra, aux portes de Tunis. Privatisation complète jusqu'à 80 invités : séminaires, anniversaires, brunchs, tournages.",
+  },
+  tournages: {
+    titre: "Lieu de tournage près de Tunis — Daughter of Gaïa, La Soukra",
+    description:
+      "Décor de tournage à 20 minutes de Tunis : cinq décors extérieurs, une maison entièrement filmable, lumière naturelle toute la journée et des chevaux sur place.",
+  },
+};
+
 /* Relais d'acheminement du formulaire de devis.
    Une page statique ne peut pas expédier de courrier elle-même : la demande
    est transmise à ce service, qui la dépose dans la boîte du domaine.
@@ -980,7 +1005,9 @@ export default function App() {
   const [piege, setPiege] = useState("");         // champ leurre anti-robot
   const [scrollY, setScrollY] = useState(0);
   const [navSolid, setNavSolid] = useState(false);
-  const [page, setPage] = useState("accueil");
+  /* La page courante découle de l'adresse : /tournages est une vraie page,
+     indexable et partageable, au lieu d'un simple état interne. */
+  const [page, setPage] = useState(() => pageDepuisChemin(window.location.pathname));
   const [lang, setLang] = useState("fr");
   const [menuOuvert, setMenuOuvert] = useState(false);
   const t = T[lang];
@@ -992,8 +1019,33 @@ export default function App() {
   const allerA = (p) => {
     setPage(p);
     setMenuOuvert(false);
+    if (window.location.pathname !== CHEMINS[p]) {
+      window.history.pushState({ page: p }, "", CHEMINS[p]);
+    }
     window.scrollTo({ top: 0, behavior: "instant" });
   };
+
+  /* Boutons précédent/suivant du navigateur : sans ça, revenir en arrière
+     changeait l'adresse sans changer la page affichée. */
+  useEffect(() => {
+    const surRetour = () => {
+      setPage(pageDepuisChemin(window.location.pathname));
+      setMenuOuvert(false);
+      window.scrollTo({ top: 0, behavior: "instant" });
+    };
+    window.addEventListener("popstate", surRetour);
+    return () => window.removeEventListener("popstate", surRetour);
+  }, []);
+
+  /* Le titre de l'onglet et la description suivent la page consultée. */
+  useEffect(() => {
+    const m = META[page] || META.accueil;
+    document.title = m.titre;
+    const d = document.querySelector('meta[name="description"]');
+    if (d) d.setAttribute("content", m.description);
+    const c = document.querySelector('link[rel="canonical"]');
+    if (c) c.setAttribute("href", "https://www.daughterofgaia.com" + CHEMINS[page]);
+  }, [page]);
 
   /* Envoi de la demande de devis vers la boîte du domaine.
      Un site statique ne peut pas expédier de courrier : la demande passe par
