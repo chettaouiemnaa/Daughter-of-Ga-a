@@ -63,14 +63,11 @@ const remplacements = [
   [/(<meta property="og:description" content=")[^"]*(")/, `$1${DESCRIPTION}$2`],
   [/(<meta name="twitter:title" content=")[^"]*(")/, `$1Daughter of Gaïa — Lieu de tournage près de Tunis$2`],
   [/(<meta name="twitter:description" content=")[^"]*(")/, `$1${DESCRIPTION}$2`],
-  [/(?s)<noscript>.*?<\/noscript>/, `<noscript>${CONTENU}\n    </noscript>`],
+  [/<noscript>.*?<\/noscript>/s, `<noscript>${CONTENU}\n    </noscript>`],
 ];
 
 let echecs = 0;
-for (const [motif, remplacement] of remplacements) {
-  const re = motif.source.startsWith("(?s)")
-    ? new RegExp(motif.source.slice(4), "s")
-    : motif;
+for (const [re, remplacement] of remplacements) {
   if (!re.test(html)) {
     console.error("Motif introuvable :", re);
     echecs++;
