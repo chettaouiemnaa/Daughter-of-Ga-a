@@ -354,6 +354,32 @@ function Photo({ src, alt = "", className = "", tone = 0, zoom = false, pos = "c
 
 /* ═══════════ COUCHES DE MOUVEMENT ═══════════ */
 
+/* Saut vers une section depuis le menu mobile.
+
+   Laisser le navigateur gérer le lien pendant que le menu se referme crée
+   une concurrence : le fond est encore figé (overflow caché) au moment où
+   le saut est demandé. Sur iOS notamment, le défilement était alors
+   simplement ignoré et l'on restait en haut de page.
+
+   On reprend donc la main : on libère le fond, puis on commande le
+   défilement une fois la fermeture engagée. */
+function allerSection(ev, href) {
+  const cible = document.querySelector(href);
+  if (!cible) return;                       // pas de cible : on laisse faire le navigateur
+  ev.preventDefault();
+
+  document.body.style.overflow = "";        // certitude que le fond n'est plus bloqué
+
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      cible.scrollIntoView({ behavior: "smooth", block: "start" });
+      /* replaceState plutôt que l'ancre : met l'adresse à jour sans
+         provoquer un second saut par-dessus celui en cours. */
+      window.history.replaceState(null, "", href);
+    }, 80);
+  });
+}
+
 /* Bouton d'ouverture du menu, toujours accessible sur mobile.
    La barre de navigation ne devient visible qu'après avoir défilé 85% de
    l'écran : placé à l'intérieur, le bouton était invisible et non cliquable
@@ -412,7 +438,7 @@ function MenuMobile({ ouvert, fermer, t, lang, setLang, entrees = [], masqueDes 
             const classe = "display text-3xl py-3 text-left transition-transform duration-500";
             return e.href ? (
               <a key={e.href + i} href={e.href} style={style} className={classe}
-                onClick={(ev) => { fermer(); e.onClick && e.onClick(ev); }}>
+                onClick={(ev) => { fermer(); e.onClick ? e.onClick(ev) : allerSection(ev, e.href); }}>
                 {e.texte}
               </a>
             ) : (
@@ -2056,8 +2082,12 @@ export default function App() {
         <div className="max-w-4xl mx-auto px-8 py-28 text-center">
           <Reveal>
             <p className="display text-4xl sm:text-6xl" style={{ fontWeight: 300 }}>Daughter of Gaïa</p>
-            <p className="mono uppercase tracking-[0.4em] text-[9px] mt-6" style={{ color: "rgba(237,228,211,.55)" }}>
-              {t.contact.sur}
+            {/* Même traitement que le hero : le fort interlettrage faisait
+                revenir la mention à la ligne n'importe où sur téléphone. */}
+            <p className="mono uppercase tracking-[0.24em] sm:tracking-[0.4em] text-[9px] mt-6 leading-[2]" style={{ color: "rgba(237,228,211,.55)" }}>
+              <span className="block sm:inline">{t.hero.sur1}</span>
+              <span className="hidden sm:inline">{" • "}</span>
+              <span className="block sm:inline">{t.hero.sur2}</span>
             </p>
           </Reveal>
 
