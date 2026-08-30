@@ -30,7 +30,9 @@ const CONTENU = `
       <div style="max-width:40rem;margin:4rem auto;padding:0 1.5rem;font-family:system-ui,sans-serif;line-height:1.7;color:#2B2118;">
         <h1 style="font-weight:400;">Lieu de tournage près de Tunis — Daughter of Gaïa</h1>
 
-        <p>Daughter of Gaïa met son domaine privé de 4 000 m² à disposition des productions, à vingt minutes du centre de Tunis, à La Soukra (Ariana). Un décor qui n'a pas besoin d'être construit : cinq décors extérieurs, une maison entièrement filmable et de la lumière naturelle toute la journée.</p>
+        <p>Daughter of Gaïa met une partie de son domaine à disposition des productions, à vingt minutes du centre de Tunis, à La Soukra (Ariana). Un décor qui n'a pas besoin d'être construit : cinq décors extérieurs, une maison entièrement filmable et de la lumière naturelle toute la journée.</p>
+
+        <p><strong>Ces espaces sont réservés aux productions</strong> et ne sont pas proposés pour les événements privés, qui se tiennent dans les autres espaces du domaine.</p>
 
         <h2 style="font-weight:400;">Cinq décors extérieurs</h2>
         <p>Le salon de jardin sous la pergola, avec canapés en teck, four à pain en pierre et bougainvilliers en fleur. La piscine et le bar extérieur, arcades en pierre et bassin turquoise, plein sud. Le jardin sous les bougainvilliers, autour d'un olivier centenaire. La pelouse et les palmiers, dégagée et praticable pour les travellings. Le salon sous voûte de brique, plafond à chevrons, marbre et portes cintrées — un intérieur colonial que l'on ne reconstitue pas en studio.</p>
@@ -58,6 +60,14 @@ const FAQ_TOURNAGE = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
   mainEntity: [
+    {
+      "@type": "Question",
+      name: "La maison est-elle aussi louée pour des événements privés ?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Non. La maison et ses décors sont réservés aux tournages et aux prises de vue. Les événements privés se tiennent dans les autres espaces du domaine.",
+      },
+    },
     {
       "@type": "Question",
       name: "Où se situe le lieu de tournage ?",
