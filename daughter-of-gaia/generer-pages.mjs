@@ -160,6 +160,35 @@ if (!blocFaq) {
     html.slice(blocFaq.index + blocFaq[0].length);
 }
 
+/* La fiche d'établissement est recopiée depuis l'accueil. Le parking y est
+   listé parmi les équipements, ce qui relève de l'offre événementielle : on
+   le retire de la page tournages. */
+const blocLieu = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+  .find((b) => b[1].includes('"EventVenue"'));
+
+if (!blocLieu) {
+  console.error("Fiche d'etablissement introuvable dans le gabarit.");
+  echecs++;
+} else {
+  try {
+    const lieu = JSON.parse(blocLieu[1]);
+    const avant = (lieu.amenityFeature || []).length;
+    lieu.amenityFeature = (lieu.amenityFeature || []).filter(
+      (a) => !/parking/i.test(a.name || "")
+    );
+    if (avant === lieu.amenityFeature.length) {
+      console.warn("Aucun equipement 'parking' a retirer (deja absent ?)");
+    }
+    html =
+      html.slice(0, blocLieu.index) +
+      `<script type="application/ld+json">\n${JSON.stringify(lieu, null, 2)}\n    </script>` +
+      html.slice(blocLieu.index + blocLieu[0].length);
+  } catch (e) {
+    console.error("Fiche d'etablissement illisible :", e.message);
+    echecs++;
+  }
+}
+
 if (echecs > 0) {
   console.error(`\n${echecs} remplacement(s) impossible(s) — page non generee.`);
   process.exit(1);
