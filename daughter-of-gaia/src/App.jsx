@@ -165,8 +165,8 @@ fr: {
     acces: "Domaine privé, accessible uniquement sur réservation confirmée.", devis: "Demander un devis", admin: "Espace propriétaire" },
   tournages: {
     sur: "Daughter of Gaïa \u00a0•\u00a0 Production",
-    titre: "Un décor qui n'a pas besoin d'être construit.",
-    accroche: "Villa coloniale, piscine, jardins, pergola et chevaux en liberté — plusieurs décors sur un seul site, à quelques minutes de Tunis.",
+    titre: "Un lieu à part, réservé aux tournages.",
+    accroche: "Villa coloniale, piscine, jardins, pergola et chevaux en liberté — plusieurs décors à quelques minutes de Tunis, distincts des espaces de réception.",
     btn: "Voir les décors",
     nav: { decors: "Les décors", maison: "La maison", pratique: "En pratique", domaine: "Le domaine", contact: "Contact" },
     introT: "Cinq univers sur un seul site, sans un mètre de décor à monter.",
