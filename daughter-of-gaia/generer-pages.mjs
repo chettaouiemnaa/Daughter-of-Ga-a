@@ -41,7 +41,7 @@ const CONTENU = `
         <p>Des chevaux recueillis vivent sur le domaine et entrent naturellement à l'image, sans transport ni prestataire animalier extérieur.</p>
 
         <h2 style="font-weight:400;">Une base technique sur place</h2>
-        <p>La maison accueille loges, maquillage, régie, repas d'équipe et stockage du matériel, dans un espace couvert, climatisé et fermé, à quelques pas des décors extérieurs. Quarante places de parking à l'entrée. Le domaine est réservé à une seule production à la fois, sans aucun événement en parallèle. L'hébergement n'est pas proposé sur place.</p>
+        <p>La maison accueille loges, maquillage, régie, repas d'équipe et stockage du matériel, dans un espace couvert, climatisé et fermé, à quelques pas des décors extérieurs. Le domaine est réservé à une seule production à la fois, sans aucun événement en parallèle. L'hébergement n'est pas proposé sur place.</p>
 
         <h2 style="font-weight:400;">Organiser un repérage</h2>
         <p>Les tournages se déroulent en journée, afin de préserver la tranquillité des animaux et du voisinage. Chaque projet fait l'objet d'une visite technique préalable.</p>
@@ -97,7 +97,7 @@ const FAQ_TOURNAGE = {
       name: "Quelles installations techniques sont prévues ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "La maison accueille loges, maquillage, régie, repas d'équipe et stockage du matériel, dans un espace couvert, climatisé et fermé, à quelques pas des décors extérieurs. Quarante places de parking à l'entrée. L'hébergement n'est pas proposé sur place.",
+        text: "La maison accueille loges, maquillage, régie, repas d'équipe et stockage du matériel, dans un espace couvert, climatisé et fermé, à quelques pas des décors extérieurs. L'hébergement n'est pas proposé sur place.",
       },
     },
     {
