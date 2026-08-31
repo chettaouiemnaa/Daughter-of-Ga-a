@@ -23,19 +23,19 @@ let html = fs.readFileSync(source, "utf-8");
 
 const TITRE = "Lieu de tournage près de Tunis — Daughter of Gaïa, La Soukra";
 const DESCRIPTION =
-  "Décor de tournage à 20 minutes de Tunis : cinq décors extérieurs, une maison entièrement filmable, lumière naturelle toute la journée et des chevaux sur place.";
+  "Décor de tournage à 20 minutes de Tunis : des décors extérieurs variés, une maison entièrement filmable, lumière naturelle toute la journée et des chevaux sur place.";
 const URL_PAGE = "https://www.daughterofgaia.com/tournages";
 
 const CONTENU = `
       <div style="max-width:40rem;margin:4rem auto;padding:0 1.5rem;font-family:system-ui,sans-serif;line-height:1.7;color:#2B2118;">
         <h1 style="font-weight:400;">Lieu de tournage près de Tunis — Daughter of Gaïa</h1>
 
-        <p>Daughter of Gaïa met une partie de son domaine à disposition des productions, à vingt minutes du centre de Tunis, à La Soukra (Ariana). Un décor qui n'a pas besoin d'être construit : cinq décors extérieurs, une maison entièrement filmable et de la lumière naturelle toute la journée.</p>
+        <p>Daughter of Gaïa met une partie de son domaine à disposition des productions, à vingt minutes du centre de Tunis, à La Soukra (Ariana). Un décor qui n'a pas besoin d'être construit : des décors extérieurs variés, une maison entièrement filmable et de la lumière naturelle toute la journée.</p>
 
         <p><strong>Ces espaces sont réservés aux productions</strong> et ne sont pas proposés pour les événements privés, qui se tiennent dans les autres espaces du domaine.</p>
 
-        <h2 style="font-weight:400;">Cinq décors extérieurs</h2>
-        <p>Le salon de jardin sous la pergola, avec canapés en teck, four à pain en pierre et bougainvilliers en fleur. La piscine et le bar extérieur, arcades en pierre et bassin turquoise, plein sud. Le jardin sous les bougainvilliers, autour d'un olivier centenaire. La pelouse et les palmiers, dégagée et praticable pour les travellings. Le salon sous voûte de brique, plafond à chevrons, marbre et portes cintrées — un intérieur colonial que l'on ne reconstitue pas en studio.</p>
+        <h2 style="font-weight:400;">Les décors extérieurs</h2>
+        <p>Parmi eux : le salon de jardin sous la pergola, avec canapés en teck, four à pain en pierre et bougainvilliers en fleur. La piscine et le bar extérieur, arcades en pierre et bassin turquoise, plein sud. Le jardin sous les bougainvilliers, autour d'un olivier centenaire. La pelouse et les palmiers, dégagée et praticable pour les travellings. Le salon sous voûte de brique, plafond à chevrons, marbre et portes cintrées — un intérieur colonial que l'on ne reconstitue pas en studio.</p>
 
         <h2 style="font-weight:400;">Des chevaux dans le cadre, sans logistique</h2>
         <p>Des chevaux recueillis vivent sur le domaine et entrent naturellement à l'image, sans transport ni prestataire animalier extérieur.</p>
@@ -81,7 +81,7 @@ const FAQ_TOURNAGE = {
       name: "Quels décors sont disponibles ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Cinq décors extérieurs — un salon de jardin sous pergola avec four à pain en pierre, une piscine avec bar en brique et arcades, un jardin sous bougainvilliers autour d'un olivier centenaire, une pelouse dégagée bordée de palmiers — et un intérieur colonial sous voûte de brique, marbre et portes cintrées.",
+        text: "Plusieurs décors extérieurs — parmi eux un salon de jardin sous pergola avec four à pain en pierre, une piscine avec bar en brique et arcades, un jardin sous bougainvilliers autour d'un olivier centenaire, une pelouse dégagée bordée de palmiers — et un intérieur colonial sous voûte de brique, marbre et portes cintrées.",
       },
     },
     {

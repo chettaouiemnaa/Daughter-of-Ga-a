@@ -68,7 +68,7 @@ const META = {
   tournages: {
     titre: "Lieu de tournage près de Tunis — Daughter of Gaïa, La Soukra",
     description:
-      "Décor de tournage à 20 minutes de Tunis : cinq décors extérieurs, une maison entièrement filmable, lumière naturelle toute la journée et des chevaux sur place.",
+      "Décor de tournage à 20 minutes de Tunis : des décors extérieurs variés, une maison entièrement filmable, lumière naturelle toute la journée et des chevaux sur place.",
   },
 };
 
@@ -131,7 +131,7 @@ fr: {
     { t: "Mariages intimistes", d: "Petits mariages et événements liés au mariage.", soon: true },
   ],
   appel: { eyebrow: "Tournages & production", titre: "Un lieu à part, réservé aux tournages.",
-    texte: "Cinq décors extérieurs et une maison entièrement filmable, qui ne font pas partie des espaces proposés pour les événements privés.",
+    texte: "Une maison entièrement filmable, des décors extérieurs variés, et des chevaux qui entrent naturellement dans le cadre.",
     lien: "Découvrir la page tournages" },
   bandeau: ["Respect du vivant", "Animaux sauvés", "Nature préservée", "Domaine privatisé", "Sur réservation"],
   galerie: { eyebrow: "Galerie", titre: "Le domaine en images", faire: "Faites défiler",
@@ -169,7 +169,7 @@ fr: {
     accroche: "Villa coloniale, piscine, jardins, pergola et chevaux en liberté — plusieurs décors à quelques minutes de Tunis, distincts des espaces de réception.",
     btn: "Voir les décors",
     nav: { decors: "Les décors", maison: "La maison", pratique: "En pratique", domaine: "Le domaine", contact: "Contact" },
-    introT: "Cinq univers sur un seul site, sans un mètre de décor à monter.",
+    introT: "Plusieurs univers sur un seul site, sans un mètre de décor à monter.",
     intro: "Une villa coloniale à voûtes de brique, une piscine bordée d'arcades en pierre, une pergola ouverte sur le jardin, des palmiers, des bougainvilliers — et des chevaux qui vivent là et entrent naturellement dans le cadre. Un vocabulaire assez large pour jouer l'Andalousie, le Maghreb ou le Levant.",
     decorsE: "Repérage", decorsT: "Du jardin au séjour",
     maisonE: "La maison", maisonT: "Un décor à part entière, et une base pour vos équipes",
@@ -255,7 +255,7 @@ en: {
     { t: "Intimate weddings", d: "Small weddings and wedding-related events.", soon: true },
   ],
   appel: { eyebrow: "Filming & production", titre: "A place apart, reserved for filming.",
-    texte: "Five outdoor locations and a house you can film throughout, none of which form part of the spaces available for private events.",
+    texte: "A house you can film throughout, varied outdoor locations, and horses that walk naturally into frame.",
     lien: "See the filming page" },
   bandeau: ["Respect for the living", "Rescued animals", "Protected nature", "Private estate", "By reservation"],
   galerie: { eyebrow: "Gallery", titre: "The estate in pictures", faire: "Scroll across",
@@ -293,7 +293,7 @@ en: {
     accroche: "Colonial villa, pool, gardens, pergola and free-roaming horses — several locations minutes from Tunis, separate from the event spaces.",
     btn: "See the locations",
     nav: { decors: "Locations", maison: "The house", pratique: "Practical", domaine: "The estate", contact: "Contact" },
-    introT: "Five worlds on a single site, without a metre of set to build.",
+    introT: "Several worlds on a single site, without a metre of set to build.",
     intro: "A colonial villa with brick vaulting, a pool framed by stone arcades, a pergola opening onto the garden, palms, bougainvillea — and horses that live here and walk naturally into frame. A vocabulary broad enough to play Andalusia, the Maghreb or the Levant.",
     decorsE: "Location scout", decorsT: "From the garden to the drawing room",
     maisonE: "The house", maisonT: "A location in its own right, and a base for your crew",
