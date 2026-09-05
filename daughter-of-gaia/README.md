@@ -55,6 +55,56 @@ Navigation par état local (`page`), pas de routeur.
 Un espace **administration** est accessible par le bouton discret en pied de page.
 Il permet de bloquer ou libérer des dates dans le calendrier.
 
+## Générer des photos avec Higgsfield
+
+Les photos du site sont des fichiers statiques dans `public/images`.
+`generer-images.mjs` les fabrique avec le modèle **Soul** de Higgsfield,
+à la main, avant la mise en ligne — pas pendant la visite : ce serait lent,
+facturé à chaque affichage, et la clé d'API se retrouverait dans le navigateur.
+
+**1. Les identifiants.** Créer une clé d'API sur higgsfield.ai (espace API),
+puis, dans le terminal, avant de lancer le script :
+
+```bash
+export HF_CREDENTIALS="identifiant:secret"   # ou HF_API_KEY + HF_API_SECRET
+```
+
+Sous Windows PowerShell : `$env:HF_CREDENTIALS="identifiant:secret"`.
+La clé ne va **jamais** dans le code ni dans un fichier versionné.
+
+**2. Lancer.**
+
+```bash
+npm run images                          # la liste des photos et leur format
+npm run images -- pergola salon         # génère ces deux-là
+npm run images -- pergola --remplacer   # écrase le fichier existant
+npm run images -- --tous                # tout regénérer
+```
+
+Le script écrit directement `public/images/<nom>.jpg`, redimensionné à
+2000 px de large et recompressé par `sharp`. Un fichier déjà présent n'est
+pas écrasé sans `--remplacer`.
+
+**3. Changer une photo.** Chaque image a une entrée dans la table `PHOTOS`
+en haut de `generer-images.mjs` : un `sujet` (ce qu'on voit) et un `format`.
+La constante `STYLE` juste au-dessus tient le vocabulaire commun — lumière,
+palette, grain — et s'ajoute à chaque description, ce qui garde la série
+cohérente. Modifier le texte, relancer avec `--remplacer`.
+
+Pour une nouvelle photo, ajouter une entrée à `PHOTOS` puis référencer
+`/images/<nom>.jpg` dans `App.jsx`, comme les constantes `P_*` et `V_*`.
+
+**Ce qu'il faut savoir.** L'API est asynchrone : le script attend la fin de
+la génération (une trentaine de secondes en général) puis rapatrie le fichier,
+que Higgsfield ne conserve qu'une heure. Chaque image est facturée en crédits.
+Le SDK officiel `@higgsfield/client` existe mais n'est pas utilisé ici : trois
+appels HTTP suffisent, autant ne pas ajouter de dépendance.
+
+**Attention aux images générées.** Elles conviennent pour une maquette ou une
+ambiance. Pour un site qui vend un lieu réel, une photo inventée qui ne
+ressemble pas au domaine est un problème commercial avant d'être un problème
+technique — les vraies photos restent la cible (voir « Contenu à venir »).
+
 ## Points à traiter avant mise en ligne
 
 **Sécurité — critique.** Le code d'accès administrateur est en clair dans
@@ -68,7 +118,7 @@ de données pour que les disponibilités soient partagées entre visiteurs.
 **Formulaire de devis.** Il ne fait qu'afficher un message de confirmation.
 Aucun envoi. À brancher sur un service d'e-mail ou une API.
 
-**Images.** Les base64 doivent sortir du fichier. Prévoir des formats modernes
+**Images.** Les base64 sont sortis du fichier (voir « Générer des photos »). Prévoir des formats modernes
 (AVIF / WebP), plusieurs tailles, et `loading="lazy"` déjà en place.
 
 **Routage.** Remplacer l'état `page` par de vraies URL (`/`, `/tournages`)
