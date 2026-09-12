@@ -802,6 +802,18 @@ function versSuite(e) {
   window.scrollTo({ top: y, behavior: "smooth" });
 }
 
+/* Remonte au calendrier depuis le champ de date du formulaire.
+   Ce champ ne se saisit pas : la date se choisit dans le calendrier, plus
+   haut dans la page. Sans ce renvoi, un visiteur cliquait dessus sans que
+   rien ne se passe. */
+function versCalendrier(e) {
+  if (e) e.preventDefault();
+  const el = document.getElementById("disponibilites");
+  if (!el) return;
+  const y = el.getBoundingClientRect().top + window.scrollY - 70;
+  window.scrollTo({ top: y, behavior: "smooth" });
+}
+
 /* Amène au formulaire de devis, quel que soit l'endroit de la page */
 function versDevis(e) {
   if (e) e.preventDefault();
@@ -2014,8 +2026,13 @@ export default function App() {
                 style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0 }} />
               <div>
                 <label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.date}</label>
-                <input type="text" readOnly value={selectedDate || ""} placeholder={t.devis.datePh}
-                  className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }} />
+                {/* Bouton et non champ de saisie : la date se choisit dans le
+                    calendrier, plus haut. Un clic y renvoie. */}
+                <button type="button" onClick={versCalendrier}
+                  className="body-font w-full mt-3 px-0 py-3 min-h-[44px] bg-transparent text-sm text-center transition-colors duration-300 hover:opacity-70"
+                  style={{ borderBottom: "1px solid #C7B79A", color: selectedDate ? "#2B2118" : "#9a8f76" }}>
+                  {selectedDate || t.devis.datePh}
+                </button>
               </div>
               <div className="grid sm:grid-cols-2 gap-8">
                 <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.nom}</label>
