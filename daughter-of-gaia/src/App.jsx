@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useLayoutEffect, useRef } from "react";
 import {
   ChevronLeft, ChevronRight, ChevronDown, ArrowRight, ArrowLeft, Mail, Phone, MapPin,
-  Users, Lock, LogOut, Loader2, Plus, Minus, Eye, EyeOff,
+  Users, Lock, LogOut, Loader2, Plus, Minus, Eye, EyeOff, CalendarDays,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════
@@ -144,7 +144,8 @@ fr: {
   dispo: { eyebrow: "Disponibilités", titre: "Choisissez une date", note: "Les dates barrées ne sont plus disponibles" },
   devis: { eyebrow: "Demande de devis", titre: "Parlez-nous de votre projet",
     texte: "Chaque événement est étudié individuellement. Décrivez-nous ce que vous imaginez, nous revenons vers vous avec une proposition adaptée.",
-    date: "Date souhaitée", datePh: "Sélectionnez une date dans le calendrier", nom: "Nom", email: "Email",
+    date: "Date souhaitée", datePh: "Sélectionnez une date dans le calendrier",
+    dateModifier: "modifier la date", nom: "Nom", email: "Email",
     tel: "Téléphone", invites: "Invités", type: "Type d'expérience", autre: "Autre", projet: "Votre projet",
     projetPh: "Horaires envisagés, ambiance recherchée, besoins particuliers…", envoyer: "Envoyer ma demande",
     envoiEnCours: "Envoi en cours…",
@@ -268,7 +269,8 @@ en: {
   dispo: { eyebrow: "Availability", titre: "Choose a date", note: "Crossed-out dates are no longer available" },
   devis: { eyebrow: "Request a quote", titre: "Tell us about your project",
     texte: "Every event is considered individually. Describe what you have in mind and we will come back to you with a tailored proposal.",
-    date: "Preferred date", datePh: "Select a date in the calendar", nom: "Name", email: "Email",
+    date: "Preferred date", datePh: "Select a date in the calendar",
+    dateModifier: "change the date", nom: "Name", email: "Email",
     tel: "Phone", invites: "Guests", type: "Type of experience", autre: "Other", projet: "Your project",
     projetPh: "Timings, atmosphere, particular requirements…", envoyer: "Send my request",
     envoiEnCours: "Sending…",
@@ -815,6 +817,16 @@ function versDevis(e) {
   }, 900);
 }
 
+/* Remonte au calendrier depuis le champ « date » du devis : la date ne se
+   saisit pas a la main, elle se choisit dans les disponibilites. */
+function versCalendrier(e) {
+  if (e) e.preventDefault();
+  const el = document.getElementById("disponibilites");
+  if (!el) return;
+  const y = el.getBoundingClientRect().top + window.scrollY - 70;
+  window.scrollTo({ top: y, behavior: "smooth" });
+}
+
 /* ─────────── Mouvements ─────────── */
 function Reveal({ children, delay = 0, className = "", y = 26 }) {
   const ref = useRef(null);
@@ -1291,6 +1303,9 @@ export default function App() {
       .grain-doux{position:absolute;inset:0;opacity:.05;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");}
       .day-cell{transition:color .3s,transform .25s;}
       .day-cell:hover:not(:disabled){transform:scale(1.25);color:#B5654A;}
+      .champ-date{color:#2B2118;border-bottom:1px solid #C7B79A;transition:color .35s,border-color .35s;}
+      .champ-date-vide{color:#9a8f76;}
+      .champ-date:hover,.champ-date:focus-visible{color:#B5654A;border-color:#B5654A;}
       .link-u{position:relative;}
       .link-u::after{content:'';position:absolute;left:0;bottom:-4px;height:1px;width:100%;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .6s cubic-bezier(.22,1,.36,1);}
       .link-u:hover::after{transform:scaleX(1);transform-origin:left;}
@@ -2014,8 +2029,12 @@ export default function App() {
                 style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0 }} />
               <div>
                 <label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.date}</label>
-                <input type="text" readOnly value={selectedDate || ""} placeholder={t.devis.datePh}
-                  className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }} />
+                <button type="button" onClick={versCalendrier}
+                  aria-label={selectedDate ? `${selectedDate} — ${t.devis.dateModifier}` : t.devis.datePh}
+                  className={`champ-date body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center flex items-center justify-center gap-2${selectedDate ? "" : " champ-date-vide"}`}>
+                  <CalendarDays size={13} aria-hidden="true" />
+                  <span>{selectedDate || t.devis.datePh}</span>
+                </button>
               </div>
               <div className="grid sm:grid-cols-2 gap-8">
                 <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.nom}</label>
