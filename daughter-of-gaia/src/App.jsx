@@ -10,16 +10,24 @@ import {
    ═══════════════════════════════════════════════════════════ */
 const P_BAR_NUIT = "/images/bar-nuit.jpg";
 const P_CHEVAL_BAR = "/images/cheval-bar.jpg";
-const P_JARDIN = "/images/domaine.jpg";
 const P_LANTERNES = "/images/lanternes.jpg";
-const P_TERRASSE = "/images/terrasse.jpg";
-const P_COUVERT = "/images/espace-couvert.jpg";
+const P_JARDIN_SOIR = "/images/jardin-soir.jpg";
+const P_CHEVAUX_FENETRE = "/images/chevaux-fenetre.jpg";
+const P_CHEVAL_NB = "/images/cheval-noir-blanc.jpg";
+const P_SALLE = "/images/salle-lustre.jpg";
+const P_TERRASSE_VASQUE = "/images/terrasse-vasque.jpg";
+const P_TROIS_CHEVAUX = "/images/trois-chevaux.jpg";
+
+/* Vidéo d'ouverture : téléphone uniquement (elle est filmée à la
+   verticale). Boucle de 5 s sans son, fondu entre la fin et le début. */
+const VIDEO_OUVERTURE = "/videos/ouverture-jardin.mp4";
+const POSTER_OUVERTURE = "/videos/ouverture-jardin.jpg";
 
 const IMAGES = {
   hero: P_BAR_NUIT,
-  lieu: P_JARDIN,
+  lieu: P_JARDIN_SOIR,
   histoire: P_LANTERNES,
-  animaux: P_CHEVAL_BAR,
+  animaux: P_CHEVAL_NB,
 };
 
 const V_HERO = "/images/tournage-hero.jpg";
@@ -86,6 +94,7 @@ const T = {
 fr: {
   hero: { sur: "Private Experiences \u00a0•\u00a0 By Reservation",
     sur1: "Private Experiences", sur2: "By Reservation",
+    alt: "Deux chevaux le long du mur ocre de l'espace couvert",
     accroche: "Un domaine privé où chaque expérience célèbre le vivant.",
     btn1: "Découvrir le domaine", btn2: "Demander un devis" },
   nav: { domaine: "Le domaine", histoire: "Histoire", experiences: "Expériences", galerie: "Galerie",
@@ -102,7 +111,7 @@ fr: {
   domaine: { eyebrow: "Le domaine", titre: "4 000 m² où la ville disparaît",
     texte: "Des espaces pensés pour s'adapter naturellement à votre événement. Une terrasse tournée vers le jardin, un espace intérieur en matériaux naturels, une cuisine prête à recevoir.",
     citation: "Et partout autour, une nature qui n'a jamais été dessinée pour impressionner, mais pour être vécue.",
-    alt: "Le jardin et l'espace couvert" },
+    alt: "Le jardin au soleil couchant, les chevaux au fond" },
   espaces: [
     { t: "Le domaine", v: "4 000 m²" }, { t: "Espace aménagé", v: "500 m²" },
     { t: "Espace couvert", v: "120 m²" }, { t: "Capacité idéale", v: "80 invités" },
@@ -135,12 +144,12 @@ fr: {
     lien: "Découvrir la page tournages" },
   bandeau: ["Respect du vivant", "Animaux sauvés", "Nature préservée", "Domaine privatisé", "Sur réservation"],
   galerie: { eyebrow: "Galerie", titre: "Le domaine en images", faire: "Faites défiler",
-    legendes: ["Le jardin", "Le bar, à la nuit tombée", "Les lanternes", "Ils sont chez eux", "La terrasse", "L'espace couvert"] },
+    legendes: ["Le jardin", "Le bar, à la nuit tombée", "Les lanternes", "Ils sont chez eux", "La terrasse", "L'espace couvert", "À l'ombre, devant la maison"] },
   refuge: { eyebrow: "Le refuge", titre: "Sauvés, réhabilités, et chez eux.",
     p1: "Chaque cheval, chien ou autre animal présent ici a été sauvé, recueilli ou réhabilité. Ils ne sont ni une attraction, ni une animation. Ils évoluent dans leur environnement, à leur rythme, et leur bien-être passe avant l'événement.",
     p2: "Sept chevaux ont été recueillis depuis l'ouverture. Quatre vivent ici aujourd'hui. Les trois autres sont repartis une fois remis sur pied, et c'était bien le but.",
     liste: ["Aucune interaction imposée", "Observation à distance, dans le calme", "Niveaux sonores et horaires encadrés", "Zones de repos strictement préservées"],
-    alt: "Un cheval accoudé au bar du domaine" },
+    alt: "Un cheval noir et blanc qui s'avance sous les arbres" },
   dispo: { eyebrow: "Disponibilités", titre: "Choisissez une date", note: "Les dates barrées ne sont plus disponibles" },
   devis: { eyebrow: "Demande de devis", titre: "Parlez-nous de votre projet",
     texte: "Chaque événement est étudié individuellement. Décrivez-nous ce que vous imaginez, nous revenons vers vous avec une proposition adaptée.",
@@ -210,6 +219,7 @@ fr: {
 en: {
   hero: { sur: "Private Experiences \u00a0•\u00a0 By Reservation",
     sur1: "Private Experiences", sur2: "By Reservation",
+    alt: "Two horses along the ochre wall of the covered space",
     accroche: "A private estate where every experience celebrates the living.",
     btn1: "Discover the estate", btn2: "Request a quote" },
   nav: { domaine: "The estate", histoire: "Story", experiences: "Experiences", galerie: "Gallery",
@@ -226,7 +236,7 @@ en: {
   domaine: { eyebrow: "The estate", titre: "4,000 m² where the city disappears",
     texte: "Spaces designed to adapt naturally to your event. A terrace facing the garden, an interior in natural materials, a kitchen ready to receive.",
     citation: "And all around, a landscape that was never designed to impress, but to be lived in.",
-    alt: "The garden and the covered space" },
+    alt: "The garden at sunset, horses in the background" },
   espaces: [
     { t: "The estate", v: "4 000 m²" }, { t: "Landscaped area", v: "500 m²" },
     { t: "Covered space", v: "120 m²" }, { t: "Ideal capacity", v: "80 guests" },
@@ -259,12 +269,12 @@ en: {
     lien: "See the filming page" },
   bandeau: ["Respect for the living", "Rescued animals", "Protected nature", "Private estate", "By reservation"],
   galerie: { eyebrow: "Gallery", titre: "The estate in pictures", faire: "Scroll across",
-    legendes: ["The garden", "The bar after dark", "The lanterns", "They live here", "The terrace", "The covered space"] },
+    legendes: ["The garden", "The bar after dark", "The lanterns", "They live here", "The terrace", "The covered space", "In the shade, by the house"] },
   refuge: { eyebrow: "The sanctuary", titre: "Rescued, rehabilitated, and home.",
     p1: "Every horse, dog or other animal here was rescued, taken in or rehabilitated. They are neither an attraction nor an act. They move through their own environment, at their own pace, and their wellbeing comes before the event.",
     p2: "Seven horses have been taken in since we opened. Four live here today. The other three left once they were back on their feet, which was the whole point.",
     liste: ["No forced interaction", "Observation from a distance, in quiet", "Sound levels and hours kept in check", "Resting areas strictly preserved"],
-    alt: "A horse leaning over the estate bar" },
+    alt: "A black-and-white horse walking out from under the trees" },
   dispo: { eyebrow: "Availability", titre: "Choose a date", note: "Crossed-out dates are no longer available" },
   devis: { eyebrow: "Request a quote", titre: "Tell us about your project",
     texte: "Every event is considered individually. Describe what you have in mind and we will come back to you with a tailored proposal.",
@@ -541,6 +551,50 @@ function Diaporama({ images, interval = 6500, overlay }) {
           }} />
       ))}
       {overlay}
+    </div>
+  );
+}
+
+/* Ouverture : vidéo du jardin sur téléphone, diaporama ailleurs.
+   La vidéo est verticale, donc réservée aux écrans étroits. Elle cède
+   la place au diaporama si le visiteur limite les animations ou ses
+   données (mode économie). Le choix est fait avant le premier rendu
+   pour ne pas charger les photos puis la vidéo. */
+function choisirVideo() {
+  if (typeof window === "undefined" || !window.matchMedia) return false;
+  const etroit = window.matchMedia("(max-width: 767px)").matches;
+  const calme = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const eco = !!(navigator.connection && navigator.connection.saveData);
+  return etroit && !calme && !eco;
+}
+
+function FondOuverture({ images }) {
+  const [video, setVideo] = useState(choisirVideo);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const maj = () => setVideo(choisirVideo());
+    if (mq.addEventListener) mq.addEventListener("change", maj);
+    return () => { if (mq.removeEventListener) mq.removeEventListener("change", maj); };
+  }, []);
+
+  /* React ne pose pas toujours l'attribut « muted » : sans lui,
+     Safari sur iPhone refuse la lecture automatique. */
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    v.muted = true;
+    const p = v.play();
+    if (p && p.catch) p.catch(() => {});
+  }, [video]);
+
+  if (!video) return <Diaporama images={images} />;
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      <video ref={ref} src={VIDEO_OUVERTURE} poster={POSTER_OUVERTURE}
+        className="absolute inset-0 w-full h-full object-cover"
+        autoPlay muted loop playsInline preload="auto" aria-hidden="true" />
     </div>
   );
 }
@@ -1648,9 +1702,9 @@ export default function App() {
       {/* ── HERO ── */}
       <section className="relative h-[100svh] w-full overflow-hidden">
         <div className="absolute inset-0" style={{ transform: `translate3d(0,${scrollY * 0.32}px,0)` }}>
-          <Diaporama images={[
-            { src: IMAGES.animaux, alt: t.refuge.alt, pos: "58% center" },
-            { src: IMAGES.lieu, alt: t.domaine.alt, pos: "center 45%" },
+          <FondOuverture images={[
+            { src: IMAGES.lieu, alt: t.domaine.alt, pos: "center 62%" },
+            { src: P_CHEVAUX_FENETRE, alt: t.hero.alt, pos: "center 55%" },
             { src: IMAGES.hero, alt: t.galerie.legendes[1], pos: "center" },
           ]} />
         </div>
@@ -1790,7 +1844,7 @@ export default function App() {
         <VoletsReveal className="relative w-full h-[52vh] sm:h-[72vh] mt-16 overflow-hidden">
           <LumiereFiltree />
           <Parallax speed={-0.07} className="absolute inset-0 -top-16 -bottom-16">
-            <Photo src={IMAGES.lieu} alt={t.domaine.alt} className="w-full h-full" tone={1} pos="center 45%" />
+            <Photo src={IMAGES.lieu} alt={t.domaine.alt} className="w-full h-full" tone={1} pos="center 60%" />
           </Parallax>
         </VoletsReveal>
 
@@ -1936,16 +1990,17 @@ export default function App() {
           { src: IMAGES.lieu, l: t.galerie.legendes[0], pos: "center 30%", w: "min(78vw,420px)", h: "min(64vh,560px)" },
           { src: IMAGES.hero, l: t.galerie.legendes[1], pos: "70% center", w: "min(88vw,640px)", h: "min(52vh,450px)" },
           { src: IMAGES.histoire, l: t.galerie.legendes[2], pos: "center 20%", w: "min(72vw,380px)", h: "min(68vh,590px)" },
-          { src: IMAGES.animaux, l: t.galerie.legendes[3], pos: "45% center", w: "min(80vw,460px)", h: "min(58vh,510px)" },
-          { src: P_TERRASSE, l: t.galerie.legendes[4], pos: "20% center", w: "min(86vw,600px)", h: "min(50vh,430px)" },
-          { src: P_COUVERT, l: t.galerie.legendes[5], pos: "center 78%", w: "min(74vw,400px)", h: "min(66vh,575px)" },
+          { src: P_CHEVAL_BAR, l: t.galerie.legendes[3], pos: "45% center", w: "min(80vw,460px)", h: "min(58vh,510px)" },
+          { src: P_TERRASSE_VASQUE, l: t.galerie.legendes[4], pos: "center 60%", w: "min(86vw,600px)", h: "min(50vh,430px)" },
+          { src: P_SALLE, l: t.galerie.legendes[5], pos: "center 40%", w: "min(74vw,400px)", h: "min(66vh,575px)" },
+          { src: P_TROIS_CHEVAUX, l: t.galerie.legendes[6], pos: "center 62%", w: "min(82vw,520px)", h: "min(56vh,490px)" },
         ]} />
       </section>
 
       {/* ── LE REFUGE ── */}
       <section id="refuge" className="relative min-h-[92svh] lg:min-h-[85vh] flex items-center overflow-hidden">
         <Projecteur className="absolute inset-0">
-          <Photo src={IMAGES.animaux} alt={t.refuge.alt} className="w-full h-full" tone={3} zoom pos="62% center" />
+          <Photo src={IMAGES.animaux} alt={t.refuge.alt} className="w-full h-full" tone={3} zoom pos="center 40%" />
           <div className="absolute inset-0" style={{ background: "rgba(22,16,10,.44)" }} />
           <div className="absolute inset-0 hidden lg:block" style={{ background: "linear-gradient(to right, rgba(22,16,10,.66) 0%, rgba(22,16,10,.22) 62%, transparent 100%)" }} />
           <div className="absolute inset-0 lg:hidden" style={{ background: "linear-gradient(to bottom, rgba(22,16,10,.26) 0%, rgba(22,16,10,.6) 100%)" }} />
