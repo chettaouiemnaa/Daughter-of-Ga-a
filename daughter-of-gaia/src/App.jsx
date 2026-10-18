@@ -579,22 +579,42 @@ function FondOuverture({ images }) {
     return () => { if (mq.removeEventListener) mq.removeEventListener("change", maj); };
   }, []);
 
-  /* React ne pose pas toujours l'attribut « muted » : sans lui,
-     Safari sur iPhone refuse la lecture automatique. */
+  /* Lecture automatique, sans jamais de bouton « play ».
+     - « muted » est posé AVANT de charger la vidéo : React ne l'écrit pas
+       dans le HTML, et sans lui l'iPhone refuse la lecture automatique.
+     - Si le téléphone bloque quand même (mode économie d'énergie sur
+       iPhone), on garde l'image fixe du jardin et on relance la lecture
+       au premier contact avec l'écran. Le bouton natif est masqué en CSS. */
   useEffect(() => {
     const v = ref.current;
     if (!v) return;
     v.muted = true;
-    const p = v.play();
-    if (p && p.catch) p.catch(() => {});
+    v.defaultMuted = true;
+    v.setAttribute("muted", "");
+    v.setAttribute("playsinline", "");
+    v.setAttribute("webkit-playsinline", "");
+    if (!v.src) v.src = VIDEO_OUVERTURE;
+
+    const evts = ["touchstart", "touchend", "click", "scroll"];
+    const lancer = () => {
+      const p = v.play();
+      if (p && p.then) p.then(retirer).catch(() => {});
+    };
+    const retirer = () => evts.forEach((e) => window.removeEventListener(e, lancer));
+    evts.forEach((e) => window.addEventListener(e, lancer, { passive: true }));
+    v.addEventListener("playing", retirer);
+    lancer();
+    return () => { retirer(); v.removeEventListener("playing", retirer); };
   }, [video]);
 
   if (!video) return <Diaporama images={images} />;
   return (
     <div className="absolute inset-0 overflow-hidden">
-      <video ref={ref} src={VIDEO_OUVERTURE} poster={POSTER_OUVERTURE}
-        className="absolute inset-0 w-full h-full object-cover"
-        autoPlay muted loop playsInline preload="auto" aria-hidden="true" />
+      <video ref={ref} poster={POSTER_OUVERTURE}
+        className="video-fond absolute inset-0 w-full h-full object-cover"
+        autoPlay muted loop playsInline preload="auto" controls={false}
+        disablePictureInPicture aria-hidden="true" tabIndex={-1}
+        style={{ pointerEvents: "none" }} />
     </div>
   );
 }
@@ -1391,6 +1411,7 @@ export default function App() {
       input:focus,select:focus,textarea:focus{outline:none;border-color:#6B7355 !important;}
       ::selection{background:#B5654A;color:#F6F1E7;}
       @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none !important;transition-duration:.01ms !important;}}
+      .video-fond::-webkit-media-controls,.video-fond::-webkit-media-controls-panel,.video-fond::-webkit-media-controls-play-button,.video-fond::-webkit-media-controls-start-playback-button,.video-fond::-webkit-media-controls-overlay-play-button{display:none !important;-webkit-appearance:none !important;opacity:0 !important;}
     `}</style>
   );
 
