@@ -22,6 +22,8 @@ const P_TROIS_CHEVAUX = "/images/trois-chevaux.jpg";
    verticale). Boucle de 5 s sans son, fondu entre la fin et le début. */
 const VIDEO_OUVERTURE = "/videos/ouverture-jardin.mp4";
 const POSTER_OUVERTURE = "/videos/ouverture-jardin.jpg";
+/* Même séquence en image animée : relais quand l'iPhone bloque la vidéo. */
+const ANIM_OUVERTURE = "/videos/ouverture-jardin.avif";
 
 const IMAGES = {
   hero: P_BAR_NUIT,
@@ -563,9 +565,7 @@ function Diaporama({ images, interval = 6500, overlay }) {
 function choisirVideo() {
   if (typeof window === "undefined" || !window.matchMedia) return false;
   const etroit = window.matchMedia("(max-width: 767px)").matches;
-  const calme = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const eco = !!(navigator.connection && navigator.connection.saveData);
-  return etroit && !calme && !eco;
+  return etroit;
 }
 
 function FondOuverture({ images }) {
@@ -582,12 +582,15 @@ function FondOuverture({ images }) {
   /* Lecture automatique, sans jamais de bouton « play ».
      - « muted » est posé AVANT de charger la vidéo : React ne l'écrit pas
        dans le HTML, et sans lui l'iPhone refuse la lecture automatique.
-     - Si le téléphone bloque quand même (mode économie d'énergie sur
-       iPhone), on garde l'image fixe du jardin et on relance la lecture
-       au premier contact avec l'écran. Le bouton natif est masqué en CSS. */
+     - En mode économie d'énergie, l'iPhone bloque TOUTES les vidéos. Il
+       anime en revanche les images animées : on bascule alors sur la même
+       séquence en AVIF animé (balise <img>), qui tourne sans interaction.
+       Le bouton natif de la vidéo est masqué en CSS. */
+  const [secours, setSecours] = useState(false);
+
   useEffect(() => {
     const v = ref.current;
-    if (!v) return;
+    if (!v || secours) return;
     v.muted = true;
     v.defaultMuted = true;
     v.setAttribute("muted", "");
@@ -595,26 +598,35 @@ function FondOuverture({ images }) {
     v.setAttribute("webkit-playsinline", "");
     if (!v.src) v.src = VIDEO_OUVERTURE;
 
-    const evts = ["touchstart", "touchend", "click", "scroll"];
-    const lancer = () => {
-      const p = v.play();
-      if (p && p.then) p.then(retirer).catch(() => {});
-    };
-    const retirer = () => evts.forEach((e) => window.removeEventListener(e, lancer));
-    evts.forEach((e) => window.addEventListener(e, lancer, { passive: true }));
-    v.addEventListener("playing", retirer);
-    lancer();
-    return () => { retirer(); v.removeEventListener("playing", retirer); };
-  }, [video]);
+    let fini = false;
+    const basculer = () => { if (!fini) { fini = true; setSecours(true); } };
+    const ok = () => { fini = true; };
+    v.addEventListener("playing", ok);
+    const p = v.play();
+    if (p && p.catch) p.catch((e) => { if (e && e.name === "NotAllowedError") basculer(); });
+    /* Certains iPhone ne refusent pas : la vidéo reste figée. On vérifie
+       qu'elle avance une fois chargée. */
+    const t = setTimeout(() => {
+      if (!fini && v.readyState >= 2 && (v.paused || v.currentTime === 0)) basculer();
+    }, 1800);
+    return () => { clearTimeout(t); v.removeEventListener("playing", ok); };
+  }, [video, secours]);
 
   if (!video) return <Diaporama images={images} />;
   return (
-    <div className="absolute inset-0 overflow-hidden">
-      <video ref={ref} poster={POSTER_OUVERTURE}
-        className="video-fond absolute inset-0 w-full h-full object-cover"
-        autoPlay muted loop playsInline preload="auto" controls={false}
-        disablePictureInPicture aria-hidden="true" tabIndex={-1}
-        style={{ pointerEvents: "none" }} />
+    <div className="absolute inset-0 overflow-hidden"
+      style={{ backgroundImage: `url(${POSTER_OUVERTURE})`, backgroundSize: "cover", backgroundPosition: "center" }}>
+      {secours ? (
+        <img src={ANIM_OUVERTURE} alt="" aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+          onError={(e) => { e.currentTarget.style.display = "none"; }} />
+      ) : (
+        <video ref={ref} poster={POSTER_OUVERTURE}
+          className="video-fond absolute inset-0 w-full h-full object-cover"
+          autoPlay muted loop playsInline preload="auto" controls={false}
+          disablePictureInPicture aria-hidden="true" tabIndex={-1}
+          style={{ pointerEvents: "none" }} />
+      )}
     </div>
   );
 }
