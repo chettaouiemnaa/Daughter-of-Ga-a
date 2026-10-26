@@ -142,9 +142,9 @@ Les événements en journée sont privilégiés, pour préserver la tranquillit�
 #daughterofgaia #lieuevenementiel #tunis #seminaire #babyshower #brunch #privatisation
 ```
 
-### 08 — `08-trois-chevaux.jpg`
+### 08 — `08-chevaux-broutent.jpg`
 ```
-Trois d'entre eux, à l'ombre des arbres.
+Le grand et le petit, côte à côte.
 Chaque cheval présent ici a été sauvé, recueilli ou réhabilité.
 
 #daughterofgaia #chevaux #refuge #sauvetageanimal #horses
@@ -165,7 +165,7 @@ L'espace couvert, prêt à recevoir.
 #daughterofgaia #lieuevenementiel #tunis #design #interiordesign
 ```
 
-### 11 — `11-chevaux-fenetre.jpg`
+### 11 — `11-fenetre-statuettes.jpg`
 ```
 Les voisins sont curieux.
 

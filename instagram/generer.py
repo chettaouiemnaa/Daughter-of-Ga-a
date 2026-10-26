@@ -12,6 +12,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 RACINE = Path(__file__).resolve().parent
 PHOTOS = RACINE.parent / "daughter-of-gaia" / "public" / "images"
+PHOTOS_KIT = RACINE / "photos"  # photos propres au kit, absentes du site
 POLICES = Path(sys.argv[1]) if len(sys.argv) > 1 else RACINE / "polices"
 
 SABLE, BLANC, ENCRE = "#EDE4D3", "#F6F1E7", "#2B2118"
@@ -36,7 +37,8 @@ def sans(t, g=300): return police("Jost[wght].ttf", t, g)
 
 
 def photo(nom, taille, centre=(0.5, 0.5)):
-    im = ImageOps.exif_transpose(Image.open(PHOTOS / nom)).convert("RGB")
+    src = PHOTOS_KIT / nom if (PHOTOS_KIT / nom).exists() else PHOTOS / nom
+    im = ImageOps.exif_transpose(Image.open(src)).convert("RGB")
     return ImageOps.fit(im, taille, Image.LANCZOS, centering=centre)
 
 
@@ -120,10 +122,10 @@ def posts():
         ("DOMAINE PRIVATISÉ  —  SUR RÉSERVATION", sans(22, 400), TERRA, 1040, 5),
     ]), out / "07-experiences.jpg")
 
-    sauver(photo("trois-chevaux.jpg", POST, (0.5, 0.6)), out / "08-trois-chevaux.jpg")
+    sauver(photo("chevaux-pie-broutent.jpg", POST, (0.5, 0.72)), out / "08-chevaux-broutent.jpg")
     sauver(photo("cheval-bar.jpg", POST, (0.5, 0.55)), out / "09-cheval-bar.jpg")
     sauver(photo("lanternes.jpg", POST, (0.45, 0.5)), out / "10-lanternes.jpg")
-    sauver(photo("chevaux-fenetre.jpg", POST, (0.5, 0.6)), out / "11-chevaux-fenetre.jpg")
+    sauver(photo("fenetre-chevaux-statuettes.jpg", POST, (0.5, 0.45)), out / "11-fenetre-statuettes.jpg")
 
     # 12 — le domaine en chiffres
     sauver(carte(ENCRE, BLANC, [
@@ -178,8 +180,8 @@ def profil():
 
 def apercu():
     """La grille telle qu'elle apparaîtra, du plus récent au plus ancien."""
-    fichiers = ["12-domaine", "11-chevaux-fenetre", "10-lanternes", "09-cheval-bar",
-                "08-trois-chevaux", "07-experiences", "06-bar-nuit", "05-refuge",
+    fichiers = ["12-domaine", "11-fenetre-statuettes", "10-lanternes", "09-cheval-bar",
+                "08-chevaux-broutent", "07-experiences", "06-bar-nuit", "05-refuge",
                 "04-cheval-noir-blanc", "03-citation", "02-jardin-soir", "01-annonce"]
     c, g = 360, 4  # vignettes 3:4, comme la grille actuelle d'Instagram
     h = c * 4 // 3
