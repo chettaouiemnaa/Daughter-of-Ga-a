@@ -1,217 +1,138 @@
-# Daughter of Gaïa — kit Instagram
+# Daughter of Gaïa — lancement Instagram
 
-Tous les visuels sont dans ce dossier : `posts/`, `stories/`, `profil/`.
-`apercu-grille.jpg` montre le profil une fois les 15 publications en ligne.
+Le lancement ne dit **rien du concept** : juste le nom, le lieu, les chevaux.
+On garde le mystère jusqu'à l'annonce du concept.
+
+- `posts/` : les 9 premiers posts, de 01 à 09, dans l'ordre de publication
+- `stories/annonce-compte-perso.jpg` : l'annonce sur ton compte perso
+- `profil/photo-profil.jpg` : la photo de profil
+- `plus-tard/` : les cartes qui expliquent le concept (refuge, expériences,
+  domaine…), les couvertures « à la une » et les anciennes légendes, pour
+  le moment où tu voudras en parler.
+
 Pour régénérer après un changement : `python3 instagram/generer.py`.
 
 ---
 
-## 1. Le compte
+## 1. La phrase sous le nom
 
-**Nom d'utilisateur** : `@daughterofgaia` (à vérifier, sinon `@daughterofgaia.tn` ou `@daughterofgaia_`)
-**Nom affiché** : `Daughter of Gaïa | Domaine privé · Tunis`
-(le nom affiché est pris en compte par la recherche Instagram : on y glisse « domaine privé » et « Tunis »)
+Actuellement sur le post 09 et la story :
 
-**Type de compte** : professionnel → catégorie « Lieu d'événements » ou « Salle de réception »
-**Photo de profil** : `profil/photo-profil.jpg`
-**Lien** : `https://www.daughterofgaia.com`
-**Adresse** : La Soukra, Tunis (à activer dans les informations professionnelles)
-**Bouton de contact** : e-mail `contact@daughterofgaia.com`
+> **Là où la ville s'arrête.**
 
-### Bio (150 caractères max.)
+Autres pistes, au choix (il suffit de changer `PHRASE` en haut de `generer.py`) :
 
-```
-Un domaine privé où chaque expérience célèbre le vivant 🌿
-Événements privés · 🐎 Chevaux sauvés
-📍 La Soukra, Tunis — sur réservation
-```
-
-Variante plus sobre, sans émojis :
-
-```
-Domaine privé à La Soukra, Tunis.
-Événements privés, et un refuge pour chevaux sauvés.
-Private experiences — by reservation.
-```
-
-### Stories à la une
-
-Créer 4 « à la une » avec les couvertures de `profil/` :
-Le domaine · Le refuge · Expériences · Réserver
+- Le début d'une histoire.
+- Quelque chose se prépare.
+- Bientôt, ici.
+- Une terre, des chevaux, et le temps de vivre.
+- Il y a des lieux que l'on visite. Et des lieux que l'on ressent.
+- Pas de phrase du tout, juste le nom.
 
 ---
 
-## 2. L'annonce sur ton compte perso
+## 2. Le compte
+
+**Nom d'utilisateur** : `@daughterofgaia` (à vérifier)
+**Nom affiché** : `Daughter of Gaïa`
+**Photo de profil** : `profil/photo-profil.jpg`
+**Lien** : rien pour l'instant, ou le site s'il doit être en ligne au moment de l'annonce
+
+### Bio
+
+```
+Daughter of Gaïa 🌿
+La Soukra, Tunis
+Bientôt.
+```
+
+Variante :
+
+```
+Là où la ville s'arrête.
+📍 La Soukra, Tunis
+L'histoire commence ici.
+```
+
+Pas de « stories à la une » au lancement : elles arriveront avec le concept.
+
+---
+
+## 3. L'annonce sur ton compte perso
 
 **Story** : `stories/annonce-compte-perso.jpg`
-Ajouter l'autocollant **Mention** `@daughterofgaia` sous « Suivez l'aventure »
-(l'espace est laissé libre exprès), ou l'autocollant **Lien** vers le site.
+Ajouter l'autocollant **Mention** `@daughterofgaia` sous « Suivez l'aventure ».
 
-**Post / légende pour le compte perso :**
+**Légende du post :**
 
 ```
 Il a enfin un nom.
 
-Depuis des mois, je construis un endroit à part, à La Soukra.
-Un domaine où les événements s'intègrent au lieu, plutôt que l'inverse.
-Où les chevaux qu'on a sauvés ne sont pas un décor, mais sont chez eux.
+Daughter of Gaïa.
 
-Il s'appelle Daughter of Gaïa — du nom de Gaïa, la déesse de la Terre.
-
-Toute l'aventure se passe désormais ici 👉 @daughterofgaia
-Abonnez-vous, la suite arrive très vite 🌿
+Je vous en dis plus très bientôt.
+En attendant, tout se passe ici 👉 @daughterofgaia
 ```
 
-> Conseil : publier les 15 posts du nouveau compte **avant** l'annonce, pour que
-> les personnes qui cliquent arrivent sur un profil déjà rempli.
+> Publier les 9 posts du nouveau compte **avant** l'annonce, pour que les
+> personnes qui cliquent arrivent sur un profil déjà rempli.
 
 ---
 
-## 3. Les 15 publications
+## 4. Les 9 posts
 
-Ordre de publication : de 01 à 15. Le 15 se retrouve en haut à gauche de la grille.
-Si tu veux tout mettre en ligne le même jour, laisse quelques minutes entre chaque.
-Sinon, rythme conseillé : 01 à 06 le jour J, puis un post tous les deux jours.
+Publier de 01 à 09. Le 09, celui avec le nom, s'affichera en haut à gauche.
+Légendes courtes exprès : on montre, on n'explique pas.
 
-### 01 — `01-annonce.jpg`
+**01 — `01-bar-nuit.jpg`**
+```
+À la tombée de la nuit.
+```
+
+**02 — `02-trois-chevaux.jpg`**
+```
+Ils sont chez eux.
+```
+
+**03 — `03-cheval-bar.jpg`**
+```
+Il a ses habitudes. 🐎
+```
+
+**04 — `04-fenetre-chevaux-statuettes.jpg`**
+```
+Les voisins sont curieux.
+```
+
+**05 — `05-chevaux-pie-broutent.jpg`**
+```
+Le grand et le petit.
+```
+
+**06 — `06-chevaux-fenetre.jpg`**
+```
+Le long du mur ocre.
+```
+
+**07 — `07-terrasse-vasque.jpg`**
+```
+Deux curieux à la terrasse.
+```
+
+**08 — `08-cheval-noir-blanc.jpg`**
+```
+Il s'avance. Vous aussi ?
+```
+
+**09 — `09-daughter-of-gaia.jpg`**
 ```
 Daughter of Gaïa.
 
-Un domaine privé à La Soukra, aux portes de Tunis, où chaque expérience célèbre le vivant.
-Le nom vient de Gaïa, déesse de la Terre dans la mythologie grecque. Il rappelle une conviction simple : le respect du vivant guide chacune de nos décisions.
+Gaïa, la Terre, dans la mythologie grecque.
+L'histoire commence ici. 🌿
 
-Bienvenue chez nous 🌿
-
-#daughterofgaia #lasoukra #tunis #tunisie #domaineprive #lieuevenementiel
+📍 La Soukra, Tunis
 ```
 
-### 02 — `02-jardin-soir.jpg`
-```
-L'impression d'être à des kilomètres de la ville.
-La réalité ? Vous êtes au début de la Soukra.
-
-#daughterofgaia #lasoukra #tunis #goldenhour #jardin #natureinthecity
-```
-
-### 03 — `03-citation.jpg`
-```
-There are places you visit. And there are places you feel.
-
-Il y a des lieux que l'on visite. Et il y a des lieux que l'on ressent.
-
-#daughterofgaia #lasoukra #tunis
-```
-
-### 04 — `04-cheval-noir-blanc.jpg`
-```
-Ici, les chevaux ne sont ni une attraction, ni une animation.
-Ils vivent chez eux, à leur rythme. Et leur bien-être passe avant tout le reste.
-
-#daughterofgaia #chevaux #sauvetageanimal #refuge #horsesoftunisia
-```
-
-### 05 — `05-refuge.jpg`
-```
-Le refuge.
-
-Sept chevaux ont été recueillis depuis l'ouverture. Quatre vivent ici aujourd'hui.
-Les trois autres sont repartis une fois remis sur pied — et c'était bien le but.
-
-Chaque réservation contribue directement au bien-être des animaux du domaine.
-
-#daughterofgaia #refuge #sauvetageanimal #chevaux #protectionanimale #tunisie
-```
-
-### 06 — `06-bar-nuit.jpg`
-```
-À la nuit tombée, l'espace couvert s'allume.
-120 m² en matériaux naturels, une cuisine entièrement équipée, et le jardin juste devant.
-
-#daughterofgaia #lieuevenementiel #tunis #eventvenue #privateevent
-```
-
-### 07 — `07-experiences.jpg`
-```
-Ce que le domaine accueille.
-
-Séminaires et journées d'équipe, lancements de marque, anniversaires, baby showers, brunchs privés, tables d'hôte, shootings photo et vidéo.
-Toujours en privatisation complète : le jour de votre événement, le domaine est à vous.
-
-Les événements en journée sont privilégiés, pour préserver la tranquillité des animaux et du voisinage.
-
-#daughterofgaia #lieuevenementiel #tunis #seminaire #babyshower #brunch #privatisation
-```
-
-### 08 — `08-chevaux-broutent.jpg`
-```
-Le grand et le petit, côte à côte.
-Chaque cheval présent ici a été sauvé, recueilli ou réhabilité.
-
-#daughterofgaia #chevaux #refuge #sauvetageanimal #horses
-```
-
-### 09 — `09-cheval-bar.jpg`
-```
-Il a ses habitudes. 🐎
-
-#daughterofgaia #chevaux #horsesofinstagram #lasoukra
-```
-
-### 10 — `10-trois-chevaux.jpg`
-```
-Ils sont chez eux.
-Chaque cheval présent ici a été sauvé, recueilli ou réhabilité.
-
-#daughterofgaia #chevaux #refuge #sauvetageanimal #horses
-```
-
-### 11 — `11-lanternes.jpg`
-```
-Lanternes tressées, comptoir en zellige vert, bois brut.
-L'espace couvert, prêt à recevoir.
-
-#daughterofgaia #lieuevenementiel #tunis #design #interiordesign
-```
-
-### 12 — `12-chevaux-fenetre.jpg`
-```
-Le long du mur ocre, à l'ombre des arbres.
-
-#daughterofgaia #chevaux #lasoukra #tunis #horsesofinstagram
-```
-
-### 13 — `13-terrasse-vasque.jpg`
-```
-Deux curieux à la terrasse.
-Vasque en pierre, suspension tressée, et des visiteurs qui passent la tête quand ça leur chante.
-
-#daughterofgaia #chevaux #lasoukra #design #naturalmaterials
-```
-
-### 14 — `14-fenetre-statuettes.jpg`
-```
-Les voisins sont curieux.
-
-#daughterofgaia #chevaux #lasoukra #tunis
-```
-
-### 15 — `15-domaine.jpg`
-```
-4 000 m² où la ville disparaît.
-
-Jusqu'à 80 invités, un domaine entièrement privatisé, et 7 chevaux sauvés.
-Séminaires, lancements de marque, anniversaires, baby showers, brunchs privés, tables d'hôte et shootings.
-
-Demandes et disponibilités → lien en bio
-contact@daughterofgaia.com
-
-#daughterofgaia #lieuevenementiel #tunis #lasoukra #seminaire #privatisation #eventvenue
-```
-
----
-
-## 4. Ce qu'il faudra pour la suite
-
-- Des **vidéos courtes (Reels)** : un cheval qui avance vers la caméra, la lumière qui tombe sur le jardin, le bar qui s'allume. Ce sont elles qui feront découvrir le compte à de nouvelles personnes. La vidéo d'ouverture du site (`daughter-of-gaia/public/videos/ouverture-jardin.mp4`) peut déjà servir de premier Reel.
-- Une **publication par cheval**, avec son prénom et son histoire (le site prévoit déjà une page « Le refuge » pour ça).
-- Des **photos d'événements** dès les premiers clients, avec leur accord.
+Hashtags à ajouter en fin de légende (ou en premier commentaire) :
+`#daughterofgaia #lasoukra #tunis #tunisie #chevaux #horses`

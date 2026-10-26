@@ -2,13 +2,13 @@
 
 Sources : les photos du site (daughter-of-gaia/public/images) et les
 couleurs / typographies de l'identité (voir le README du site).
-Sortie : instagram/posts, instagram/stories, instagram/profil.
+Sortie : instagram/posts, instagram/stories, instagram/profil, instagram/plus-tard.
 
     python3 instagram/generer.py
 """
 from pathlib import Path
 import sys
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 
 RACINE = Path(__file__).resolve().parent
 PHOTOS = RACINE.parent / "daughter-of-gaia" / "public" / "images"
@@ -69,23 +69,50 @@ def sauver(im, chemin):
     im.save(chemin, quality=92, optimize=True)
 
 
+# La phrase sous le nom. Une seule ligne à changer pour en essayer une autre
+# (pistes dans TEXTES.md). Elle ne dit rien du concept, pas encore annoncé.
+PHRASE = "Là où la ville s'arrête."
+
+
+def titre_sur_photo(nom, taille, pos, y0, voile=0.18):
+    """Le nom posé sur une photo, avec un voile sombre fondu sous le texte."""
+    W, H = taille
+    im = Image.blend(photo(nom, taille, pos), Image.new("RGB", taille, ENCRE), voile)
+    masque = Image.new("L", taille, 0)
+    ImageDraw.Draw(masque).rectangle((0, y0 - 40, W, y0 + 500), fill=175)
+    masque = masque.filter(ImageFilter.GaussianBlur(140))
+    im = Image.composite(Image.new("RGB", taille, ENCRE), im, masque)
+    d = ImageDraw.Draw(im)
+    centre(d, y0, "Daughter", serif(150), BLANC, W)
+    centre(d, y0 + 150, "of Gaïa", italique(150), BLANC, W)
+    centre(d, y0 + 360, PHRASE, italique(58), BLANC, W)
+    return im
+
+
+# Les 9 premiers posts, du premier publié au dernier. Le 9 (le nom) arrive
+# en dernier pour s'afficher en haut à gauche du profil.
+LANCEMENT = [
+    ("bar-nuit.jpg", (0.5, 0.5)),
+    ("trois-chevaux.jpg", (0.5, 0.6)),
+    ("cheval-bar.jpg", (0.5, 0.55)),
+    ("fenetre-chevaux-statuettes.jpg", (0.5, 0.45)),
+    ("chevaux-pie-broutent.jpg", (0.5, 0.72)),
+    ("chevaux-fenetre.jpg", (0.5, 0.6)),
+    ("terrasse-vasque.jpg", (0.5, 0.5)),
+    ("cheval-noir-blanc.jpg", (0.5, 0.45)),
+]
+
+
 def posts():
     out = RACINE / "posts"
-    sur = "PRIVATE EXPERIENCES  •  BY RESERVATION"
+    for i, (nom, pos) in enumerate(LANCEMENT, 1):
+        sauver(photo(nom, POST, pos), out / f"{i:02d}-{nom.rsplit('.', 1)[0]}.jpg")
+    sauver(titre_sur_photo("jardin-soir.jpg", POST, (0.5, 0.6), 380), out / "09-daughter-of-gaia.jpg")
 
-    # 01 — l'annonce du nom
-    sauver(carte(SABLE, ENCRE, [
-        (sur, sans(22, 400), OLIVE, 330, 5),
-        ("Daughter", serif(150), None, 470, 0),
-        ("of Gaïa", italique(150), None, 620, 0),
-        ("Un domaine privé où chaque", serif(46), None, 880, 0),
-        ("expérience célèbre le vivant.", serif(46), None, 935, 0),
-        ("LA SOUKRA  —  TUNIS", sans(22, 400), TERRA, 1080, 5),
-    ]), out / "01-annonce.jpg")
 
-    sauver(photo("jardin-soir.jpg", POST, (0.5, 0.6)), out / "02-jardin-soir.jpg")
-
-    # 03 — la citation du site
+def plus_tard():
+    """Cartes qui expliquent le concept : à publier une fois celui-ci annoncé."""
+    out = RACINE / "plus-tard"
     sauver(carte(OLIVE, BLANC, [
         ("“", serif(200), FILET, 330, 0),
         ("There are places", italique(84), None, 540, 0),
@@ -93,11 +120,7 @@ def posts():
         ("And there are places", italique(84), None, 760, 0),
         ("you feel.", italique(84), None, 855, 0),
         ("DAUGHTER OF GAÏA", sans(22, 400), SABLE, 1060, 6),
-    ]), out / "03-citation.jpg")
-
-    sauver(photo("cheval-noir-blanc.jpg", POST, (0.5, 0.45)), out / "04-cheval-noir-blanc.jpg")
-
-    # 05 — le refuge
+    ]), out / "citation.jpg")
     sauver(carte(TERRA, BLANC, [
         ("LE REFUGE", sans(24, 400), SABLE, 330, 7),
         ("Sauvés,", serif(120), None, 450, 0),
@@ -105,11 +128,7 @@ def posts():
         ("et chez eux.", italique(120), None, 710, 0),
         ("Sept chevaux recueillis depuis l'ouverture.", serif(42), SABLE, 920, 0),
         ("Quatre vivent ici aujourd'hui.", serif(42), SABLE, 972, 0),
-    ]), out / "05-refuge.jpg")
-
-    sauver(photo("bar-nuit.jpg", POST, (0.5, 0.5)), out / "06-bar-nuit.jpg")
-
-    # 07 — ce que le domaine accueille (la maison n'apparaît sur aucun visuel)
+    ]), out / "refuge.jpg")
     sauver(carte(BLANC, ENCRE, [
         ("EXPÉRIENCES", sans(24, 400), OLIVE, 250, 7),
         ("Ce que le domaine", serif(82), None, 330, 0),
@@ -120,17 +139,7 @@ def posts():
         ("Brunchs privés  ·  Tables d'hôte", serif(46), None, 805, 0),
         ("Shootings photo & vidéo", serif(46), None, 870, 0),
         ("DOMAINE PRIVATISÉ  —  SUR RÉSERVATION", sans(22, 400), TERRA, 1040, 5),
-    ]), out / "07-experiences.jpg")
-
-    sauver(photo("chevaux-pie-broutent.jpg", POST, (0.5, 0.72)), out / "08-chevaux-broutent.jpg")
-    sauver(photo("cheval-bar.jpg", POST, (0.5, 0.55)), out / "09-cheval-bar.jpg")
-    sauver(photo("trois-chevaux.jpg", POST, (0.5, 0.6)), out / "10-trois-chevaux.jpg")
-    sauver(photo("lanternes.jpg", POST, (0.45, 0.5)), out / "11-lanternes.jpg")
-    sauver(photo("chevaux-fenetre.jpg", POST, (0.5, 0.6)), out / "12-chevaux-fenetre.jpg")
-    sauver(photo("terrasse-vasque.jpg", POST, (0.5, 0.5)), out / "13-terrasse-vasque.jpg")
-    sauver(photo("fenetre-chevaux-statuettes.jpg", POST, (0.5, 0.45)), out / "14-fenetre-statuettes.jpg")
-
-    # 15 — le domaine en chiffres
+    ]), out / "experiences.jpg")
     sauver(carte(ENCRE, BLANC, [
         ("LE DOMAINE", sans(24, 400), FILET, 300, 7),
         ("4 000 m²", serif(150), None, 420, 0),
@@ -138,25 +147,28 @@ def posts():
         ("80 invités  ·  domaine privatisé  ·  7 chevaux sauvés", sans(28, 300), FILET, 820, 1),
         ("Sur réservation", serif(48), None, 960, 0),
         ("daughterofgaia.com", sans(26, 400), TERRA, 1040, 2),
-    ]), out / "15-domaine.jpg")
+    ]), out / "domaine.jpg")
+    sauver(photo("lanternes.jpg", POST, (0.45, 0.5)), out / "lanternes.jpg")
+
+    # Couvertures des stories à la une, une fois qu'il y aura de quoi les remplir.
+    t = 1080
+    for nom, fond, enc in [("Le domaine", SABLE, ENCRE), ("Le refuge", TERRA, BLANC),
+                           ("Expériences", OLIVE, BLANC), ("Réserver", ENCRE, BLANC)]:
+        im = Image.new("RGB", (t, t), fond)
+        centre(ImageDraw.Draw(im), 430, nom, italique(150), enc, t)
+        fichier = nom.lower().replace("é", "e").replace("è", "e").replace(" ", "-")
+        sauver(im, out / f"une-{fichier}.jpg")
 
 
 def stories():
     out = RACINE / "stories"
     # L'annonce à publier depuis le compte perso.
-    fond = photo("trois-chevaux.jpg", STORY, (0.5, 0.55))
-    voile = Image.new("RGB", STORY, ENCRE)
-    im = Image.blend(fond, voile, 0.55)
+    im = titre_sur_photo("trois-chevaux.jpg", STORY, (0.5, 0.55), 560, voile=0.35)
     d = ImageDraw.Draw(im)
     W = STORY[0]
-    centre(d, 380, "LE NOM DU PROJET", sans(28, 400), SABLE, W, 8)
-    centre(d, 520, "Daughter", serif(170), BLANC, W)
-    centre(d, 690, "of Gaïa", italique(170), BLANC, W)
-    centre(d, 960, "Un domaine privé où chaque", serif(54), SABLE, W)
-    centre(d, 1025, "expérience célèbre le vivant.", serif(54), SABLE, W)
+    centre(d, 440, "LE NOM DU PROJET", sans(28, 400), SABLE, W, 8)
     # Emplacement laissé libre pour l'autocollant « Mention » ou « Lien ».
     centre(d, 1420, "Suivez l'aventure", sans(30, 400), SABLE, W, 3)
-    centre(d, 1700, "LA SOUKRA  —  TUNIS", sans(24, 400), FILET, W, 6)
     sauver(im, out / "annonce-compte-perso.jpg")
 
 
@@ -170,35 +182,23 @@ def profil():
     d.text((t / 2, t / 2), "G", font=serif(640, 300), fill=ENCRE, anchor="mm")
     sauver(im, out / "photo-profil.jpg")
 
-    # Couvertures des stories à la une.
-    for nom, fond, enc in [("Le domaine", SABLE, ENCRE), ("Le refuge", TERRA, BLANC),
-                           ("Expériences", OLIVE, BLANC),
-                           ("Réserver", ENCRE, BLANC)]:
-        im = Image.new("RGB", (t, t), fond)
-        d = ImageDraw.Draw(im)
-        centre(d, 430, nom, italique(150), enc, t)
-        fichier = nom.lower().replace("é", "e").replace("è", "e").replace(" ", "-")
-        sauver(im, out / f"une-{fichier}.jpg")
-
 
 def apercu():
     """La grille telle qu'elle apparaîtra, du plus récent au plus ancien."""
-    fichiers = ["15-domaine", "14-fenetre-statuettes", "13-terrasse-vasque",
-                "12-chevaux-fenetre", "11-lanternes", "10-trois-chevaux", "09-cheval-bar",
-                "08-chevaux-broutent", "07-experiences", "06-bar-nuit", "05-refuge",
-                "04-cheval-noir-blanc", "03-citation", "02-jardin-soir", "01-annonce"]
+    fichiers = sorted((RACINE / "posts").glob("*.jpg"), reverse=True)
     c, g = 360, 4  # vignettes 3:4, comme la grille actuelle d'Instagram
     h = c * 4 // 3
     lignes = len(fichiers) // 3
     im = Image.new("RGB", (3 * c + 2 * g, lignes * h + (lignes - 1) * g), "white")
     for i, f in enumerate(fichiers):
-        v = ImageOps.fit(Image.open(RACINE / "posts" / f"{f}.jpg"), (c, h), Image.LANCZOS)
+        v = ImageOps.fit(Image.open(f), (c, h), Image.LANCZOS)
         im.paste(v, ((i % 3) * (c + g), (i // 3) * (h + g)))
     sauver(im, RACINE / "apercu-grille.jpg")
 
 
 if __name__ == "__main__":
     posts()
+    plus_tard()
     stories()
     profil()
     apercu()
