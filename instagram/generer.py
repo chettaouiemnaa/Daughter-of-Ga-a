@@ -123,23 +123,27 @@ def domaine():
     ])
 
 
-def nom_du_projet():
-    """Les trois chevaux devant le mur ocre, le nom en grand au-dessus d'eux.
-    Le voile descend du haut : le nom se détache sur un fond sombre et
-    calme, lisible même en vignette, et les chevaux restent en pleine
-    lumière."""
-    W, H = POST
-    im = photo("trois-chevaux.jpg", POST, (0.5, 0.75))
-    degrade = Image.new("L", (1, H))
-    for y in range(H):
-        t = max(0, 1 - y / 720)
-        degrade.putpixel((0, y), int(200 * min(1, t * 1.3) ** 1.1))
-    im = Image.composite(Image.new("RGB", POST, ENCRE), im, degrade.resize(POST))
+def nom_avec_ombre(im, y0, taille=176, sur="PRIVATE EXPERIENCES"):
+    """Le nom en crème, détaché par une ombre douce autour des lettres
+    plutôt que par un voile : la photo garde toutes ses couleurs."""
+    W = im.size[0]
+    lignes = [(y0 - 45, sur, sans(24, 400), 7), (y0, "Daughter", serif(taille, 400), 0),
+              (y0 + taille * 0.97, "of Gaïa", italique(taille, 400), 0)]
+    ombre = Image.new("L", im.size, 0)
+    d = ImageDraw.Draw(ombre)
+    for y, texte, f, esp in lignes:
+        centre(d, y, texte, f, 255, W, esp)
+    ombre = ombre.filter(ImageFilter.MaxFilter(9)).filter(ImageFilter.GaussianBlur(22))
+    im = Image.composite(Image.new("RGB", im.size, ENCRE), im, ombre.point(lambda v: int(v * 0.7)))
     d = ImageDraw.Draw(im)
-    centre(d, 140, "PRIVATE EXPERIENCES", sans(24, 400), SABLE, W, 7)
-    centre(d, 185, "Daughter", serif(176, 400), BLANC, W)
-    centre(d, 355, "of Gaïa", italique(176, 400), BLANC, W)
+    for y, texte, f, esp in lignes:
+        centre(d, y, texte, f, BLANC, W, esp)
     return im
+
+
+def nom_du_projet():
+    """Les trois chevaux devant le mur ocre, le nom en grand au-dessus d'eux."""
+    return nom_avec_ombre(photo("trois-chevaux.jpg", POST, (0.5, 0.75)), 185)
 
 
 # Les 12 posts, du premier publié au dernier. Le 12 (le nom) arrive en
@@ -196,12 +200,15 @@ def plus_tard():
 def stories():
     out = RACINE / "stories"
     # L'annonce à publier depuis le compte perso.
-    im = titre_sur_photo("trois-chevaux.jpg", STORY, (0.5, 0.55), 560, voile=0.35)
+    im = nom_avec_ombre(photo("trois-chevaux.jpg", STORY, (0.5, 0.55)), 400, sur="LE NOM DU PROJET")
     d = ImageDraw.Draw(im)
     W = STORY[0]
-    centre(d, 440, "LE NOM DU PROJET", sans(28, 400), SABLE, W, 8)
     # Emplacement laissé libre pour l'autocollant « Mention » ou « Lien ».
-    centre(d, 1420, "Suivez l'aventure", sans(30, 400), SABLE, W, 3)
+    ombre = Image.new("L", STORY, 0)
+    centre(ImageDraw.Draw(ombre), 1600, "Suivez l'aventure", sans(32, 400), 255, W, 3)
+    ombre = ombre.filter(ImageFilter.MaxFilter(9)).filter(ImageFilter.GaussianBlur(16))
+    im = Image.composite(Image.new("RGB", STORY, ENCRE), im, ombre.point(lambda v: int(v * 0.6)))
+    centre(ImageDraw.Draw(im), 1600, "Suivez l'aventure", sans(32, 400), BLANC, W, 3)
     sauver(im, out / "annonce-compte-perso.jpg")
 
 
