@@ -17,7 +17,7 @@ Pour régénérer après un changement : `python3 instagram/generer.py`.
 
 ## 1. La phrase sous le nom
 
-Actuellement sur le post 12 et la story :
+Actuellement sur la story d'annonce (le post 12 montre le nom seul, pour qu'il ressorte au maximum) :
 
 > **Là où la ville s'arrête.**
 
@@ -85,22 +85,21 @@ En attendant, tout se passe ici 👉 @daughterofgaia
 Publier de 01 à 12. Le 12, celui avec le nom, s'affichera en haut à gauche.
 Légendes courtes exprès : on montre, on n'explique pas.
 
-**01 — `01-refuge.jpg`**
+**01 — `01-citation.jpg`**
 ```
-Le refuge.
+There are places you visit. And there are places you feel.
 
-Sept chevaux recueillis. Quatre vivent ici aujourd'hui.
-Les trois autres sont repartis une fois remis sur pied — et c'était bien le but.
-```
-
-**02 — `02-bar-nuit.jpg`**
-```
-À la tombée de la nuit.
+Il y a des lieux que l'on visite. Et il y a des lieux que l'on ressent.
 ```
 
-**03 — `03-chevaux-fenetre.jpg`**
+**02 — `02-terrasse-vasque.jpg`**
 ```
-Le long du mur ocre.
+Deux curieux à la terrasse.
+```
+
+**03 — `03-fenetre-chevaux-statuettes.jpg`**
+```
+Les voisins sont curieux.
 ```
 
 **04 — `04-cheval-bar.jpg`**
@@ -108,16 +107,17 @@ Le long du mur ocre.
 Il a ses habitudes. 🐎
 ```
 
-**05 — `05-terrasse-vasque.jpg`**
+**05 — `05-ecuries.jpg`**
 ```
-Deux curieux à la terrasse.
+Chacun sa porte.
 ```
 
-**06 — `06-citation.jpg`**
+**06 — `06-refuge.jpg`**
 ```
-There are places you visit. And there are places you feel.
+Le refuge.
 
-Il y a des lieux que l'on visite. Et il y a des lieux que l'on ressent.
+Sept chevaux recueillis. Quatre vivent ici aujourd'hui.
+Les trois autres sont repartis une fois remis sur pied — et c'était bien le but.
 ```
 
 **07 — `07-domaine.jpg`**
@@ -126,14 +126,14 @@ Il y a des lieux que l'on visite. Et il y a des lieux que l'on ressent.
 Le reste, très bientôt.
 ```
 
-**08 — `08-chevaux-pie-broutent.jpg`**
-```
-Le grand et le petit.
-```
-
-**09 — `09-cheval-noir-blanc.jpg`**
+**08 — `08-cheval-noir-blanc.jpg`**
 ```
 Il s'avance. Vous aussi ?
+```
+
+**09 — `09-chevaux-fenetre.jpg`**
+```
+Le long du mur ocre.
 ```
 
 **10 — `10-trois-chevaux.jpg`**
@@ -141,9 +141,9 @@ Il s'avance. Vous aussi ?
 Ils sont chez eux.
 ```
 
-**11 — `11-fenetre-chevaux-statuettes.jpg`**
+**11 — `11-chevaux-pie-broutent.jpg`**
 ```
-Les voisins sont curieux.
+Le grand et le petit.
 ```
 
 **12 — `12-daughter-of-gaia.jpg`**

@@ -124,24 +124,38 @@ def domaine():
 
 
 def nom_du_projet():
-    return titre_sur_photo("jardin-soir.jpg", POST, (0.5, 0.6), 400, sur="PRIVATE EXPERIENCES")
+    """Le bar à la tombée de la nuit, le nom en grand sur la pelouse.
+    Le voile monte du bas : le haut de la photo reste lumineux, et le nom
+    se détache sur un fond sombre et calme, lisible même en vignette."""
+    W, H = POST
+    im = photo("bar-nuit.jpg", POST, (0.5, 0.5))
+    degrade = Image.new("L", (1, H))
+    for y in range(H):
+        t = max(0, (y - 700) / (H - 700))
+        degrade.putpixel((0, y), int(215 * min(1, t * 1.4) ** 1.2))
+    im = Image.composite(Image.new("RGB", POST, ENCRE), im, degrade.resize(POST))
+    d = ImageDraw.Draw(im)
+    centre(d, 870, "PRIVATE EXPERIENCES", sans(24, 400), SABLE, W, 7)
+    centre(d, 915, "Daughter", serif(176, 400), BLANC, W)
+    centre(d, 1085, "of Gaïa", italique(176, 400), BLANC, W)
+    return im
 
 
 # Les 12 posts, du premier publié au dernier. Le 12 (le nom) arrive en
 # dernier pour s'afficher en haut à gauche du profil ; les cartes forment
 # un zigzag dans la grille.
 LANCEMENT = [
-    ("refuge", refuge),
-    ("bar-nuit", ("bar-nuit.jpg", (0.5, 0.5))),
-    ("chevaux-fenetre", ("chevaux-fenetre.jpg", (0.5, 0.6))),
-    ("cheval-bar", ("cheval-bar.jpg", (0.5, 0.55))),
-    ("terrasse-vasque", ("terrasse-vasque.jpg", (0.5, 0.5))),
     ("citation", citation),
-    ("domaine", domaine),
-    ("chevaux-pie-broutent", ("chevaux-pie-broutent.jpg", (0.5, 0.72))),
-    ("cheval-noir-blanc", ("cheval-noir-blanc.jpg", (0.5, 0.45))),
-    ("trois-chevaux", ("trois-chevaux.jpg", (0.5, 0.6))),
+    ("terrasse-vasque", ("terrasse-vasque.jpg", (0.5, 0.5))),
     ("fenetre-chevaux-statuettes", ("fenetre-chevaux-statuettes.jpg", (0.5, 0.45))),
+    ("cheval-bar", ("cheval-bar.jpg", (0.5, 0.55))),
+    ("ecuries", ("domaine.jpg", (0.5, 0.6))),
+    ("refuge", refuge),
+    ("domaine", domaine),
+    ("cheval-noir-blanc", ("cheval-noir-blanc.jpg", (0.5, 0.45))),
+    ("chevaux-fenetre", ("chevaux-fenetre.jpg", (0.5, 0.6))),
+    ("trois-chevaux", ("trois-chevaux.jpg", (0.5, 0.6))),
+    ("chevaux-pie-broutent", ("chevaux-pie-broutent.jpg", (0.5, 0.72))),
     ("daughter-of-gaia", nom_du_projet),
 ]
 
