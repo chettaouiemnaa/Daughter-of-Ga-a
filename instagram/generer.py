@@ -124,10 +124,13 @@ def posts():
 
     sauver(photo("chevaux-pie-broutent.jpg", POST, (0.5, 0.72)), out / "08-chevaux-broutent.jpg")
     sauver(photo("cheval-bar.jpg", POST, (0.5, 0.55)), out / "09-cheval-bar.jpg")
-    sauver(photo("lanternes.jpg", POST, (0.45, 0.5)), out / "10-lanternes.jpg")
-    sauver(photo("fenetre-chevaux-statuettes.jpg", POST, (0.5, 0.45)), out / "11-fenetre-statuettes.jpg")
+    sauver(photo("trois-chevaux.jpg", POST, (0.5, 0.6)), out / "10-trois-chevaux.jpg")
+    sauver(photo("lanternes.jpg", POST, (0.45, 0.5)), out / "11-lanternes.jpg")
+    sauver(photo("chevaux-fenetre.jpg", POST, (0.5, 0.6)), out / "12-chevaux-fenetre.jpg")
+    sauver(photo("terrasse-vasque.jpg", POST, (0.5, 0.5)), out / "13-terrasse-vasque.jpg")
+    sauver(photo("fenetre-chevaux-statuettes.jpg", POST, (0.5, 0.45)), out / "14-fenetre-statuettes.jpg")
 
-    # 12 — le domaine en chiffres
+    # 15 — le domaine en chiffres
     sauver(carte(ENCRE, BLANC, [
         ("LE DOMAINE", sans(24, 400), FILET, 300, 7),
         ("4 000 m²", serif(150), None, 420, 0),
@@ -135,7 +138,7 @@ def posts():
         ("80 invités  ·  domaine privatisé  ·  7 chevaux sauvés", sans(28, 300), FILET, 820, 1),
         ("Sur réservation", serif(48), None, 960, 0),
         ("daughterofgaia.com", sans(26, 400), TERRA, 1040, 2),
-    ]), out / "12-domaine.jpg")
+    ]), out / "15-domaine.jpg")
 
 
 def stories():
@@ -180,12 +183,14 @@ def profil():
 
 def apercu():
     """La grille telle qu'elle apparaîtra, du plus récent au plus ancien."""
-    fichiers = ["12-domaine", "11-fenetre-statuettes", "10-lanternes", "09-cheval-bar",
+    fichiers = ["15-domaine", "14-fenetre-statuettes", "13-terrasse-vasque",
+                "12-chevaux-fenetre", "11-lanternes", "10-trois-chevaux", "09-cheval-bar",
                 "08-chevaux-broutent", "07-experiences", "06-bar-nuit", "05-refuge",
                 "04-cheval-noir-blanc", "03-citation", "02-jardin-soir", "01-annonce"]
     c, g = 360, 4  # vignettes 3:4, comme la grille actuelle d'Instagram
     h = c * 4 // 3
-    im = Image.new("RGB", (3 * c + 2 * g, 4 * h + 3 * g), "white")
+    lignes = len(fichiers) // 3
+    im = Image.new("RGB", (3 * c + 2 * g, lignes * h + (lignes - 1) * g), "white")
     for i, f in enumerate(fichiers):
         v = ImageOps.fit(Image.open(RACINE / "posts" / f"{f}.jpg"), (c, h), Image.LANCZOS)
         im.paste(v, ((i % 3) * (c + g), (i // 3) * (h + g)))

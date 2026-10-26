@@ -1,7 +1,7 @@
 # Daughter of Gaïa — kit Instagram
 
 Tous les visuels sont dans ce dossier : `posts/`, `stories/`, `profil/`.
-`apercu-grille.jpg` montre le profil une fois les 12 publications en ligne.
+`apercu-grille.jpg` montre le profil une fois les 15 publications en ligne.
 Pour régénérer après un changement : `python3 instagram/generer.py`.
 
 ---
@@ -62,14 +62,14 @@ Toute l'aventure se passe désormais ici 👉 @daughterofgaia
 Abonnez-vous, la suite arrive très vite 🌿
 ```
 
-> Conseil : publier les 12 posts du nouveau compte **avant** l'annonce, pour que
+> Conseil : publier les 15 posts du nouveau compte **avant** l'annonce, pour que
 > les personnes qui cliquent arrivent sur un profil déjà rempli.
 
 ---
 
-## 3. Les 12 publications
+## 3. Les 15 publications
 
-Ordre de publication : de 01 à 12. Le 12 se retrouve en haut à gauche de la grille.
+Ordre de publication : de 01 à 15. Le 15 se retrouve en haut à gauche de la grille.
 Si tu veux tout mettre en ligne le même jour, laisse quelques minutes entre chaque.
 Sinon, rythme conseillé : 01 à 06 le jour J, puis un post tous les deux jours.
 
@@ -157,7 +157,15 @@ Il a ses habitudes. 🐎
 #daughterofgaia #chevaux #horsesofinstagram #lasoukra
 ```
 
-### 10 — `10-lanternes.jpg`
+### 10 — `10-trois-chevaux.jpg`
+```
+Ils sont chez eux.
+Chaque cheval présent ici a été sauvé, recueilli ou réhabilité.
+
+#daughterofgaia #chevaux #refuge #sauvetageanimal #horses
+```
+
+### 11 — `11-lanternes.jpg`
 ```
 Lanternes tressées, comptoir en zellige vert, bois brut.
 L'espace couvert, prêt à recevoir.
@@ -165,14 +173,29 @@ L'espace couvert, prêt à recevoir.
 #daughterofgaia #lieuevenementiel #tunis #design #interiordesign
 ```
 
-### 11 — `11-fenetre-statuettes.jpg`
+### 12 — `12-chevaux-fenetre.jpg`
+```
+Le long du mur ocre, à l'ombre des arbres.
+
+#daughterofgaia #chevaux #lasoukra #tunis #horsesofinstagram
+```
+
+### 13 — `13-terrasse-vasque.jpg`
+```
+Deux curieux à la terrasse.
+Vasque en pierre, suspension tressée, et des visiteurs qui passent la tête quand ça leur chante.
+
+#daughterofgaia #chevaux #lasoukra #design #naturalmaterials
+```
+
+### 14 — `14-fenetre-statuettes.jpg`
 ```
 Les voisins sont curieux.
 
 #daughterofgaia #chevaux #lasoukra #tunis
 ```
 
-### 12 — `12-domaine.jpg`
+### 15 — `15-domaine.jpg`
 ```
 4 000 m² où la ville disparaît.
 
