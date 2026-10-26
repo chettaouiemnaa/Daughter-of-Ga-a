@@ -124,20 +124,21 @@ def domaine():
 
 
 def nom_du_projet():
-    """Le bar à la tombée de la nuit, le nom en grand sur la pelouse.
-    Le voile monte du bas : le haut de la photo reste lumineux, et le nom
-    se détache sur un fond sombre et calme, lisible même en vignette."""
+    """Les trois chevaux devant le mur ocre, le nom en grand au-dessus d'eux.
+    Le voile descend du haut : le nom se détache sur un fond sombre et
+    calme, lisible même en vignette, et les chevaux restent en pleine
+    lumière."""
     W, H = POST
-    im = photo("bar-nuit.jpg", POST, (0.5, 0.5))
+    im = photo("trois-chevaux.jpg", POST, (0.5, 0.75))
     degrade = Image.new("L", (1, H))
     for y in range(H):
-        t = max(0, (y - 700) / (H - 700))
-        degrade.putpixel((0, y), int(215 * min(1, t * 1.4) ** 1.2))
+        t = max(0, 1 - y / 720)
+        degrade.putpixel((0, y), int(200 * min(1, t * 1.3) ** 1.1))
     im = Image.composite(Image.new("RGB", POST, ENCRE), im, degrade.resize(POST))
     d = ImageDraw.Draw(im)
-    centre(d, 870, "PRIVATE EXPERIENCES", sans(24, 400), SABLE, W, 7)
-    centre(d, 915, "Daughter", serif(176, 400), BLANC, W)
-    centre(d, 1085, "of Gaïa", italique(176, 400), BLANC, W)
+    centre(d, 140, "PRIVATE EXPERIENCES", sans(24, 400), SABLE, W, 7)
+    centre(d, 185, "Daughter", serif(176, 400), BLANC, W)
+    centre(d, 355, "of Gaïa", italique(176, 400), BLANC, W)
     return im
 
 
@@ -152,9 +153,9 @@ LANCEMENT = [
     ("ecuries", ("domaine.jpg", (0.5, 0.6))),
     ("refuge", refuge),
     ("domaine", domaine),
-    ("cheval-noir-blanc", ("cheval-noir-blanc.jpg", (0.5, 0.45))),
     ("chevaux-fenetre", ("chevaux-fenetre.jpg", (0.5, 0.6))),
-    ("trois-chevaux", ("trois-chevaux.jpg", (0.5, 0.6))),
+    ("cheval-noir-blanc", ("cheval-noir-blanc.jpg", (0.5, 0.45))),
+    ("cheval-brindille", ("espace-couvert.jpg", (0.5, 0.42))),
     ("chevaux-pie-broutent", ("chevaux-pie-broutent.jpg", (0.5, 0.72))),
     ("daughter-of-gaia", nom_du_projet),
 ]

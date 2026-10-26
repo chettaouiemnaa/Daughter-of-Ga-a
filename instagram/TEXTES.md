@@ -126,19 +126,19 @@ Les trois autres sont repartis une fois remis sur pied — et c'était bien le b
 Le reste, très bientôt.
 ```
 
-**08 — `08-cheval-noir-blanc.jpg`**
-```
-Il s'avance. Vous aussi ?
-```
-
-**09 — `09-chevaux-fenetre.jpg`**
+**08 — `08-chevaux-fenetre.jpg`**
 ```
 Le long du mur ocre.
 ```
 
-**10 — `10-trois-chevaux.jpg`**
+**09 — `09-cheval-noir-blanc.jpg`**
 ```
-Ils sont chez eux.
+Il s'avance. Vous aussi ?
+```
+
+**10 — `10-cheval-brindille.jpg`**
+```
+Il a trouvé son bouquet. 🌿
 ```
 
 **11 — `11-chevaux-pie-broutent.jpg`**

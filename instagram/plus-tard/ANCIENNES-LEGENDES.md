@@ -122,14 +122,6 @@ Chaque réservation contribue directement au bien-être des animaux du domaine.
 #daughterofgaia #refuge #sauvetageanimal #chevaux #protectionanimale #tunisie
 ```
 
-### 06 — `06-bar-nuit.jpg`
-```
-À la nuit tombée, l'espace couvert s'allume.
-120 m² en matériaux naturels, une cuisine entièrement équipée, et le jardin juste devant.
-
-#daughterofgaia #lieuevenementiel #tunis #eventvenue #privateevent
-```
-
 ### 07 — `07-experiences.jpg`
 ```
 Ce que le domaine accueille.
