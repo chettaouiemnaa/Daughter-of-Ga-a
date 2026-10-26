@@ -142,9 +142,9 @@ Le long du mur ocre.
 Il s'avance. Vous aussi ?
 ```
 
-**10 — `10-cheval-brindille.jpg`**
+**10 — `10-trois-chevaux.jpg`**
 ```
-Il a trouvé son bouquet. 🌿
+Ils sont chez eux.
 ```
 
 **11 — `11-chevaux-pie-broutent.jpg`**
