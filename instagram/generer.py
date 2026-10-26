@@ -74,61 +74,88 @@ def sauver(im, chemin):
 PHRASE = "Là où la ville s'arrête."
 
 
-def titre_sur_photo(nom, taille, pos, y0, voile=0.18):
+def titre_sur_photo(nom, taille, pos, y0, voile=0.18, sur=None):
     """Le nom posé sur une photo, avec un voile sombre fondu sous le texte."""
     W, H = taille
     im = Image.blend(photo(nom, taille, pos), Image.new("RGB", taille, ENCRE), voile)
     masque = Image.new("L", taille, 0)
-    ImageDraw.Draw(masque).rectangle((0, y0 - 40, W, y0 + 500), fill=175)
+    ImageDraw.Draw(masque).rectangle((0, y0 - 140, W, y0 + 500), fill=175)
     masque = masque.filter(ImageFilter.GaussianBlur(140))
     im = Image.composite(Image.new("RGB", taille, ENCRE), im, masque)
     d = ImageDraw.Draw(im)
+    if sur:
+        centre(d, y0 - 90, sur, sans(24, 400), SABLE, W, 7)
     centre(d, y0, "Daughter", serif(150), BLANC, W)
     centre(d, y0 + 150, "of Gaïa", italique(150), BLANC, W)
     centre(d, y0 + 360, PHRASE, italique(58), BLANC, W)
     return im
 
 
-# Les 9 premiers posts, du premier publié au dernier. Le 9 (le nom) arrive
-# en dernier pour s'afficher en haut à gauche du profil.
-LANCEMENT = [
-    ("bar-nuit.jpg", (0.5, 0.5)),
-    ("trois-chevaux.jpg", (0.5, 0.6)),
-    ("cheval-bar.jpg", (0.5, 0.55)),
-    ("fenetre-chevaux-statuettes.jpg", (0.5, 0.45)),
-    ("chevaux-pie-broutent.jpg", (0.5, 0.72)),
-    ("chevaux-fenetre.jpg", (0.5, 0.6)),
-    ("terrasse-vasque.jpg", (0.5, 0.5)),
-    ("cheval-noir-blanc.jpg", (0.5, 0.45)),
-]
-
-
-def posts():
-    out = RACINE / "posts"
-    for i, (nom, pos) in enumerate(LANCEMENT, 1):
-        sauver(photo(nom, POST, pos), out / f"{i:02d}-{nom.rsplit('.', 1)[0]}.jpg")
-    sauver(titre_sur_photo("jardin-soir.jpg", POST, (0.5, 0.6), 380), out / "09-daughter-of-gaia.jpg")
-
-
-def plus_tard():
-    """Cartes qui expliquent le concept : à publier une fois celui-ci annoncé."""
-    out = RACINE / "plus-tard"
-    sauver(carte(OLIVE, BLANC, [
+def citation():
+    return carte(OLIVE, BLANC, [
         ("“", serif(200), FILET, 330, 0),
         ("There are places", italique(84), None, 540, 0),
         ("you visit.", italique(84), None, 635, 0),
         ("And there are places", italique(84), None, 760, 0),
         ("you feel.", italique(84), None, 855, 0),
         ("DAUGHTER OF GAÏA", sans(22, 400), SABLE, 1060, 6),
-    ]), out / "citation.jpg")
-    sauver(carte(TERRA, BLANC, [
+    ])
+
+
+def refuge():
+    return carte(TERRA, BLANC, [
         ("LE REFUGE", sans(24, 400), SABLE, 330, 7),
         ("Sauvés,", serif(120), None, 450, 0),
         ("réhabilités,", serif(120), None, 580, 0),
         ("et chez eux.", italique(120), None, 710, 0),
-        ("Sept chevaux recueillis depuis l'ouverture.", serif(42), SABLE, 920, 0),
+        ("Sept chevaux recueillis.", serif(42), SABLE, 920, 0),
         ("Quatre vivent ici aujourd'hui.", serif(42), SABLE, 972, 0),
-    ]), out / "refuge.jpg")
+    ])
+
+
+def domaine():
+    # « où la ville disparaît » ferait doublon avec la phrase sous le nom.
+    return carte(ENCRE, BLANC, [
+        ("LE DOMAINE", sans(24, 400), FILET, 330, 7),
+        ("4 000 m²", serif(150), None, 460, 0),
+        ("de nature préservée", italique(70), SABLE, 650, 0),
+        ("LA SOUKRA  —  TUNIS", sans(24, 400), TERRA, 950, 6),
+    ])
+
+
+def nom_du_projet():
+    return titre_sur_photo("jardin-soir.jpg", POST, (0.5, 0.6), 400, sur="PRIVATE EXPERIENCES")
+
+
+# Les 12 posts, du premier publié au dernier. Le 12 (le nom) arrive en
+# dernier pour s'afficher en haut à gauche du profil ; les cartes forment
+# un zigzag dans la grille.
+LANCEMENT = [
+    ("refuge", refuge),
+    ("bar-nuit", ("bar-nuit.jpg", (0.5, 0.5))),
+    ("chevaux-fenetre", ("chevaux-fenetre.jpg", (0.5, 0.6))),
+    ("cheval-bar", ("cheval-bar.jpg", (0.5, 0.55))),
+    ("terrasse-vasque", ("terrasse-vasque.jpg", (0.5, 0.5))),
+    ("citation", citation),
+    ("domaine", domaine),
+    ("chevaux-pie-broutent", ("chevaux-pie-broutent.jpg", (0.5, 0.72))),
+    ("cheval-noir-blanc", ("cheval-noir-blanc.jpg", (0.5, 0.45))),
+    ("trois-chevaux", ("trois-chevaux.jpg", (0.5, 0.6))),
+    ("fenetre-chevaux-statuettes", ("fenetre-chevaux-statuettes.jpg", (0.5, 0.45))),
+    ("daughter-of-gaia", nom_du_projet),
+]
+
+
+def posts():
+    out = RACINE / "posts"
+    for i, (nom, source) in enumerate(LANCEMENT, 1):
+        im = source() if callable(source) else photo(source[0], POST, source[1])
+        sauver(im, out / f"{i:02d}-{nom}.jpg")
+
+
+def plus_tard():
+    """Ce qui parle des événements : à publier une fois le concept annoncé."""
+    out = RACINE / "plus-tard"
     sauver(carte(BLANC, ENCRE, [
         ("EXPÉRIENCES", sans(24, 400), OLIVE, 250, 7),
         ("Ce que le domaine", serif(82), None, 330, 0),
@@ -140,14 +167,6 @@ def plus_tard():
         ("Shootings photo & vidéo", serif(46), None, 870, 0),
         ("DOMAINE PRIVATISÉ  —  SUR RÉSERVATION", sans(22, 400), TERRA, 1040, 5),
     ]), out / "experiences.jpg")
-    sauver(carte(ENCRE, BLANC, [
-        ("LE DOMAINE", sans(24, 400), FILET, 300, 7),
-        ("4 000 m²", serif(150), None, 420, 0),
-        ("où la ville disparaît", italique(70), SABLE, 600, 0),
-        ("80 invités  ·  domaine privatisé  ·  7 chevaux sauvés", sans(28, 300), FILET, 820, 1),
-        ("Sur réservation", serif(48), None, 960, 0),
-        ("daughterofgaia.com", sans(26, 400), TERRA, 1040, 2),
-    ]), out / "domaine.jpg")
 
     # Couvertures des stories à la une, une fois qu'il y aura de quoi les remplir.
     t = 1080

@@ -1,14 +1,15 @@
 # Daughter of Gaïa — lancement Instagram
 
-Le lancement ne dit **rien du concept** : juste le nom, le lieu, les chevaux.
-On garde le mystère jusqu'à l'annonce du concept.
+Le lancement donne des **indices** (private experiences, 4 000 m², le refuge)
+mais ne dit **rien des événements** qu'on pourra y faire. On garde le
+mystère jusqu'à l'annonce du concept.
 
-- `posts/` : les 9 premiers posts, de 01 à 09, dans l'ordre de publication
+- `posts/` : les 12 premiers posts, de 01 à 12, dans l'ordre de publication
 - `stories/annonce-compte-perso.jpg` : l'annonce sur ton compte perso
 - `profil/photo-profil.jpg` : la photo de profil
-- `plus-tard/` : les cartes qui expliquent le concept (refuge, expériences,
-  domaine…), les couvertures « à la une » et les anciennes légendes, pour
-  le moment où tu voudras en parler.
+- `plus-tard/` : la carte « Ce que le domaine accueille », les couvertures
+  « à la une » et les anciennes légendes, pour le moment où tu voudras
+  parler des événements.
 
 Pour régénérer après un changement : `python3 instagram/generer.py`.
 
@@ -16,7 +17,7 @@ Pour régénérer après un changement : `python3 instagram/generer.py`.
 
 ## 1. La phrase sous le nom
 
-Actuellement sur le post 09 et la story :
+Actuellement sur le post 12 et la story :
 
 > **Là où la ville s'arrête.**
 
@@ -41,8 +42,8 @@ Autres pistes, au choix (il suffit de changer `PHRASE` en haut de `generer.py`) 
 ### Bio
 
 ```
-Daughter of Gaïa 🌿
-La Soukra, Tunis
+Private experiences 🌿
+📍 La Soukra, Tunis
 Bientôt.
 ```
 
@@ -74,62 +75,83 @@ Je vous en dis plus très bientôt.
 En attendant, tout se passe ici 👉 @daughterofgaia
 ```
 
-> Publier les 9 posts du nouveau compte **avant** l'annonce, pour que les
+> Publier les 12 posts du nouveau compte **avant** l'annonce, pour que les
 > personnes qui cliquent arrivent sur un profil déjà rempli.
 
 ---
 
-## 4. Les 9 posts
+## 4. Les 12 posts
 
-Publier de 01 à 09. Le 09, celui avec le nom, s'affichera en haut à gauche.
+Publier de 01 à 12. Le 12, celui avec le nom, s'affichera en haut à gauche.
 Légendes courtes exprès : on montre, on n'explique pas.
 
-**01 — `01-bar-nuit.jpg`**
+**01 — `01-refuge.jpg`**
+```
+Le refuge.
+
+Sept chevaux recueillis. Quatre vivent ici aujourd'hui.
+Les trois autres sont repartis une fois remis sur pied — et c'était bien le but.
+```
+
+**02 — `02-bar-nuit.jpg`**
 ```
 À la tombée de la nuit.
 ```
 
-**02 — `02-trois-chevaux.jpg`**
-```
-Ils sont chez eux.
-```
-
-**03 — `03-cheval-bar.jpg`**
-```
-Il a ses habitudes. 🐎
-```
-
-**04 — `04-fenetre-chevaux-statuettes.jpg`**
-```
-Les voisins sont curieux.
-```
-
-**05 — `05-chevaux-pie-broutent.jpg`**
-```
-Le grand et le petit.
-```
-
-**06 — `06-chevaux-fenetre.jpg`**
+**03 — `03-chevaux-fenetre.jpg`**
 ```
 Le long du mur ocre.
 ```
 
-**07 — `07-terrasse-vasque.jpg`**
+**04 — `04-cheval-bar.jpg`**
+```
+Il a ses habitudes. 🐎
+```
+
+**05 — `05-terrasse-vasque.jpg`**
 ```
 Deux curieux à la terrasse.
 ```
 
-**08 — `08-cheval-noir-blanc.jpg`**
+**06 — `06-citation.jpg`**
+```
+There are places you visit. And there are places you feel.
+
+Il y a des lieux que l'on visite. Et il y a des lieux que l'on ressent.
+```
+
+**07 — `07-domaine.jpg`**
+```
+4 000 m² de nature préservée, aux portes de Tunis.
+Le reste, très bientôt.
+```
+
+**08 — `08-chevaux-pie-broutent.jpg`**
+```
+Le grand et le petit.
+```
+
+**09 — `09-cheval-noir-blanc.jpg`**
 ```
 Il s'avance. Vous aussi ?
 ```
 
-**09 — `09-daughter-of-gaia.jpg`**
+**10 — `10-trois-chevaux.jpg`**
+```
+Ils sont chez eux.
+```
+
+**11 — `11-fenetre-chevaux-statuettes.jpg`**
+```
+Les voisins sont curieux.
+```
+
+**12 — `12-daughter-of-gaia.jpg`**
 ```
 Daughter of Gaïa.
 
 Gaïa, la Terre, dans la mythologie grecque.
-L'histoire commence ici. 🌿
+Private experiences — l'histoire commence ici. 🌿
 
 📍 La Soukra, Tunis
 ```
