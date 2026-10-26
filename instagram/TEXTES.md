@@ -17,7 +17,7 @@ Pour régénérer après un changement : `python3 instagram/generer.py`.
 
 ## 1. La phrase sous le nom
 
-Actuellement sur la story d'annonce (le post 12 montre le nom seul, pour qu'il ressorte au maximum) :
+Actuellement sur la story d'annonce (le post 12 et le Reel montrent le nom seul, pour qu'il ressorte au maximum) :
 
 > **Là où la ville s'arrête.**
 
@@ -83,6 +83,12 @@ En attendant, tout se passe ici 👉 @daughterofgaia
 ## 4. Les 12 posts
 
 Publier de 01 à 12. Le 12, celui avec le nom, s'affichera en haut à gauche.
+
+**Pour le 12, deux possibilités au choix** (une seule des deux) :
+- la carte `posts/12-daughter-of-gaia.jpg`, dans le style des autres cartes ;
+- ou le Reel `reel/reel-daughter-of-gaia.mp4` : la vidéo du jardin, le nom
+  qui apparaît en fondu. Aperçu de la grille : `reel/apercu-grille-reel.jpg`.
+  Voir la section 5 pour le publier.
 Légendes courtes exprès : on montre, on n'explique pas.
 
 **01 — `01-citation.jpg`**
@@ -158,3 +164,16 @@ Private experiences — l'histoire commence ici. 🌿
 
 Hashtags à ajouter en fin de légende (ou en premier commentaire) :
 `#daughterofgaia #lasoukra #tunis #tunisie #chevaux #horses`
+
+---
+
+## 5. Publier le Reel (si tu choisis cette version pour le 12)
+
+1. Nouveau Reel → choisir `reel/reel-daughter-of-gaia.mp4` (10 s, sans son).
+2. Ajouter une musique douce depuis la bibliothèque d'Instagram, volume bas.
+3. **Couverture** : « Modifier la couverture » → « Ajouter depuis la galerie »
+   → `reel/couverture.jpg`. Dans la grille, Instagram n'en montre que le
+   centre : le nom y est bien en entier.
+4. Vérifier que **« Afficher aussi dans le fil »** est activé, sinon le Reel
+   n'apparaît pas dans la grille du profil.
+5. Légende : la même que le post 12 ci-dessus.

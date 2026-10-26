@@ -142,8 +142,47 @@ def nom_avec_ombre(im, y0, taille=176, sur="PRIVATE EXPERIENCES"):
 
 
 def nom_du_projet():
-    """Les trois chevaux devant le mur ocre, le nom en grand au-dessus d'eux."""
-    return nom_avec_ombre(photo("trois-chevaux.jpg", POST, (0.5, 0.75)), 185)
+    """Le logo en carte, dans le même esprit que les autres cartes texte."""
+    return carte(SABLE, ENCRE, [
+        ("PRIVATE EXPERIENCES", sans(24, 400), OLIVE, 330, 7),
+        ("Daughter", serif(190, 400), None, 420, 0),
+        ("of Gaïa", italique(190, 400), None, 605, 0),
+        ("LA SOUKRA  —  TUNIS", sans(24, 400), TERRA, 1010, 6),
+    ])
+
+
+VIDEO = RACINE.parent / "daughter-of-gaia" / "public" / "videos" / "ouverture-jardin.mp4"
+
+
+def reel():
+    """Variante : le logo qui apparaît sur la vidéo du jardin, en Reel.
+    Le nom reste dans le centre de l'image : le bas est couvert par la
+    légende et les boutons de Reels, et la grille n'affiche que le centre."""
+    import subprocess, tempfile
+    out = RACINE / "reel"
+    out.mkdir(exist_ok=True)
+    calque = Image.new("RGBA", STORY, (0, 0, 0, 0))
+    lignes = [(515, "PRIVATE EXPERIENCES", sans(26, 400), 7), (560, "Daughter", serif(184, 400), 0),
+              (738, "of Gaïa", italique(184, 400), 0)]
+    masque = Image.new("L", STORY, 0)
+    for y, texte, f, esp in lignes:
+        centre(ImageDraw.Draw(masque), y, texte, f, 255, STORY[0], esp)
+    ombre = masque.filter(ImageFilter.MaxFilter(11)).filter(ImageFilter.GaussianBlur(26))
+    calque.paste(Image.new("RGBA", STORY, ENCRE), (0, 0), ombre.point(lambda v: int(v * 0.8)))
+    d = ImageDraw.Draw(calque)
+    for y, texte, f, esp in lignes:
+        centre(d, y, texte, f, BLANC, STORY[0], esp)
+    with tempfile.TemporaryDirectory() as tmp:
+        png = f"{tmp}/logo.png"
+        calque.save(png)
+        # Deux boucles de la vidéo (≈ 10 s) ; le nom apparaît en fondu.
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-stream_loop", "1", "-i", str(VIDEO),
+                        "-loop", "1", "-i", png, "-filter_complex",
+                        "[1:v]format=rgba,fade=in:st=0.6:d=1.4:alpha=1[t];[0:v][t]overlay=0:0:shortest=1,format=yuv420p",
+                        "-an", "-c:v", "libx264", "-preset", "slow", "-crf", "21", "-r", "30",
+                        "-movflags", "+faststart", str(out / "reel-daughter-of-gaia.mp4")], check=True)
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", "3", "-i", str(out / "reel-daughter-of-gaia.mp4"),
+                        "-frames:v", "1", "-q:v", "2", str(out / "couverture.jpg")], check=True)
 
 
 # Les 12 posts, du premier publié au dernier. Le 12 (le nom) arrive en
@@ -234,10 +273,16 @@ def apercu():
         v = ImageOps.fit(Image.open(f), (c, h), Image.LANCZOS)
         im.paste(v, ((i % 3) * (c + g), (i // 3) * (h + g)))
     sauver(im, RACINE / "apercu-grille.jpg")
+    # Même grille, avec le Reel en haut à gauche (la grille montre le
+    # centre de la vidéo, en 3:4).
+    couv = ImageOps.fit(Image.open(RACINE / "reel" / "couverture.jpg"), (c, h), Image.LANCZOS)
+    im.paste(couv, (0, 0))
+    sauver(im, RACINE / "reel" / "apercu-grille-reel.jpg")
 
 
 if __name__ == "__main__":
     posts()
+    reel()
     plus_tard()
     stories()
     profil()
