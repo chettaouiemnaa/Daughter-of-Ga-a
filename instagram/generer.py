@@ -82,9 +82,8 @@ def posts():
     ]), out / "01-annonce.jpg")
 
     sauver(photo("jardin-soir.jpg", POST, (0.5, 0.6)), out / "02-jardin-soir.jpg")
-    sauver(photo("cheval-noir-blanc.jpg", POST, (0.5, 0.45)), out / "03-cheval-noir-blanc.jpg")
 
-    # 04 — la citation du site
+    # 03 — la citation du site
     sauver(carte(OLIVE, BLANC, [
         ("“", serif(200), FILET, 330, 0),
         ("There are places", italique(84), None, 540, 0),
@@ -92,18 +91,11 @@ def posts():
         ("And there are places", italique(84), None, 760, 0),
         ("you feel.", italique(84), None, 855, 0),
         ("DAUGHTER OF GAÏA", sans(22, 400), SABLE, 1060, 6),
-    ]), out / "04-citation.jpg")
+    ]), out / "03-citation.jpg")
 
-    sauver(photo("bar-nuit.jpg", POST, (0.5, 0.5)), out / "05-bar-nuit.jpg")
-    sauver(photo("trois-chevaux.jpg", POST, (0.5, 0.6)), out / "06-trois-chevaux.jpg")
+    sauver(photo("cheval-noir-blanc.jpg", POST, (0.5, 0.45)), out / "04-cheval-noir-blanc.jpg")
 
-    # 07 — carrousel tournages
-    for i, (nom, c) in enumerate([("pergola.jpg", (0.5, 0.5)), ("tournage-hero.jpg", (0.5, 0.5)),
-                                   ("piscine.jpg", (0.5, 0.5)), ("palmiers.jpg", (0.55, 0.5)),
-                                   ("salon.jpg", (0.5, 0.5))], 1):
-        sauver(photo(nom, POST, c), out / f"07-tournages-{i}.jpg")
-
-    # 08 — le refuge
+    # 05 — le refuge
     sauver(carte(TERRA, BLANC, [
         ("LE REFUGE", sans(24, 400), SABLE, 330, 7),
         ("Sauvés,", serif(120), None, 450, 0),
@@ -111,8 +103,24 @@ def posts():
         ("et chez eux.", italique(120), None, 710, 0),
         ("Sept chevaux recueillis depuis l'ouverture.", serif(42), SABLE, 920, 0),
         ("Quatre vivent ici aujourd'hui.", serif(42), SABLE, 972, 0),
-    ]), out / "08-refuge.jpg")
+    ]), out / "05-refuge.jpg")
 
+    sauver(photo("bar-nuit.jpg", POST, (0.5, 0.5)), out / "06-bar-nuit.jpg")
+
+    # 07 — ce que le domaine accueille (la maison n'apparaît sur aucun visuel)
+    sauver(carte(BLANC, ENCRE, [
+        ("EXPÉRIENCES", sans(24, 400), OLIVE, 250, 7),
+        ("Ce que le domaine", serif(82), None, 330, 0),
+        ("accueille", italique(82), None, 425, 0),
+        ("Séminaires & journées d'équipe", serif(46), None, 610, 0),
+        ("Lancements de marque", serif(46), None, 675, 0),
+        ("Anniversaires  ·  Baby showers", serif(46), None, 740, 0),
+        ("Brunchs privés  ·  Tables d'hôte", serif(46), None, 805, 0),
+        ("Shootings photo & vidéo", serif(46), None, 870, 0),
+        ("DOMAINE PRIVATISÉ  —  SUR RÉSERVATION", sans(22, 400), TERRA, 1040, 5),
+    ]), out / "07-experiences.jpg")
+
+    sauver(photo("trois-chevaux.jpg", POST, (0.5, 0.6)), out / "08-trois-chevaux.jpg")
     sauver(photo("cheval-bar.jpg", POST, (0.5, 0.55)), out / "09-cheval-bar.jpg")
     sauver(photo("lanternes.jpg", POST, (0.45, 0.5)), out / "10-lanternes.jpg")
     sauver(photo("chevaux-fenetre.jpg", POST, (0.5, 0.6)), out / "11-chevaux-fenetre.jpg")
@@ -159,7 +167,7 @@ def profil():
 
     # Couvertures des stories à la une.
     for nom, fond, enc in [("Le domaine", SABLE, ENCRE), ("Le refuge", TERRA, BLANC),
-                           ("Tournages", OLIVE, BLANC), ("Expériences", BLANC, ENCRE),
+                           ("Expériences", OLIVE, BLANC),
                            ("Réserver", ENCRE, BLANC)]:
         im = Image.new("RGB", (t, t), fond)
         d = ImageDraw.Draw(im)
@@ -171,8 +179,8 @@ def profil():
 def apercu():
     """La grille telle qu'elle apparaîtra, du plus récent au plus ancien."""
     fichiers = ["12-domaine", "11-chevaux-fenetre", "10-lanternes", "09-cheval-bar",
-                "08-refuge", "07-tournages-1", "06-trois-chevaux", "05-bar-nuit",
-                "04-citation", "03-cheval-noir-blanc", "02-jardin-soir", "01-annonce"]
+                "08-trois-chevaux", "07-experiences", "06-bar-nuit", "05-refuge",
+                "04-cheval-noir-blanc", "03-citation", "02-jardin-soir", "01-annonce"]
     c, g = 360, 4  # vignettes 3:4, comme la grille actuelle d'Instagram
     h = c * 4 // 3
     im = Image.new("RGB", (3 * c + 2 * g, 4 * h + 3 * g), "white")

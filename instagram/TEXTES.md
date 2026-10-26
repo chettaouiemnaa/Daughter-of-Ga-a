@@ -22,7 +22,7 @@ Pour régénérer après un changement : `python3 instagram/generer.py`.
 
 ```
 Un domaine privé où chaque expérience célèbre le vivant 🌿
-Événements · Tournages · 🐎 Chevaux sauvés
+Événements privés · 🐎 Chevaux sauvés
 📍 La Soukra, Tunis — sur réservation
 ```
 
@@ -30,14 +30,14 @@ Variante plus sobre, sans émojis :
 
 ```
 Domaine privé à La Soukra, Tunis.
-Événements, tournages, et un refuge pour chevaux sauvés.
+Événements privés, et un refuge pour chevaux sauvés.
 Private experiences — by reservation.
 ```
 
 ### Stories à la une
 
-Créer 5 « à la une » avec les couvertures de `profil/` :
-Le domaine · Le refuge · Tournages · Expériences · Réserver
+Créer 4 « à la une » avec les couvertures de `profil/` :
+Le domaine · Le refuge · Expériences · Réserver
 
 ---
 
@@ -93,15 +93,7 @@ La réalité ? Vous êtes au début de la Soukra.
 #daughterofgaia #lasoukra #tunis #goldenhour #jardin #natureinthecity
 ```
 
-### 03 — `03-cheval-noir-blanc.jpg`
-```
-Ici, les chevaux ne sont ni une attraction, ni une animation.
-Ils vivent chez eux, à leur rythme. Et leur bien-être passe avant tout le reste.
-
-#daughterofgaia #chevaux #sauvetageanimal #refuge #horsesoftunisia
-```
-
-### 04 — `04-citation.jpg`
+### 03 — `03-citation.jpg`
 ```
 There are places you visit. And there are places you feel.
 
@@ -110,35 +102,15 @@ Il y a des lieux que l'on visite. Et il y a des lieux que l'on ressent.
 #daughterofgaia #lasoukra #tunis
 ```
 
-### 05 — `05-bar-nuit.jpg`
+### 04 — `04-cheval-noir-blanc.jpg`
 ```
-À la nuit tombée, l'espace couvert s'allume.
-120 m² en matériaux naturels, une cuisine entièrement équipée, et le jardin juste devant.
+Ici, les chevaux ne sont ni une attraction, ni une animation.
+Ils vivent chez eux, à leur rythme. Et leur bien-être passe avant tout le reste.
 
-#daughterofgaia #lieuevenementiel #tunis #eventvenue #privateevent
-```
-
-### 06 — `06-trois-chevaux.jpg`
-```
-Trois d'entre eux, à l'ombre des arbres.
-Chaque cheval présent ici a été sauvé, recueilli ou réhabilité.
-
-#daughterofgaia #chevaux #refuge #sauvetageanimal #horses
+#daughterofgaia #chevaux #sauvetageanimal #refuge #horsesoftunisia
 ```
 
-### 07 — carrousel `07-tournages-1` à `07-tournages-5`
-```
-Un lieu à part, réservé aux tournages 🎬
-
-Une villa coloniale à voûtes de brique, une piscine bordée d'arcades, une pergola ouverte sur le jardin, des palmiers, des bougainvilliers — et des chevaux qui entrent naturellement dans le cadre.
-Assez pour jouer l'Andalousie, le Maghreb ou le Levant, à 20 minutes de Tunis.
-
-Production, shooting, clip : écrivez-nous → lien en bio.
-
-#daughterofgaia #lieudetournage #filmlocation #tunisie #shooting #production #tunis
-```
-
-### 08 — `08-refuge.jpg`
+### 05 — `05-refuge.jpg`
 ```
 Le refuge.
 
@@ -148,6 +120,34 @@ Les trois autres sont repartis une fois remis sur pied — et c'était bien le b
 Chaque réservation contribue directement au bien-être des animaux du domaine.
 
 #daughterofgaia #refuge #sauvetageanimal #chevaux #protectionanimale #tunisie
+```
+
+### 06 — `06-bar-nuit.jpg`
+```
+À la nuit tombée, l'espace couvert s'allume.
+120 m² en matériaux naturels, une cuisine entièrement équipée, et le jardin juste devant.
+
+#daughterofgaia #lieuevenementiel #tunis #eventvenue #privateevent
+```
+
+### 07 — `07-experiences.jpg`
+```
+Ce que le domaine accueille.
+
+Séminaires et journées d'équipe, lancements de marque, anniversaires, baby showers, brunchs privés, tables d'hôte, shootings photo et vidéo.
+Toujours en privatisation complète : le jour de votre événement, le domaine est à vous.
+
+Les événements en journée sont privilégiés, pour préserver la tranquillité des animaux et du voisinage.
+
+#daughterofgaia #lieuevenementiel #tunis #seminaire #babyshower #brunch #privatisation
+```
+
+### 08 — `08-trois-chevaux.jpg`
+```
+Trois d'entre eux, à l'ombre des arbres.
+Chaque cheval présent ici a été sauvé, recueilli ou réhabilité.
+
+#daughterofgaia #chevaux #refuge #sauvetageanimal #horses
 ```
 
 ### 09 — `09-cheval-bar.jpg`
@@ -177,7 +177,7 @@ Les voisins sont curieux.
 4 000 m² où la ville disparaît.
 
 Jusqu'à 80 invités, un domaine entièrement privatisé, et 7 chevaux sauvés.
-Séminaires, lancements de marque, anniversaires, baby showers, brunchs privés, tables d'hôte, shootings et tournages.
+Séminaires, lancements de marque, anniversaires, baby showers, brunchs privés, tables d'hôte et shootings.
 
 Demandes et disponibilités → lien en bio
 contact@daughterofgaia.com
