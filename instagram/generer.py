@@ -148,7 +148,6 @@ def plus_tard():
         ("Sur réservation", serif(48), None, 960, 0),
         ("daughterofgaia.com", sans(26, 400), TERRA, 1040, 2),
     ]), out / "domaine.jpg")
-    sauver(photo("lanternes.jpg", POST, (0.45, 0.5)), out / "lanternes.jpg")
 
     # Couvertures des stories à la une, une fois qu'il y aura de quoi les remplir.
     t = 1080

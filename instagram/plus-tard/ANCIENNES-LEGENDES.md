@@ -165,14 +165,6 @@ Chaque cheval présent ici a été sauvé, recueilli ou réhabilité.
 #daughterofgaia #chevaux #refuge #sauvetageanimal #horses
 ```
 
-### 11 — `11-lanternes.jpg`
-```
-Lanternes tressées, comptoir en zellige vert, bois brut.
-L'espace couvert, prêt à recevoir.
-
-#daughterofgaia #lieuevenementiel #tunis #design #interiordesign
-```
-
 ### 12 — `12-chevaux-fenetre.jpg`
 ```
 Le long du mur ocre, à l'ombre des arbres.
