@@ -8,7 +8,6 @@ import {
    PHOTOS DU DOMAINE
    Photos réelles du domaine, servies depuis /public/images.
    ═══════════════════════════════════════════════════════════ */
-const P_BAR_NUIT = "/images/bar-nuit.jpg";
 const P_CHEVAL_BAR = "/images/cheval-bar.jpg";
 const P_CHEVAUX_PIE = "/images/chevaux-pie.jpg";
 const P_JARDIN_SOIR = "/images/jardin-soir.jpg";
@@ -26,7 +25,6 @@ const POSTER_OUVERTURE = "/videos/ouverture-jardin.jpg";
 const ANIM_OUVERTURE = "/videos/ouverture-jardin.avif";
 
 const IMAGES = {
-  hero: P_BAR_NUIT,
   lieu: P_JARDIN_SOIR,
   histoire: P_CHEVAUX_PIE,
   animaux: P_CHEVAL_NB,
@@ -146,7 +144,7 @@ fr: {
     lien: "Découvrir la page tournages" },
   bandeau: ["Respect du vivant", "Animaux sauvés", "Nature préservée", "Domaine privatisé", "Sur réservation"],
   galerie: { eyebrow: "Galerie", titre: "Le domaine en images", faire: "Faites défiler",
-    legendes: ["Le jardin", "Le bar, à la nuit tombée", "Ils sont chez eux", "La terrasse", "L'espace couvert", "À l'ombre, devant la maison"] },
+    legendes: ["Le jardin", "Ils sont chez eux", "La terrasse", "L'espace couvert", "À l'ombre, devant la maison"] },
   refuge: { eyebrow: "Le refuge", titre: "Sauvés, réhabilités, et chez eux.",
     p1: "Chaque cheval, chien ou autre animal présent ici a été sauvé, recueilli ou réhabilité. Ils ne sont ni une attraction, ni une animation. Ils évoluent dans leur environnement, à leur rythme, et leur bien-être passe avant l'événement.",
     p2: "Sept chevaux ont été recueillis depuis l'ouverture. Quatre vivent ici aujourd'hui. Les trois autres sont repartis une fois remis sur pied, et c'était bien le but.",
@@ -271,7 +269,7 @@ en: {
     lien: "See the filming page" },
   bandeau: ["Respect for the living", "Rescued animals", "Protected nature", "Private estate", "By reservation"],
   galerie: { eyebrow: "Gallery", titre: "The estate in pictures", faire: "Scroll across",
-    legendes: ["The garden", "The bar after dark", "They live here", "The terrace", "The covered space", "In the shade, by the house"] },
+    legendes: ["The garden", "They live here", "The terrace", "The covered space", "In the shade, by the house"] },
   refuge: { eyebrow: "The sanctuary", titre: "Rescued, rehabilitated, and home.",
     p1: "Every horse, dog or other animal here was rescued, taken in or rehabilitated. They are neither an attraction nor an act. They move through their own environment, at their own pace, and their wellbeing comes before the event.",
     p2: "Seven horses have been taken in since we opened. Four live here today. The other three left once they were back on their feet, which was the whole point.",
@@ -1738,7 +1736,6 @@ export default function App() {
           <FondOuverture images={[
             { src: IMAGES.lieu, alt: t.domaine.alt, pos: "center 62%" },
             { src: P_CHEVAUX_FENETRE, alt: t.hero.alt, pos: "center 55%" },
-            { src: IMAGES.hero, alt: t.galerie.legendes[1], pos: "center" },
           ]} />
         </div>
         <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(20,14,8,.52) 0%, rgba(20,14,8,.26) 34%, rgba(20,14,8,.42) 66%, rgba(20,14,8,.74) 100%)" }} />
@@ -2021,11 +2018,10 @@ export default function App() {
         </div>
         <GalerieHorizontale items={[
           { src: IMAGES.lieu, l: t.galerie.legendes[0], pos: "center 30%", w: "min(78vw,420px)", h: "min(64vh,560px)" },
-          { src: IMAGES.hero, l: t.galerie.legendes[1], pos: "70% center", w: "min(88vw,640px)", h: "min(52vh,450px)" },
-          { src: P_CHEVAL_BAR, l: t.galerie.legendes[2], pos: "45% center", w: "min(80vw,460px)", h: "min(58vh,510px)" },
-          { src: P_TERRASSE_VASQUE, l: t.galerie.legendes[3], pos: "center 60%", w: "min(86vw,600px)", h: "min(50vh,430px)" },
-          { src: P_SALLE, l: t.galerie.legendes[4], pos: "center 40%", w: "min(74vw,400px)", h: "min(66vh,575px)" },
-          { src: P_TROIS_CHEVAUX, l: t.galerie.legendes[5], pos: "center 62%", w: "min(82vw,520px)", h: "min(56vh,490px)" },
+          { src: P_CHEVAL_BAR, l: t.galerie.legendes[1], pos: "45% center", w: "min(80vw,460px)", h: "min(58vh,510px)" },
+          { src: P_TERRASSE_VASQUE, l: t.galerie.legendes[2], pos: "center 60%", w: "min(86vw,600px)", h: "min(50vh,430px)" },
+          { src: P_SALLE, l: t.galerie.legendes[3], pos: "center 40%", w: "min(74vw,400px)", h: "min(66vh,575px)" },
+          { src: P_TROIS_CHEVAUX, l: t.galerie.legendes[4], pos: "center 62%", w: "min(82vw,520px)", h: "min(56vh,490px)" },
         ]} />
       </section>
 
