@@ -29,7 +29,7 @@ Le site tient volontairement dans un seul fichier. C'est la première chose
 En haut du fichier, dans l'ordre :
 
 1. **Constantes d'images** — `P_BAR_NUIT`, `P_CHEVAL_BAR`, `P_JARDIN`,
-   `P_LANTERNES` (le domaine) et `V_PERGOLA`, `V_PISCINE`, `V_JARDIN_V`,
+   `P_CHEVAUX_PIE` (le domaine) et `V_PERGOLA`, `V_PISCINE`, `V_JARDIN_V`,
    `V_PALMIERS`, `V_SALON` (la villa de tournage). Ce sont des data-URI
    base64 fortement compressées, uniquement pour la maquette.
    **À remplacer par des URL d'images hébergées.**
