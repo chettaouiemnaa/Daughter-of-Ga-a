@@ -294,6 +294,7 @@ def fin_de_video():
     out.mkdir(exist_ok=True)
     W, H = STORY
     lignes = [(700, "PRIVATE EXPERIENCES", sans(28, 400), 8, "sur"),
+              (700, "LA SOUKRA  —  TUNIS", sans(28, 400), 8, "lieu"),
               (760, "Daughter", serif(200, 400), 0, "nom"),
               (958, "of Gaïa", italique(200, 400), 0, "nom"),
               (1255, "LA SOUKRA  —  TUNIS", sans(26, 400), 7, "sous"),
@@ -302,7 +303,8 @@ def fin_de_video():
     def ecrire(im, couleurs):
         d = ImageDraw.Draw(im)
         for y, texte, f, esp, role in lignes:
-            centre(d, y, texte, f, couleurs[role], W, esp)
+            if role in couleurs:
+                centre(d, y, texte, f, couleurs[role], W, esp)
         return im
 
     # Fonds unis, aux couleurs de l'identité.
@@ -327,9 +329,9 @@ def fin_de_video():
     calque_nom().save(out / "nom-transparent.png")
 
     # Le même nom posé sur une photo du domaine, remonté sur le mur ocre
-    # pour ne pas couvrir les chevaux (le lieu et le compte n'y tiennent pas).
+    # pour ne pas couvrir les chevaux ; le lieu passe au-dessus du nom.
     sauver(Image.alpha_composite(photo("trois-chevaux.jpg", STORY, (0.5, 0.55)).convert("RGBA"),
-                                 calque_nom(-400, ("sur", "nom"))).convert("RGB"), out / "fin-photo.jpg")
+                                 calque_nom(-400, ("lieu", "nom"))).convert("RGB"), out / "fin-photo.jpg")
 
     # Version animée de 4 s : fond encre, le nom apparaît en fondu.
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", f"color=c={ENCRE}:s={W}x{H}:d=4:r=30",
