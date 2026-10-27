@@ -16,7 +16,7 @@ Pour régénérer après un changement : `python3 instagram/generer.py`.
 **Photo de profil** : `profil/photo-profil.jpg`
 **Lien** : `https://www.daughterofgaia.com`
 **Adresse** : La Soukra, Tunis (à activer dans les informations professionnelles)
-**Bouton de contact** : e-mail `contact@daughterofgaiatunis.com`
+**Bouton de contact** : e-mail `contact@daughterofgaia.com`
 
 ### Bio (150 caractères max.)
 
@@ -187,7 +187,7 @@ Jusqu'à 80 invités, un domaine entièrement privatisé, et 7 chevaux sauvés.
 Séminaires, lancements de marque, anniversaires, baby showers, brunchs privés, tables d'hôte et shootings.
 
 Demandes et disponibilités → lien en bio
-contact@daughterofgaiatunis.com
+contact@daughterofgaia.com
 
 #daughterofgaia #lieuevenementiel #tunis #lasoukra #seminaire #privatisation #eventvenue
 ```
