@@ -285,6 +285,60 @@ def profil():
     sauver(im, out / "photo-profil.jpg")
 
 
+def fin_de_video():
+    """Écrans de fin pour la vidéo qui révèle le nom (format Reels, 9:16).
+    Le texte reste dans le centre de l'image : en Reels, le bas est couvert
+    par la légende et la droite par les boutons."""
+    import subprocess
+    out = RACINE / "fin-video"
+    out.mkdir(exist_ok=True)
+    W, H = STORY
+    lignes = [(700, "PRIVATE EXPERIENCES", sans(28, 400), 8, "sur"),
+              (760, "Daughter", serif(200, 400), 0, "nom"),
+              (958, "of Gaïa", italique(200, 400), 0, "nom"),
+              (1255, "LA SOUKRA  —  TUNIS", sans(26, 400), 7, "sous"),
+              (1312, "@daughterofgaiatunis", sans(30, 400), 1, "sous")]
+
+    def ecrire(im, couleurs):
+        d = ImageDraw.Draw(im)
+        for y, texte, f, esp, role in lignes:
+            centre(d, y, texte, f, couleurs[role], W, esp)
+        return im
+
+    # Fonds unis, aux couleurs de l'identité.
+    sauver(ecrire(Image.new("RGB", STORY, SABLE), {"sur": OLIVE, "nom": ENCRE, "sous": TERRA}), out / "fin-sable.jpg")
+    sauver(ecrire(Image.new("RGB", STORY, ENCRE), {"sur": FILET, "nom": BLANC, "sous": TERRA}), out / "fin-encre.jpg")
+
+    # Calque transparent à poser sur le dernier plan de la vidéo, dans CapCut
+    # (« Incrustation »). Une ombre douce détache le nom de n'importe quelle image.
+    def calque_nom(dy=0, roles=("sur", "nom", "sous")):
+        choix = [l for l in lignes if l[4] in roles]
+        masque = Image.new("L", STORY, 0)
+        d = ImageDraw.Draw(masque)
+        for y, texte, f, esp, _ in choix:
+            centre(d, y + dy, texte, f, 255, W, esp)
+        ombre = masque.filter(ImageFilter.MaxFilter(11)).filter(ImageFilter.GaussianBlur(26)).point(lambda v: int(v * 0.75))
+        calque = Image.new("RGBA", STORY, (0, 0, 0, 0))
+        calque.paste(Image.new("RGBA", STORY, ENCRE), (0, 0), ombre)
+        d = ImageDraw.Draw(calque)
+        for y, texte, f, esp, role in choix:
+            centre(d, y + dy, texte, f, SABLE if role != "nom" else BLANC, W, esp)
+        return calque
+    calque_nom().save(out / "nom-transparent.png")
+
+    # Le même nom posé sur une photo du domaine, remonté sur le mur ocre
+    # pour ne pas couvrir les chevaux (le lieu et le compte n'y tiennent pas).
+    sauver(Image.alpha_composite(photo("trois-chevaux.jpg", STORY, (0.5, 0.55)).convert("RGBA"),
+                                 calque_nom(-400, ("sur", "nom"))).convert("RGB"), out / "fin-photo.jpg")
+
+    # Version animée de 4 s : fond encre, le nom apparaît en fondu.
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", f"color=c={ENCRE}:s={W}x{H}:d=4:r=30",
+                    "-loop", "1", "-i", str(out / "nom-transparent.png"), "-filter_complex",
+                    "[1:v]format=rgba,fade=in:st=0.4:d=1.6:alpha=1[t];[0:v][t]overlay=0:0:shortest=1,format=yuv420p",
+                    "-t", "4", "-an", "-c:v", "libx264", "-crf", "18", "-movflags", "+faststart",
+                    str(out / "fin-encre-anime.mp4")], check=True)
+
+
 def apercu():
     """La grille telle qu'elle apparaîtra, du plus récent au plus ancien."""
     fichiers = sorted((RACINE / "posts").glob("*.jpg"), reverse=True)
@@ -309,5 +363,6 @@ if __name__ == "__main__":
     plus_tard()
     stories()
     profil()
+    fin_de_video()
     apercu()
     print("ok")
