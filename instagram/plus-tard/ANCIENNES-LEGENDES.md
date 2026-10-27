@@ -8,7 +8,7 @@ Pour régénérer après un changement : `python3 instagram/generer.py`.
 
 ## 1. Le compte
 
-**Nom d'utilisateur** : `@daughterofgaia` (à vérifier, sinon `@daughterofgaia.tn` ou `@daughterofgaia_`)
+**Nom d'utilisateur** : `@daughterofgaiatunis`
 **Nom affiché** : `Daughter of Gaïa | Domaine privé · Tunis`
 (le nom affiché est pris en compte par la recherche Instagram : on y glisse « domaine privé » et « Tunis »)
 
@@ -16,7 +16,7 @@ Pour régénérer après un changement : `python3 instagram/generer.py`.
 **Photo de profil** : `profil/photo-profil.jpg`
 **Lien** : `https://www.daughterofgaia.com`
 **Adresse** : La Soukra, Tunis (à activer dans les informations professionnelles)
-**Bouton de contact** : e-mail `contact@daughterofgaia.com`
+**Bouton de contact** : e-mail `contact@daughterofgaiatunis.com`
 
 ### Bio (150 caractères max.)
 
@@ -44,7 +44,7 @@ Le domaine · Le refuge · Expériences · Réserver
 ## 2. L'annonce sur ton compte perso
 
 **Story** : `stories/annonce-compte-perso.jpg`
-Ajouter l'autocollant **Mention** `@daughterofgaia` sous « Suivez l'aventure »
+Ajouter l'autocollant **Mention** `@daughterofgaiatunis` sous « Suivez l'aventure »
 (l'espace est laissé libre exprès), ou l'autocollant **Lien** vers le site.
 
 **Post / légende pour le compte perso :**
@@ -58,7 +58,7 @@ Où les chevaux qu'on a sauvés ne sont pas un décor, mais sont chez eux.
 
 Il s'appelle Daughter of Gaïa — du nom de Gaïa, la déesse de la Terre.
 
-Toute l'aventure se passe désormais ici 👉 @daughterofgaia
+Toute l'aventure se passe désormais ici 👉 @daughterofgaiatunis
 Abonnez-vous, la suite arrive très vite 🌿
 ```
 
@@ -187,7 +187,7 @@ Jusqu'à 80 invités, un domaine entièrement privatisé, et 7 chevaux sauvés.
 Séminaires, lancements de marque, anniversaires, baby showers, brunchs privés, tables d'hôte et shootings.
 
 Demandes et disponibilités → lien en bio
-contact@daughterofgaia.com
+contact@daughterofgaiatunis.com
 
 #daughterofgaia #lieuevenementiel #tunis #lasoukra #seminaire #privatisation #eventvenue
 ```

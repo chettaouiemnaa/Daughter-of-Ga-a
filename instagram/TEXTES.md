@@ -34,7 +34,7 @@ Autres pistes, au choix (il suffit de changer `PHRASE` en haut de `generer.py`) 
 
 ## 2. Le compte
 
-**Nom d'utilisateur** : `@daughterofgaia` (à vérifier)
+**Nom d'utilisateur** : `@daughterofgaiatunis`
 **Nom affiché** : `Daughter of Gaïa`
 **Photo de profil** : `profil/photo-profil.jpg`
 **Lien** : rien pour l'instant, ou le site s'il doit être en ligne au moment de l'annonce
@@ -62,7 +62,7 @@ Pas de « stories à la une » au lancement : elles arriveront avec le concept.
 ## 3. L'annonce sur ton compte perso
 
 **Story** : `stories/annonce-compte-perso.jpg`
-Ajouter l'autocollant **Mention** `@daughterofgaia` sous « Suivez l'aventure ».
+Ajouter l'autocollant **Mention** `@daughterofgaiatunis` sous « Suivez l'aventure ».
 
 **Légende du post :**
 
@@ -72,7 +72,7 @@ Il a enfin un nom.
 Daughter of Gaïa.
 
 Je vous en dis plus très bientôt.
-En attendant, tout se passe ici 👉 @daughterofgaia
+En attendant, tout se passe ici 👉 @daughterofgaiatunis
 ```
 
 > Publier les 15 posts du nouveau compte **avant** l'annonce, pour que les
