@@ -123,6 +123,23 @@ def domaine():
     ])
 
 
+def gaia():
+    """Le sens du nom, sans rien dire du concept."""
+    return carte(BLANC, ENCRE, [
+        ("GAÏA", sans(24, 400), OLIVE, 330, 9),
+        ("Fille", italique(130), None, 440, 0),
+        ("de la Terre.", serif(130), None, 585, 0),
+        ("Gaïa, déesse de la Terre", serif(44), TERRA, 900, 0),
+        ("dans la mythologie grecque.", serif(44), TERRA, 955, 0),
+    ])
+
+
+def lustre():
+    """Détail : la suspension aux verres soufflés de l'espace couvert."""
+    im = Image.open(PHOTOS / "salle-lustre.jpg").convert("RGB")
+    return im.crop((110, 0, 1150, 1300)).resize(POST, Image.LANCZOS)
+
+
 def nom_avec_ombre(im, y0, taille=176, sur="PRIVATE EXPERIENCES"):
     """Le nom en crème, détaché par une ombre douce autour des lettres
     plutôt que par un voile : la photo garde toutes ses couleurs."""
@@ -185,22 +202,26 @@ def reel():
                         "-frames:v", "1", "-q:v", "2", str(out / "couverture.jpg")], check=True)
 
 
-# Les 12 posts, du premier publié au dernier. Le 12 (le logo) arrive en
+# Les 15 posts, du premier publié au dernier. Le 15 (le logo) arrive en
 # dernier pour s'afficher en haut à gauche du profil. Les cartes forment un
-# zigzag ; les photos où l'on voit le même duo de chevaux (l'alezan et le
-# gris) ne se touchent jamais, même par un coin, et chaque ligne mêle des
-# photos différentes (chevaux pie, architecture, duo).
+# zigzag sur les cinq lignes. Cinq photos montrent le même alezan : le
+# jardin de la vidéo et le détail de la suspension s'intercalent entre
+# elles, et les deux vues du mur ocre (trois chevaux, chevaux le long du
+# mur) restent loin l'une de l'autre.
 LANCEMENT = [
-    ("citation", citation),
-    ("cheval-bar", ("cheval-bar.jpg", (0.5, 0.55))),
-    ("fenetre-chevaux-statuettes", ("fenetre-chevaux-statuettes.jpg", (0.5, 0.45))),
-    ("trois-chevaux", ("trois-chevaux.jpg", (0.5, 0.6))),
     ("cheval-noir-blanc", ("cheval-noir-blanc.jpg", (0.5, 0.45))),
+    ("chevaux-fenetre", ("chevaux-fenetre.jpg", (0.5, 0.6))),
+    ("gaia", gaia),
+    ("citation", citation),
+    ("suspension", lustre),
+    ("terrasse-vasque", ("terrasse-vasque.jpg", (0.5, 0.5))),
+    ("trois-chevaux", ("trois-chevaux.jpg", (0.5, 0.6))),
+    ("jardin", ("jardin-video.jpg", (0.5, 0.62))),
     ("refuge", refuge),
     ("domaine", domaine),
     ("ecuries", ("domaine.jpg", (0.5, 0.6))),
-    ("chevaux-fenetre", ("chevaux-fenetre.jpg", (0.5, 0.6))),
-    ("terrasse-vasque", ("terrasse-vasque.jpg", (0.5, 0.5))),
+    ("fenetre-chevaux-statuettes", ("fenetre-chevaux-statuettes.jpg", (0.5, 0.45))),
+    ("cheval-bar", ("cheval-bar.jpg", (0.5, 0.55))),
     ("chevaux-pie-broutent", ("chevaux-pie-broutent.jpg", (0.5, 0.72))),
     ("daughter-of-gaia", nom_du_projet),
 ]
