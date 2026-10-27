@@ -188,20 +188,20 @@ def reel():
 # Les 12 posts, du premier publié au dernier. Le 12 (le logo) arrive en
 # dernier pour s'afficher en haut à gauche du profil. Les cartes forment un
 # zigzag ; les photos où l'on voit le même duo de chevaux (l'alezan et le
-# gris) ne se touchent jamais, même par un coin, et deux photos ocre ne
-# sont pas côte à côte.
+# gris) ne se touchent jamais, même par un coin, et chaque ligne mêle des
+# photos différentes (chevaux pie, architecture, duo).
 LANCEMENT = [
     ("citation", citation),
     ("cheval-bar", ("cheval-bar.jpg", (0.5, 0.55))),
     ("fenetre-chevaux-statuettes", ("fenetre-chevaux-statuettes.jpg", (0.5, 0.45))),
-    ("chevaux-fenetre", ("chevaux-fenetre.jpg", (0.5, 0.6))),
-    ("chevaux-pie-broutent", ("chevaux-pie-broutent.jpg", (0.5, 0.72))),
+    ("trois-chevaux", ("trois-chevaux.jpg", (0.5, 0.6))),
+    ("cheval-noir-blanc", ("cheval-noir-blanc.jpg", (0.5, 0.45))),
     ("refuge", refuge),
     ("domaine", domaine),
     ("ecuries", ("domaine.jpg", (0.5, 0.6))),
+    ("chevaux-fenetre", ("chevaux-fenetre.jpg", (0.5, 0.6))),
     ("terrasse-vasque", ("terrasse-vasque.jpg", (0.5, 0.5))),
-    ("trois-chevaux", ("trois-chevaux.jpg", (0.5, 0.6))),
-    ("cheval-noir-blanc", ("cheval-noir-blanc.jpg", (0.5, 0.45))),
+    ("chevaux-pie-broutent", ("chevaux-pie-broutent.jpg", (0.5, 0.72))),
     ("daughter-of-gaia", nom_du_projet),
 ]
 

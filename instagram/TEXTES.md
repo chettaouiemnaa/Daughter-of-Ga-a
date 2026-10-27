@@ -108,14 +108,14 @@ Il a ses habitudes. 🐎
 Les voisins sont curieux.
 ```
 
-**04 — `04-chevaux-fenetre.jpg`**
+**04 — `04-trois-chevaux.jpg`**
 ```
-Le long du mur ocre.
+Ils sont chez eux.
 ```
 
-**05 — `05-chevaux-pie-broutent.jpg`**
+**05 — `05-cheval-noir-blanc.jpg`**
 ```
-Le grand et le petit.
+Il s'avance. Vous aussi ?
 ```
 
 **06 — `06-refuge.jpg`**
@@ -137,19 +137,19 @@ Le reste, très bientôt.
 Chacun sa porte.
 ```
 
-**09 — `09-terrasse-vasque.jpg`**
+**09 — `09-chevaux-fenetre.jpg`**
+```
+Le long du mur ocre.
+```
+
+**10 — `10-terrasse-vasque.jpg`**
 ```
 Deux curieux à la terrasse.
 ```
 
-**10 — `10-trois-chevaux.jpg`**
+**11 — `11-chevaux-pie-broutent.jpg`**
 ```
-Ils sont chez eux.
-```
-
-**11 — `11-cheval-noir-blanc.jpg`**
-```
-Il s'avance. Vous aussi ?
+Le grand et le petit.
 ```
 
 **12 — `12-daughter-of-gaia.jpg`**
