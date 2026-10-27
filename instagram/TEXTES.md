@@ -98,9 +98,9 @@ There are places you visit. And there are places you feel.
 Il y a des lieux que l'on visite. Et il y a des lieux que l'on ressent.
 ```
 
-**02 — `02-terrasse-vasque.jpg`**
+**02 — `02-cheval-bar.jpg`**
 ```
-Deux curieux à la terrasse.
+Il a ses habitudes. 🐎
 ```
 
 **03 — `03-fenetre-chevaux-statuettes.jpg`**
@@ -108,14 +108,14 @@ Deux curieux à la terrasse.
 Les voisins sont curieux.
 ```
 
-**04 — `04-cheval-bar.jpg`**
+**04 — `04-chevaux-fenetre.jpg`**
 ```
-Il a ses habitudes. 🐎
+Le long du mur ocre.
 ```
 
-**05 — `05-ecuries.jpg`**
+**05 — `05-chevaux-pie-broutent.jpg`**
 ```
-Chacun sa porte.
+Le grand et le petit.
 ```
 
 **06 — `06-refuge.jpg`**
@@ -132,14 +132,14 @@ Les trois autres sont repartis une fois remis sur pied — et c'était bien le b
 Le reste, très bientôt.
 ```
 
-**08 — `08-chevaux-fenetre.jpg`**
+**08 — `08-ecuries.jpg`**
 ```
-Le long du mur ocre.
+Chacun sa porte.
 ```
 
-**09 — `09-cheval-noir-blanc.jpg`**
+**09 — `09-terrasse-vasque.jpg`**
 ```
-Il s'avance. Vous aussi ?
+Deux curieux à la terrasse.
 ```
 
 **10 — `10-trois-chevaux.jpg`**
@@ -147,9 +147,9 @@ Il s'avance. Vous aussi ?
 Ils sont chez eux.
 ```
 
-**11 — `11-chevaux-pie-broutent.jpg`**
+**11 — `11-cheval-noir-blanc.jpg`**
 ```
-Le grand et le petit.
+Il s'avance. Vous aussi ?
 ```
 
 **12 — `12-daughter-of-gaia.jpg`**
