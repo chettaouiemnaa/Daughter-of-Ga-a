@@ -268,7 +268,7 @@ LANCEMENT = [
     ("ecuries", ("domaine.jpg", (0.5, 0.6))),
     ("terrasse-vasque", ("terrasse-vasque.jpg", (0.5, 0.5))),
     ("trois-chevaux", ("trois-chevaux.jpg", (0.5, 0.6))),
-    ("cheval-noir-blanc", ("cheval-noir-blanc.jpg", (0.5, 0.45))),
+    ("cheval-noir-blanc", ("aiko.jpg", (0.5, 1.0))),
     ("daughter-of-gaia", nom_du_projet),
 ]
 
