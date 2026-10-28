@@ -50,8 +50,8 @@ y_nom = 1110
 centre(d, y_nom, LOGO, f_logo, ENCRE, W)
 y = ligne_domaine(d, W / 2, y_nom + f_logo.getmetrics()[0] + 55, TERRA, taille=26, esp=7, graisse=300, ep=1.5)
 y = lignes(d, y + 90, ["Un nom qui prend", "tout son sens ici."], f_italique, ENCRE, 106)
-# « L'HISTOIRE DERRIÈRE » suivi d'une fine flèche vers la vidéo, centrés ensemble.
-texte, f_suite, esp = "L’HISTOIRE DERRIÈRE", sans(26, 300), 8
+# « THE STORY BEHIND » suivi d'une fine flèche vers la vidéo, centrés ensemble.
+texte, f_suite, esp = "THE STORY BEHIND", sans(26, 300), 8
 larg = sum(d.textlength(c, font=f_suite) for c in texte) + esp * (len(texte) - 1)
 fleche, ecart = 56, 22
 x = (W - (larg + ecart + fleche)) / 2
