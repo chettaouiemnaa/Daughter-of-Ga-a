@@ -493,10 +493,10 @@ def fin_de_video():
                         str(out / "fin-encre-anime.mp4")], check=True)
 
 
-def ligne_domaine(d, cx, y, couleur, taille=30, esp=6, gap=22, trait=70, ecart=24, ep=2):
+def ligne_domaine(d, cx, y, couleur, taille=30, esp=6, gap=22, trait=70, ecart=24, ep=2, graisse=400):
     """« —— DOMAINE • LA SOUKRA —— », centrée en cx, haut des capitales en y.
     Le point et les traits sont à mi-hauteur des capitales."""
-    f = sans(taille, 400)
+    f = sans(taille, graisse)
     mots = ("DOMAINE", "LA SOUKRA")
 
     def chasse(m):
@@ -526,11 +526,11 @@ def couvertures_video():
     t = taille_logo(860)
     f_nom = serif(t, 300)
 
-    def bloc(d, c_sur, c_nom, c_lieu, haut_nom):
-        centre(d, haut_nom - 110, "PRIVATE EXPERIENCES", sans(26, 400), c_sur, W, 9)
+    def bloc(d, c_sur, c_nom, c_lieu, haut_nom, sur="PRIVATE EXPERIENCES"):
+        centre(d, haut_nom - 130, sur, sans(26, 300), c_sur, W, 10)
         centre(d, haut_nom, LOGO, f_nom, c_nom, W)
         base = haut_nom + f_nom.getmetrics()[0]
-        ligne_domaine(d, W / 2, base + 70, c_lieu)
+        ligne_domaine(d, W / 2, base + 80, c_lieu, taille=27, esp=7, graisse=300, ep=1.5)
 
     def cadre(d, couleur):
         """Fin cadre intérieur, dans la zone visible de la grille."""
@@ -542,7 +542,7 @@ def couvertures_video():
     # comme les cartes de la grille.
     creme = "#E3D6BE"
     im = Image.new("RGB", STORY, creme)
-    bloc(ImageDraw.Draw(im), OLIVE, ENCRE, TERRA, 600)
+    bloc(ImageDraw.Draw(im), OLIVE, ENCRE, TERRA, 600, sur="THE STORY BEHIND")
     sauver(recentrer(im, creme, H / 2), out / "couverture-sable.jpg")
 
     # Nuit, le fond de l'ouverture du site.
