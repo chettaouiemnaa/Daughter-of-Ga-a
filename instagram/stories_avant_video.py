@@ -50,6 +50,20 @@ y_nom = 1110
 centre(d, y_nom, LOGO, f_logo, ENCRE, W)
 y = ligne_domaine(d, W / 2, y_nom + f_logo.getmetrics()[0] + 55, TERRA, taille=26, esp=7, graisse=300, ep=1.5)
 y = lignes(d, y + 90, ["Un nom qui prend", "tout son sens ici."], f_italique, ENCRE, 106)
-centre(d, y + 60, "L’HISTOIRE DERRIÈRE LE NOM", sans(26, 300), TERRA, W, 8)
+# « L'HISTOIRE DERRIÈRE » suivi d'une fine flèche vers la vidéo, centrés ensemble.
+texte, f_suite, esp = "L’HISTOIRE DERRIÈRE", sans(26, 300), 8
+larg = sum(d.textlength(c, font=f_suite) for c in texte) + esp * (len(texte) - 1)
+fleche, ecart = 56, 22
+x = (W - (larg + ecart + fleche)) / 2
+y_suite = y + 60
+for c in texte:
+    d.text((x, y_suite), c, font=f_suite, fill=TERRA)
+    x += d.textlength(c, font=f_suite) + esp
+haut = f_suite.getbbox("H")
+ym = y_suite + (haut[1] + haut[3]) / 2
+x0 = x - esp + ecart
+d.line((x0, ym, x0 + fleche, ym), fill=TERRA, width=2)
+d.line((x0 + fleche - 11, ym - 9, x0 + fleche, ym), fill=TERRA, width=2)
+d.line((x0 + fleche - 11, ym + 9, x0 + fleche, ym), fill=TERRA, width=2)
 sauver(recentrer(im, CREME, 900), OUT / "avant-video-2.jpg")
 print("ok")
