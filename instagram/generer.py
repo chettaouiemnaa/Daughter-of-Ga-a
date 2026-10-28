@@ -149,7 +149,7 @@ def citation():
         ("you visit.", italique(84), None, 635, 0),
         ("And there are places", italique(84), None, 760, 0),
         ("you feel.", italique(84), None, 855, 0),
-        ("DAUGHTER OF GAÏA", sans(22, 400), SABLE, 1060, 6),
+        (LOGO, serif(taille_logo(300), 300), SABLE, 1040, 0),
     ])
 
 
