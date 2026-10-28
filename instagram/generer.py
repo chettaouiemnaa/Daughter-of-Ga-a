@@ -293,28 +293,43 @@ def contraste(a, b):
 
 
 def signer(im):
-    """Signature en bas au centre : le logo en petit, un fin filet juste
-    dessous, et « LA SOUKRA  TUNIS » en petit. Une seule couleur de la palette Gaïa, sans
-    ombre : la première de sable, encre, blanc cassé qui contraste assez
-    avec le fond (4:1), sinon la plus contrastée. Olive et terracotta,
-    tons moyens comme les sols des photos, ne ressortent pas en petit."""
+    """Signature en bas au centre : le logo en petit, puis « LA SOUKRA  TUNIS »
+    au milieu d'un fin trait. Une seule couleur de la
+    palette Gaïa, sans ombre : la première de sable, encre, blanc cassé qui
+    contraste assez avec le fond (4:1), sinon la plus contrastée. Olive et
+    terracotta, tons moyens comme les sols des photos, ne ressortent pas en
+    petit. Tout est centré sur l'encre réelle des lettres, pas sur leur chasse."""
     W, H = im.size
     t = taille_logo(210)
     f = serif(t, 400)
     f_lieu = sans(14, 400)
+    lieu, esp = "LA SOUKRA  TUNIS", 3
     d = ImageDraw.Draw(im)
     largeur = d.textlength(LOGO, font=f)
-    filet, ep = largeur / 2.42, 2
-    y_lieu = H - 44 - f_lieu.getmetrics()[0]
-    y_filet = y_lieu - 22
-    y = y_filet - largeur * 0.07 - f.getmetrics()[0]
-    zone = im.convert("RGB").crop((int((W - largeur) / 2), int(y), int((W + largeur) / 2), H - 40))
+
+    def encre(texte, police, espacement=0):
+        """Boîte de l'encre réelle d'un texte dessiné en (0, 0)."""
+        tmp = Image.new("L", (int(largeur * 2), 200), 0)
+        centre(ImageDraw.Draw(tmp), 50, texte, police, 255, tmp.width, espacement)
+        x0, y0, x1, y1 = tmp.getbbox()
+        return x0 - tmp.width / 2, y0 - 50, x1 - tmp.width / 2, y1 - 50
+
+    nx0, ny0, nx1, ny1 = encre(LOGO, f)
+    lx0, ly0, lx1, ly1 = encre(lieu, f_lieu, esp)
+    y_lieu = H - 46 - ly1
+    y_nom = y_lieu + ly0 - 20 - ny1
+    zone = im.convert("RGB").crop((int(W / 2 + nx0), int(y_nom + ny0), int(W / 2 + nx1), int(y_lieu + ly1)))
     fond = ImageStat.Stat(zone).mean
     palette = [ImageColor.getrgb(c) for c in (SABLE, ENCRE, BLANC)]
     couleur = next((c for c in palette if contraste(c, fond) >= 4), None) or max(palette, key=lambda c: contraste(c, fond))
-    centre(d, y, LOGO, f, couleur, W)
-    d.rectangle(((W - filet) / 2, y_filet, (W + filet) / 2, y_filet + ep - 1), fill=couleur)
-    centre(d, y_lieu, "LA SOUKRA  TUNIS", f_lieu, couleur, W, 4)
+    # Décalages pour que l'encre, et non la chasse, tombe au centre.
+    centre(d, y_nom, LOGO, f, couleur, W + 2 * (-(nx0 + nx1) / 2))
+    centre(d, y_lieu, lieu, f_lieu, couleur, W + 2 * (-(lx0 + lx1) / 2), esp)
+    y_trait = y_lieu + (ly0 + ly1) / 2
+    demi_lieu, ecart, trait = (lx1 - lx0) / 2, 12, 42
+    for x0, x1 in ((W / 2 - demi_lieu - ecart - trait, W / 2 - demi_lieu - ecart),
+                   (W / 2 + demi_lieu + ecart, W / 2 + demi_lieu + ecart + trait)):
+        d.rectangle((x0, y_trait - 0.5, x1, y_trait + 0.5), fill=couleur)
     return im
 
 
