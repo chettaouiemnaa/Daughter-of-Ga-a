@@ -493,6 +493,84 @@ def fin_de_video():
                         str(out / "fin-encre-anime.mp4")], check=True)
 
 
+def ligne_domaine(d, cx, y, couleur, taille=30, esp=6, gap=22, trait=70, ecart=24, ep=2):
+    """« —— DOMAINE • LA SOUKRA —— », centrée en cx, haut des capitales en y.
+    Le point et les traits sont à mi-hauteur des capitales."""
+    f = sans(taille, 400)
+    mots = ("DOMAINE", "LA SOUKRA")
+
+    def chasse(m):
+        return sum(d.textlength(c, font=f) for c in m) + esp * (len(m) - 1)
+
+    larg = chasse(mots[0]) + 2 * gap + chasse(mots[1])
+    haut = f.getbbox("D", anchor="lt")
+    milieu = y + (haut[1] + haut[3]) / 2
+    x = cx - larg / 2
+    for mot, xm in ((mots[0], x), (mots[1], x + chasse(mots[0]) + 2 * gap)):
+        for c in mot:
+            d.text((xm, y), c, font=f, fill=couleur, anchor="lt")
+            xm += d.textlength(c, font=f) + esp
+    r = max(2, taille / 9)
+    px = x + chasse(mots[0]) + gap
+    d.ellipse((px - r, milieu - r, px + r, milieu + r), fill=couleur)
+    for x0, x1 in ((x - ecart - trait, x - ecart), (x + larg + ecart, x + larg + ecart + trait)):
+        d.rectangle((x0, milieu - ep / 2, x1, milieu + ep / 2), fill=couleur)
+    return y + haut[3]
+
+
+def couvertures_video():
+    """Couvertures du Reel de révélation (9:16). Tout tient dans le centre
+    3:4 (y 240 à 1680), seule partie que la grille du profil affiche."""
+    out = RACINE / "fin-video"
+    W, H = STORY
+    t = taille_logo(860)
+    f_nom = serif(t, 300)
+
+    def bloc(d, c_sur, c_nom, c_lieu, haut_nom):
+        centre(d, haut_nom - 110, "PRIVATE EXPERIENCES", sans(26, 400), c_sur, W, 9)
+        centre(d, haut_nom, LOGO, f_nom, c_nom, W)
+        base = haut_nom + f_nom.getmetrics()[0]
+        ligne_domaine(d, W / 2, base + 70, c_lieu)
+
+    def cadre(d, couleur):
+        """Fin cadre intérieur, dans la zone visible de la grille."""
+        m = 70
+        d.rectangle((m, 240 + m, W - m, 1680 - m), outline=couleur, width=2)
+
+    # Sable, comme la carte logo : la grille reste identique à l'aperçu.
+    im = Image.new("RGB", STORY, SABLE)
+    bloc(ImageDraw.Draw(im), OLIVE, ENCRE, TERRA, 600)
+    im = recentrer(im, SABLE, H / 2)
+    cadre(ImageDraw.Draw(im), FILET)
+    sauver(im, out / "couverture-sable.jpg")
+
+    # Nuit, le fond de l'ouverture du site.
+    im = Image.new("RGB", STORY, NUIT)
+    bloc(ImageDraw.Draw(im), FILET, SABLE, TERRA, 600)
+    im = recentrer(im, NUIT, H / 2)
+    cadre(ImageDraw.Draw(im), "#4A3B2C")
+    sauver(im, out / "couverture-nuit.jpg")
+
+    # Photo : les trois chevaux, le nom posé sur le mur ocre, dans la zone
+    # visible de la grille.
+    im = photo("trois-chevaux.jpg", STORY, (0.5, 0.55))
+    calque = Image.new("RGBA", STORY, (0, 0, 0, 0))
+    d = ImageDraw.Draw(calque)
+    centre(d, 380, LOGO, f_nom, (246, 241, 231, 255), W)
+    ligne_domaine(d, W / 2, 380 + f_nom.getmetrics()[0] + 60, (246, 241, 231, 255))
+    sauver(Image.alpha_composite(im.convert("RGBA"), calque).convert("RGB"), out / "couverture-photo.jpg")
+
+    # Aperçu : chaque couverture entière, et telle que la grille la montre (3:4).
+    fichiers = ["couverture-sable", "couverture-nuit", "couverture-photo"]
+    planche = Image.new("RGB", (3 * 420, 560 + 20 + 400), "white")
+    for i, nom in enumerate(fichiers):
+        c = Image.open(out / f"{nom}.jpg")
+        planche.paste(c.resize((315, 560)), (i * 420 + 52, 0))
+        grille = c.crop((0, 240, W, 1680)).resize((300, 400))
+        planche.paste(grille, (i * 420 + 60, 580))
+    sauver(planche, out / "apercu-couvertures.jpg")
+
+
 def apercu():
     """La grille telle qu'elle apparaîtra, du plus récent au plus ancien."""
     fichiers = sorted((RACINE / "posts").glob("*.jpg"), reverse=True)
@@ -518,5 +596,6 @@ if __name__ == "__main__":
     stories()
     profil()
     fin_de_video()
+    couvertures_video()
     apercu()
     print("ok")
