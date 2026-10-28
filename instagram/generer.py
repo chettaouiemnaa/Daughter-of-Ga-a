@@ -273,10 +273,29 @@ LANCEMENT = [
 ]
 
 
+def signer(im):
+    """Signature discrète en bas au centre des photos : le logo, petit, en
+    crème presque opaque, avec une ombre légère pour rester lisible sur
+    l'herbe claire comme sur la terre. Au centre, la grille 3:4 ne la rogne pas."""
+    W, H = im.size
+    t = taille_logo(210)
+    y = H - 46 - serif(t, 300).getmetrics()[0]
+    masque = Image.new("L", im.size, 0)
+    logo(ImageDraw.Draw(masque), y, t, 255, W)
+    ombre = masque.filter(ImageFilter.MaxFilter(7)).filter(ImageFilter.GaussianBlur(9)).point(lambda v: int(v * 0.85))
+    sortie = im.convert("RGBA")
+    calque = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    calque.paste(Image.new("RGBA", im.size, ENCRE), (0, 0), ombre)
+    sortie = Image.alpha_composite(sortie, calque)
+    texte = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    logo(ImageDraw.Draw(texte), y, t, (246, 241, 231, 238), W)
+    return Image.alpha_composite(sortie, texte).convert("RGB")
+
+
 def posts():
     out = RACINE / "posts"
     for i, (nom, source) in enumerate(LANCEMENT, 1):
-        im = source() if callable(source) else photo(source[0], POST, source[1])
+        im = source() if callable(source) else signer(photo(source[0], POST, source[1]))
         sauver(im, out / f"{i:02d}-{nom}.jpg")
 
 
@@ -285,8 +304,8 @@ def plus_tard():
     out = RACINE / "plus-tard"
     # En réserve pour les semaines qui suivent le lancement.
     sauver(gaia(), out / "gaia.jpg")
-    sauver(lustre(), out / "suspension.jpg")
-    sauver(photo("jardin-video.jpg", POST, (0.5, 0.62)), out / "jardin.jpg")
+    sauver(signer(lustre()), out / "suspension.jpg")
+    sauver(signer(photo("jardin-video.jpg", POST, (0.5, 0.62))), out / "jardin.jpg")
     sauver(carte(BLANC, ENCRE, [
         ("EXPÉRIENCES", sans(24, 400), OLIVE, 250, 7),
         ("Ce que le domaine", serif(82), None, 330, 0),
