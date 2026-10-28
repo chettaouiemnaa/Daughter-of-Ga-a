@@ -8,7 +8,7 @@ Sortie : instagram/posts, instagram/stories, instagram/profil, instagram/plus-ta
 """
 from pathlib import Path
 import sys
-from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont, ImageOps, ImageStat
+from PIL import Image, ImageChops, ImageColor, ImageDraw, ImageFilter, ImageFont, ImageOps, ImageStat
 
 RACINE = Path(__file__).resolve().parent
 PHOTOS = RACINE.parent / "daughter-of-gaia" / "public" / "images"
@@ -278,31 +278,43 @@ AVEC_CHEVAUX = {"cheval-bar", "fenetre-chevaux-statuettes", "chevaux-fenetre", "
                 "terrasse-vasque", "trois-chevaux", "cheval-noir-blanc"}
 
 
+def luminance(rgb):
+    """Luminance relative (WCAG) d'une couleur RVB 0-255."""
+    def canal(v):
+        v /= 255
+        return v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4
+    r, v, b = (canal(c) for c in rgb[:3])
+    return 0.2126 * r + 0.7152 * v + 0.0722 * b
+
+
+def contraste(a, b):
+    la, lb = luminance(a), luminance(b)
+    return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
+
+
 def signer(im):
-    """Signature en bas de la photo : le logo en petit et un fin filet dessous,
-    d'une seule couleur, sans ombre. Elle se pose à gauche, au centre ou à
-    droite, là où le fond est le plus calme, en encre ou en crème selon ce
-    qui ressort le mieux. Les marges latérales tiennent compte du rognage de
-    la grille 3:4 (34 px de chaque côté)."""
+    """Signature en bas au centre : le logo en petit, un fin filet juste
+    dessous, et « LA SOUKRA ». Une seule couleur de la palette Gaïa, sans
+    ombre : la première de sable, encre, blanc cassé qui contraste assez
+    avec le fond (4:1), sinon la plus contrastée. Olive et terracotta,
+    tons moyens comme les sols des photos, ne ressortent pas en petit."""
     W, H = im.size
     t = taille_logo(210)
     f = serif(t, 400)
+    f_lieu = sans(17, 400)
     d = ImageDraw.Draw(im)
     largeur = d.textlength(LOGO, font=f)
     filet, ep = largeur / 2.42, 2
-    y_filet = H - 52
-    y = y_filet - largeur * 0.15 - f.getmetrics()[0]
-    gris = im.convert("L")
-    marge = 80 + largeur / 2
-    choix = []
-    for cx in (marge, W / 2, W - marge):
-        zone = ImageStat.Stat(gris.crop((int(cx - largeur / 2), int(y), int(cx + largeur / 2), y_filet + ep)))
-        lum, texture = zone.mean[0], zone.stddev[0]
-        for couleur, lum_texte in (((43, 33, 24), 40), ((246, 241, 231), 240)):
-            choix.append((abs(lum - lum_texte) / (1 + texture / 20), cx, couleur))
-    _, cx, couleur = max(choix)
-    d.text((cx - largeur / 2, y), LOGO, font=f, fill=couleur)
-    d.rectangle((cx - filet / 2, y_filet, cx + filet / 2, y_filet + ep - 1), fill=couleur)
+    y_lieu = H - 44 - f_lieu.getmetrics()[0]
+    y_filet = y_lieu - 22
+    y = y_filet - largeur * 0.07 - f.getmetrics()[0]
+    zone = im.convert("RGB").crop((int((W - largeur) / 2), int(y), int((W + largeur) / 2), H - 40))
+    fond = ImageStat.Stat(zone).mean
+    palette = [ImageColor.getrgb(c) for c in (SABLE, ENCRE, BLANC)]
+    couleur = next((c for c in palette if contraste(c, fond) >= 4), None) or max(palette, key=lambda c: contraste(c, fond))
+    centre(d, y, LOGO, f, couleur, W)
+    d.rectangle(((W - filet) / 2, y_filet, (W + filet) / 2, y_filet + ep - 1), fill=couleur)
+    centre(d, y_lieu, "LA SOUKRA", f_lieu, couleur, W, 5)
     return im
 
 
