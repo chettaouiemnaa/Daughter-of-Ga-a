@@ -1,4 +1,5 @@
-"""Deux stories à publier avant la vidéo qui révèle l'histoire du nom.
+"""Deux stories à publier avant la vidéo qui révèle le nom. Le nom n'y
+apparaît pas : la vidéo le révèle.
 
 Elles ne reprennent rien du texte de la vidéo (la nature, Gaïa, la Terre,
 « ralentir ») : la première pose la question, la seconde présente ceux qui
@@ -48,6 +49,5 @@ for i, (nom, pos, prenom) in enumerate(bandes):
     centre(d, top + bh + 24, prenom, sans(20, 400), OLIVE, 2 * x + bw, 5)
 y = lignes(d, 1130, ["Ce nom leur ressemble."], f_titre, ENCRE, 112)
 y = lignes(d, y + 30, ["Je vous raconte pourquoi,", "dans quelques instants."], f_italique, ENCRE, 100)
-centre(d, y + 70, LOGO, serif(taille_logo(420), 300), ENCRE, W)
 sauver(im, OUT / "avant-video-2.jpg")
 print("ok")
