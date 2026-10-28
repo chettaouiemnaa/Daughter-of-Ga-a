@@ -202,27 +202,23 @@ def reel():
                         "-frames:v", "1", "-q:v", "2", str(out / "couverture.jpg")], check=True)
 
 
-# Les 15 posts, du premier publié au dernier. Le 15 (le logo) arrive en
-# dernier pour s'afficher en haut à gauche du profil. Les cartes forment un
-# zigzag sur les cinq lignes. Cinq photos montrent le même alezan : le
-# jardin de la vidéo et le détail de la suspension s'intercalent entre
-# elles, et les deux vues du mur ocre (trois chevaux, chevaux le long du
-# mur) restent loin l'une de l'autre.
+# Les 12 posts, du premier publié au dernier. Le 12 arrive en dernier pour
+# s'afficher en haut à gauche du profil : c'est la vidéo qui révèle le nom,
+# avec fin-video/fin-sable.jpg en couverture ; la carte logo ci-dessous la
+# remplace si la vidéo n'est pas prête. Les cartes forment un zigzag ; les
+# photos du même duo de chevaux ne se touchent jamais, même par un coin.
 LANCEMENT = [
-    ("cheval-noir-blanc", ("cheval-noir-blanc.jpg", (0.5, 0.45))),
-    ("chevaux-fenetre", ("chevaux-fenetre.jpg", (0.5, 0.6))),
-    ("gaia", gaia),
     ("citation", citation),
-    ("suspension", lustre),
-    ("terrasse-vasque", ("terrasse-vasque.jpg", (0.5, 0.5))),
-    ("trois-chevaux", ("trois-chevaux.jpg", (0.5, 0.6))),
-    ("jardin", ("jardin-video.jpg", (0.5, 0.62))),
+    ("cheval-bar", ("cheval-bar.jpg", (0.5, 0.55))),
+    ("fenetre-chevaux-statuettes", ("fenetre-chevaux-statuettes.jpg", (0.5, 0.45))),
+    ("chevaux-fenetre", ("chevaux-fenetre.jpg", (0.5, 0.6))),
+    ("chevaux-pie-broutent", ("chevaux-pie-broutent.jpg", (0.5, 0.72))),
     ("refuge", refuge),
     ("domaine", domaine),
     ("ecuries", ("domaine.jpg", (0.5, 0.6))),
-    ("fenetre-chevaux-statuettes", ("fenetre-chevaux-statuettes.jpg", (0.5, 0.45))),
-    ("cheval-bar", ("cheval-bar.jpg", (0.5, 0.55))),
-    ("chevaux-pie-broutent", ("chevaux-pie-broutent.jpg", (0.5, 0.72))),
+    ("terrasse-vasque", ("terrasse-vasque.jpg", (0.5, 0.5))),
+    ("trois-chevaux", ("trois-chevaux.jpg", (0.5, 0.6))),
+    ("cheval-noir-blanc", ("cheval-noir-blanc.jpg", (0.5, 0.45))),
     ("daughter-of-gaia", nom_du_projet),
 ]
 
@@ -237,6 +233,10 @@ def posts():
 def plus_tard():
     """Ce qui parle des événements : à publier une fois le concept annoncé."""
     out = RACINE / "plus-tard"
+    # En réserve pour les semaines qui suivent le lancement.
+    sauver(gaia(), out / "gaia.jpg")
+    sauver(lustre(), out / "suspension.jpg")
+    sauver(photo("jardin-video.jpg", POST, (0.5, 0.62)), out / "jardin.jpg")
     sauver(carte(BLANC, ENCRE, [
         ("EXPÉRIENCES", sans(24, 400), OLIVE, 250, 7),
         ("Ce que le domaine", serif(82), None, 330, 0),
