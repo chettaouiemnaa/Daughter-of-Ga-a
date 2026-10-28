@@ -49,6 +49,7 @@ f_logo = serif(taille_logo(820), 300)
 y_nom = 1110
 centre(d, y_nom, LOGO, f_logo, ENCRE, W)
 y = ligne_domaine(d, W / 2, y_nom + f_logo.getmetrics()[0] + 55, TERRA, taille=26, esp=7, graisse=300, ep=1.5)
-lignes(d, y + 90, ["Un nom qui prend", "tout son sens ici."], f_italique, ENCRE, 106)
+y = lignes(d, y + 90, ["Un nom qui prend", "tout son sens ici."], f_italique, ENCRE, 106)
+centre(d, y + 60, "VOICI LE POURQUOI DU COMMENT", sans(26, 300), TERRA, W, 8)
 sauver(im, OUT / "avant-video-2.jpg")
 print("ok")
