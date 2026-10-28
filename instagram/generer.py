@@ -61,13 +61,65 @@ def carte(fond, encre, lignes, taille=POST):
     d = ImageDraw.Draw(im)
     for texte, f, c, y, esp in lignes:
         centre(d, y, texte, f, c or encre, taille[0], esp)
-    # Recentre verticalement le bloc sur l'encre réelle : les y ci-dessus
-    # placent les lignes entre elles, pas le bloc dans la carte.
-    boite = ImageChops.difference(im, Image.new("RGB", taille, fond)).getbbox()
-    if boite:
-        bloc = im.crop((0, boite[1], taille[0], boite[3]))
-        im = Image.new("RGB", taille, fond)
-        im.paste(bloc, (0, (taille[1] - bloc.height) // 2))
+    # Les y ci-dessus placent les lignes entre elles, pas le bloc dans la carte.
+    return recentrer(im, fond)
+
+
+def recentrer(im, fond, milieu=None):
+    """Recentre verticalement le contenu sur son encre réelle."""
+    W, H = im.size
+    boite = ImageChops.difference(im, Image.new("RGB", im.size, fond)).getbbox()
+    if not boite:
+        return im
+    bloc = im.crop((0, boite[1], W, boite[3]))
+    neuf = Image.new("RGB", im.size, fond)
+    neuf.paste(bloc, (0, int((milieu or H / 2) - bloc.height / 2)))
+    return neuf
+
+
+# Le logo, tel que le site l'affiche à l'ouverture : Cormorant Garamond
+# léger (300), droit, sur une seule ligne, et un filet terracotta centré
+# dessous. Proportions relevées sur le site : filet = largeur du nom / 2,42,
+# posé à 0,15 largeur sous la ligne de base.
+LOGO = "Daughter of Gaïa"
+NUIT = "#1A130C"  # le fond du rideau d'ouverture du site
+
+
+def logo(d, y, taille, couleur, filet=TERRA, W=1080, espacement=0.0, ouverture=1.0):
+    """Dessine le logo, haut du texte en y. espacement en em (0,5 au début
+    de l'animation du site, presque 0 à la fin) ; ouverture du filet de 0 à 1."""
+    f = serif(taille, 300)
+    if espacement:
+        centre(d, y, LOGO, f, couleur, W, taille * espacement)
+    else:
+        centre(d, y, LOGO, f, couleur, W)
+    largeur = d.textlength(LOGO, font=f)
+    yf = y + f.getmetrics()[0] + largeur * 0.15
+    if filet is not None and ouverture > 0:
+        l = largeur / 2.42 * ouverture
+        ep = max(2, round(largeur * 0.005))
+        d.rectangle(((W - l) / 2, yf, (W + l) / 2, yf + ep - 1), fill=filet)
+    return yf
+
+
+def taille_logo(largeur_voulue):
+    """Corps de police qui donne au nom la largeur voulue, en pixels."""
+    d = ImageDraw.Draw(Image.new("L", (1, 1)))
+    return round(100 * largeur_voulue / d.textlength(LOGO, font=serif(100, 300)))
+
+
+def avec_ombre(fond, dessiner, force=0.75, flou=26, filet=BLANC):
+    """Pose ce que dessine dessiner(d, couleur, filet) sur fond, détaché par
+    une ombre douce : lisible sur n'importe quelle image. Le filet passe en
+    crème : le terracotta disparaîtrait sur le mur ocre."""
+    masque = Image.new("L", fond.size, 0)
+    dessiner(ImageDraw.Draw(masque), 255, 255)
+    ombre = masque.filter(ImageFilter.MaxFilter(11)).filter(ImageFilter.GaussianBlur(flou))
+    im = fond.convert("RGBA")
+    calque = Image.new("RGBA", fond.size, (0, 0, 0, 0))
+    calque.paste(Image.new("RGBA", fond.size, ENCRE), (0, 0), ombre.point(lambda v: int(v * force)))
+    im = Image.alpha_composite(im, calque)
+    dessiner(ImageDraw.Draw(im), BLANC, filet)
     return im
 
 
@@ -166,16 +218,15 @@ def nom_avec_ombre(im, y0, taille=176, sur="PRIVATE EXPERIENCES"):
 
 
 def nom_du_projet():
-    """Le logo en carte, dans le même esprit que les autres cartes texte."""
-    return carte(SABLE, ENCRE, [
-        ("PRIVATE EXPERIENCES", sans(24, 400), OLIVE, 330, 7),
-        ("Daughter", serif(190, 400), None, 420, 0),
-        ("of Gaïa", italique(190, 400), None, 605, 0),
-        ("LA SOUKRA  —  TUNIS", sans(24, 400), TERRA, 1010, 6),
-    ])
-
-
-VIDEO = RACINE.parent / "daughter-of-gaia" / "public" / "videos" / "ouverture-jardin.mp4"
+    """La carte logo : le logo du site, avec l'indice et le lieu."""
+    W, H = POST
+    im = Image.new("RGB", POST, SABLE)
+    d = ImageDraw.Draw(im)
+    t = taille_logo(780)
+    centre(d, 500, "PRIVATE EXPERIENCES", sans(24, 400), OLIVE, W, 7)
+    yf = logo(d, 560, t, ENCRE)
+    centre(d, yf + 90, "LA SOUKRA  —  TUNIS", sans(24, 400), TERRA, W, 6)
+    return recentrer(im, SABLE)
 
 
 def reel():
@@ -268,17 +319,17 @@ def plus_tard():
 
 def stories():
     out = RACINE / "stories"
-    # L'annonce à publier depuis le compte perso.
-    im = nom_avec_ombre(photo("trois-chevaux.jpg", STORY, (0.5, 0.55)), 400, sur="LE NOM DU PROJET")
-    d = ImageDraw.Draw(im)
     W = STORY[0]
-    # Emplacement laissé libre pour l'autocollant « Mention » ou « Lien ».
-    ombre = Image.new("L", STORY, 0)
-    centre(ImageDraw.Draw(ombre), 1600, "Suivez l'aventure", sans(32, 400), 255, W, 3)
-    ombre = ombre.filter(ImageFilter.MaxFilter(9)).filter(ImageFilter.GaussianBlur(16))
-    im = Image.composite(Image.new("RGB", STORY, ENCRE), im, ombre.point(lambda v: int(v * 0.6)))
-    centre(ImageDraw.Draw(im), 1600, "Suivez l'aventure", sans(32, 400), BLANC, W, 3)
-    sauver(im, out / "annonce-compte-perso.jpg")
+    t = taille_logo(820)
+
+    # L'annonce à publier depuis le compte perso : le logo sur le mur ocre,
+    # et un emplacement libre pour l'autocollant « Mention » ou « Lien ».
+    def textes(d, c, f):
+        centre(d, 460, "LE NOM DU PROJET", sans(28, 400), c, W, 8)
+        logo(d, 530, t, c, f, W)
+        centre(d, 1600, "Suivez l'aventure", sans(32, 400), c, W, 3)
+    fond = photo("trois-chevaux.jpg", STORY, (0.5, 0.55))
+    sauver(avec_ombre(fond, textes).convert("RGB"), out / "annonce-compte-perso.jpg")
 
 
 def profil():
@@ -294,58 +345,87 @@ def profil():
 
 def fin_de_video():
     """Écrans de fin pour la vidéo qui révèle le nom (format Reels, 9:16).
-    Le texte reste dans le centre de l'image : en Reels, le bas est couvert
-    par la légende et la droite par les boutons."""
+    Le texte reste au-dessus du centre de l'image : en Reels, le bas est
+    couvert par la légende et la droite par les boutons."""
     import subprocess
+    import tempfile
     out = RACINE / "fin-video"
     out.mkdir(exist_ok=True)
     W, H = STORY
-    lignes = [(700, "PRIVATE EXPERIENCES", sans(28, 400), 8, "sur"),
-              (700, "LA SOUKRA  —  TUNIS", sans(28, 400), 8, "lieu"),
-              (760, "Daughter", serif(200, 400), 0, "nom"),
-              (958, "of Gaïa", italique(200, 400), 0, "nom"),
-              (1255, "LA SOUKRA  —  TUNIS", sans(26, 400), 7, "sous"),
-              (1312, "@daughterofgaiatunis", sans(30, 400), 1, "sous")]
+    t = taille_logo(820)
+    MILIEU = 900
 
-    def ecrire(im, couleurs):
-        d = ImageDraw.Draw(im)
-        for y, texte, f, esp, role in lignes:
-            if role in couleurs:
-                centre(d, y, texte, f, couleurs[role], W, esp)
-        return im
+    def ecran(d, c_sur, c_nom, c_filet, c_sous, sur="PRIVATE EXPERIENCES", y=760):
+        if sur:
+            centre(d, y - 80, sur, sans(28, 400), c_sur, W, 8)
+        yf = logo(d, y, t, c_nom, c_filet, W)
+        centre(d, yf + 100, "LA SOUKRA  —  TUNIS", sans(26, 400), c_sous, W, 7)
+        centre(d, yf + 157, "@daughterofgaiatunis", sans(30, 400), c_sous, W, 1)
 
-    # Fonds unis, aux couleurs de l'identité.
-    sauver(ecrire(Image.new("RGB", STORY, SABLE), {"sur": OLIVE, "nom": ENCRE, "sous": TERRA}), out / "fin-sable.jpg")
-    sauver(ecrire(Image.new("RGB", STORY, ENCRE), {"sur": FILET, "nom": BLANC, "sous": TERRA}), out / "fin-encre.jpg")
+    # Fond sable : aussi la couverture de la vidéo dans la grille.
+    im = Image.new("RGB", STORY, SABLE)
+    ecran(ImageDraw.Draw(im), OLIVE, ENCRE, TERRA, TERRA)
+    sauver(recentrer(im, SABLE, MILIEU), out / "fin-sable.jpg")
+
+    # Fond nuit : exactement le rideau d'ouverture du site.
+    im = Image.new("RGB", STORY, NUIT)
+    ecran(ImageDraw.Draw(im), FILET, SABLE, TERRA, FILET)
+    sauver(recentrer(im, NUIT, MILIEU), out / "fin-encre.jpg")
 
     # Calque transparent à poser sur le dernier plan de la vidéo, dans CapCut
-    # (« Incrustation »). Une ombre douce détache le nom de n'importe quelle image.
-    def calque_nom(dy=0, roles=("sur", "nom", "sous")):
-        choix = [l for l in lignes if l[4] in roles]
-        masque = Image.new("L", STORY, 0)
-        d = ImageDraw.Draw(masque)
-        for y, texte, f, esp, _ in choix:
-            centre(d, y + dy, texte, f, 255, W, esp)
-        ombre = masque.filter(ImageFilter.MaxFilter(11)).filter(ImageFilter.GaussianBlur(26)).point(lambda v: int(v * 0.75))
-        calque = Image.new("RGBA", STORY, (0, 0, 0, 0))
-        calque.paste(Image.new("RGBA", STORY, ENCRE), (0, 0), ombre)
-        d = ImageDraw.Draw(calque)
-        for y, texte, f, esp, role in choix:
-            centre(d, y + dy, texte, f, SABLE if role != "nom" else BLANC, W, esp)
-        return calque
-    calque_nom().save(out / "nom-transparent.png")
+    # (« Incrustation »).
+    vide = Image.new("RGBA", STORY, (0, 0, 0, 0))
+    avec_ombre(vide, lambda d, c, f: ecran(d, c, c, f, c)).save(out / "nom-transparent.png")
 
-    # Le même nom posé sur une photo du domaine, remonté sur le mur ocre
-    # pour ne pas couvrir les chevaux ; le lieu passe au-dessus du nom.
-    sauver(Image.alpha_composite(photo("trois-chevaux.jpg", STORY, (0.5, 0.55)).convert("RGBA"),
-                                 calque_nom(-400, ("lieu", "nom"))).convert("RGB"), out / "fin-photo.jpg")
+    # Sur la photo des trois chevaux : le lieu et le logo sur le mur ocre,
+    # au-dessus des chevaux.
+    def sur_photo(d, c, f):
+        centre(d, 330, "LA SOUKRA  —  TUNIS", sans(28, 400), c, W, 8)
+        logo(d, 400, t, c, f, W)
+    fond = photo("trois-chevaux.jpg", STORY, (0.5, 0.55))
+    sauver(avec_ombre(fond, sur_photo).convert("RGB"), out / "fin-photo.jpg")
 
-    # Version animée de 4 s : fond encre, le nom apparaît en fondu.
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", f"color=c={ENCRE}:s={W}x{H}:d=4:r=30",
-                    "-loop", "1", "-i", str(out / "nom-transparent.png"), "-filter_complex",
-                    "[1:v]format=rgba,fade=in:st=0.4:d=1.6:alpha=1[t];[0:v][t]overlay=0:0:shortest=1,format=yuv420p",
-                    "-t", "4", "-an", "-c:v", "libx264", "-crf", "18", "-movflags", "+faststart",
-                    str(out / "fin-encre-anime.mp4")], check=True)
+    # Version animée : l'ouverture du site. Les lettres se resserrent (0,5 em
+    # vers 0) en apparaissant, le filet se déploie depuis le centre, puis le
+    # lieu et le compte arrivent en fondu.
+    def ease(x):
+        x = min(max(x, 0.0), 1.0)
+        return 1 - (1 - x) ** 4
+    fixe = Image.new("RGB", STORY, NUIT)
+    ecran(ImageDraw.Draw(fixe), FILET, SABLE, TERRA, FILET)
+    boite = ImageChops.difference(fixe, Image.new("RGB", STORY, NUIT)).getbbox()
+    dy = int(MILIEU - (boite[1] + boite[3]) / 2)
+    y_nom = 760 + dy
+    fps, duree = 30, 5
+    with tempfile.TemporaryDirectory() as tmp:
+        for i in range(fps * duree):
+            s_ = i / fps
+            p_nom = ease((s_ - 0.3) / 1.6)
+            p_filet = ease((s_ - 0.9) / 1.4)
+            p_sous = ease((s_ - 2.0) / 1.0)
+            im = Image.new("RGB", STORY, NUIT)
+            calque = Image.new("RGBA", STORY, (0, 0, 0, 0))
+            d = ImageDraw.Draw(calque)
+            a = int(255 * p_nom)
+            logo(d, y_nom, t, (237, 228, 211, a), None, W, espacement=0.5 * (1 - p_nom))
+            im.paste(calque, (0, 0), calque)
+            if p_filet > 0:
+                logo(ImageDraw.Draw(calque2 := Image.new("RGBA", STORY, (0, 0, 0, 0))),
+                     y_nom, t, (0, 0, 0, 0), TERRA, W, ouverture=p_filet)
+                im.paste(calque2, (0, 0), calque2)
+            yf = logo(ImageDraw.Draw(Image.new("L", (1, 1))), y_nom, t, 0, None, W)
+            if p_sous > 0:
+                c3 = Image.new("RGBA", STORY, (0, 0, 0, 0))
+                d3 = ImageDraw.Draw(c3)
+                b = int(255 * p_sous)
+                centre(d3, y_nom - 80, "PRIVATE EXPERIENCES", sans(28, 400), (199, 183, 154, b), W, 8)
+                centre(d3, yf + 100, "LA SOUKRA  —  TUNIS", sans(26, 400), (199, 183, 154, b), W, 7)
+                centre(d3, yf + 157, "@daughterofgaiatunis", sans(30, 400), (199, 183, 154, b), W, 1)
+                im.paste(c3, (0, 0), c3)
+            im.save(f"{tmp}/{i:04d}.png")
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-framerate", str(fps), "-i", f"{tmp}/%04d.png",
+                        "-c:v", "libx264", "-crf", "18", "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+                        str(out / "fin-encre-anime.mp4")], check=True)
 
 
 def apercu():
