@@ -8,7 +8,7 @@ Sortie : instagram/posts, instagram/stories, instagram/profil, instagram/plus-ta
 """
 from pathlib import Path
 import sys
-from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont, ImageOps
 
 RACINE = Path(__file__).resolve().parent
 PHOTOS = RACINE.parent / "daughter-of-gaia" / "public" / "images"
@@ -61,6 +61,13 @@ def carte(fond, encre, lignes, taille=POST):
     d = ImageDraw.Draw(im)
     for texte, f, c, y, esp in lignes:
         centre(d, y, texte, f, c or encre, taille[0], esp)
+    # Recentre verticalement le bloc sur l'encre réelle : les y ci-dessus
+    # placent les lignes entre elles, pas le bloc dans la carte.
+    boite = ImageChops.difference(im, Image.new("RGB", taille, fond)).getbbox()
+    if boite:
+        bloc = im.crop((0, boite[1], taille[0], boite[3]))
+        im = Image.new("RGB", taille, fond)
+        im.paste(bloc, (0, (taille[1] - bloc.height) // 2))
     return im
 
 
