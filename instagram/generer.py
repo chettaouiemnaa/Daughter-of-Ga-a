@@ -8,7 +8,7 @@ Sortie : instagram/posts, instagram/stories, instagram/profil, instagram/plus-ta
 """
 from pathlib import Path
 import sys
-from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont, ImageOps
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont, ImageOps, ImageStat
 
 RACINE = Path(__file__).resolve().parent
 PHOTOS = RACINE.parent / "daughter-of-gaia" / "public" / "images"
@@ -273,29 +273,48 @@ LANCEMENT = [
 ]
 
 
+# Les photos où l'on voit les chevaux : ce sont elles qu'on signe.
+AVEC_CHEVAUX = {"cheval-bar", "fenetre-chevaux-statuettes", "chevaux-fenetre", "chevaux-pie-broutent",
+                "terrasse-vasque", "trois-chevaux", "cheval-noir-blanc"}
+
+
 def signer(im):
-    """Signature discrète en bas au centre des photos : le logo, petit, en
-    crème presque opaque, avec une ombre légère pour rester lisible sur
-    l'herbe claire comme sur la terre. Au centre, la grille 3:4 ne la rogne pas."""
+    """Signature en bas de la photo : le logo en petit et un fin filet dessous,
+    d'une seule couleur, sans ombre. Elle se pose à gauche, au centre ou à
+    droite, là où le fond est le plus calme, en encre ou en crème selon ce
+    qui ressort le mieux. Les marges latérales tiennent compte du rognage de
+    la grille 3:4 (34 px de chaque côté)."""
     W, H = im.size
     t = taille_logo(210)
-    y = H - 46 - serif(t, 300).getmetrics()[0]
-    masque = Image.new("L", im.size, 0)
-    logo(ImageDraw.Draw(masque), y, t, 255, W)
-    ombre = masque.filter(ImageFilter.MaxFilter(7)).filter(ImageFilter.GaussianBlur(9)).point(lambda v: int(v * 0.85))
-    sortie = im.convert("RGBA")
-    calque = Image.new("RGBA", im.size, (0, 0, 0, 0))
-    calque.paste(Image.new("RGBA", im.size, ENCRE), (0, 0), ombre)
-    sortie = Image.alpha_composite(sortie, calque)
-    texte = Image.new("RGBA", im.size, (0, 0, 0, 0))
-    logo(ImageDraw.Draw(texte), y, t, (246, 241, 231, 238), W)
-    return Image.alpha_composite(sortie, texte).convert("RGB")
+    f = serif(t, 400)
+    d = ImageDraw.Draw(im)
+    largeur = d.textlength(LOGO, font=f)
+    filet, ep = largeur / 2.42, 2
+    y_filet = H - 52
+    y = y_filet - largeur * 0.15 - f.getmetrics()[0]
+    gris = im.convert("L")
+    marge = 80 + largeur / 2
+    choix = []
+    for cx in (marge, W / 2, W - marge):
+        zone = ImageStat.Stat(gris.crop((int(cx - largeur / 2), int(y), int(cx + largeur / 2), y_filet + ep)))
+        lum, texture = zone.mean[0], zone.stddev[0]
+        for couleur, lum_texte in (((43, 33, 24), 40), ((246, 241, 231), 240)):
+            choix.append((abs(lum - lum_texte) / (1 + texture / 20), cx, couleur))
+    _, cx, couleur = max(choix)
+    d.text((cx - largeur / 2, y), LOGO, font=f, fill=couleur)
+    d.rectangle((cx - filet / 2, y_filet, cx + filet / 2, y_filet + ep - 1), fill=couleur)
+    return im
 
 
 def posts():
     out = RACINE / "posts"
     for i, (nom, source) in enumerate(LANCEMENT, 1):
-        im = source() if callable(source) else signer(photo(source[0], POST, source[1]))
+        if callable(source):
+            im = source()
+        else:
+            im = photo(source[0], POST, source[1])
+            if nom in AVEC_CHEVAUX:
+                im = signer(im)
         sauver(im, out / f"{i:02d}-{nom}.jpg")
 
 
@@ -304,8 +323,8 @@ def plus_tard():
     out = RACINE / "plus-tard"
     # En réserve pour les semaines qui suivent le lancement.
     sauver(gaia(), out / "gaia.jpg")
-    sauver(signer(lustre()), out / "suspension.jpg")
-    sauver(signer(photo("jardin-video.jpg", POST, (0.5, 0.62))), out / "jardin.jpg")
+    sauver(lustre(), out / "suspension.jpg")
+    sauver(photo("jardin-video.jpg", POST, (0.5, 0.62)), out / "jardin.jpg")
     sauver(carte(BLANC, ENCRE, [
         ("EXPÉRIENCES", sans(24, 400), OLIVE, 250, 7),
         ("Ce que le domaine", serif(82), None, 330, 0),
