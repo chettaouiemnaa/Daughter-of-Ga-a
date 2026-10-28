@@ -294,14 +294,14 @@ def contraste(a, b):
 
 def signer(im):
     """Signature en bas au centre : le logo en petit, un fin filet juste
-    dessous, et « LA SOUKRA ». Une seule couleur de la palette Gaïa, sans
+    dessous, et « LA SOUKRA  TUNIS » en petit. Une seule couleur de la palette Gaïa, sans
     ombre : la première de sable, encre, blanc cassé qui contraste assez
     avec le fond (4:1), sinon la plus contrastée. Olive et terracotta,
     tons moyens comme les sols des photos, ne ressortent pas en petit."""
     W, H = im.size
     t = taille_logo(210)
     f = serif(t, 400)
-    f_lieu = sans(17, 400)
+    f_lieu = sans(14, 400)
     d = ImageDraw.Draw(im)
     largeur = d.textlength(LOGO, font=f)
     filet, ep = largeur / 2.42, 2
@@ -314,7 +314,7 @@ def signer(im):
     couleur = next((c for c in palette if contraste(c, fond) >= 4), None) or max(palette, key=lambda c: contraste(c, fond))
     centre(d, y, LOGO, f, couleur, W)
     d.rectangle(((W - filet) / 2, y_filet, (W + filet) / 2, y_filet + ep - 1), fill=couleur)
-    centre(d, y_lieu, "LA SOUKRA", f_lieu, couleur, W, 5)
+    centre(d, y_lieu, "LA SOUKRA  TUNIS", f_lieu, couleur, W, 4)
     return im
 
 
