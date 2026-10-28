@@ -538,10 +538,12 @@ def couvertures_video():
         d.rectangle((m, 240 + m, W - m, 1680 - m), outline=couleur, width=2)
 
     # Sable, comme la carte logo : la grille reste identique à l'aperçu.
-    im = Image.new("RGB", STORY, SABLE)
+    # Un crème un peu plus soutenu que le sable des cartes. Sans cadre,
+    # comme les cartes de la grille.
+    creme = "#E3D6BE"
+    im = Image.new("RGB", STORY, creme)
     bloc(ImageDraw.Draw(im), OLIVE, ENCRE, TERRA, 600)
-    # Sans cadre, comme les cartes de la grille.
-    sauver(recentrer(im, SABLE, H / 2), out / "couverture-sable.jpg")
+    sauver(recentrer(im, creme, H / 2), out / "couverture-sable.jpg")
 
     # Nuit, le fond de l'ouverture du site.
     im = Image.new("RGB", STORY, NUIT)
