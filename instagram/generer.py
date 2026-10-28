@@ -540,9 +540,8 @@ def couvertures_video():
     # Sable, comme la carte logo : la grille reste identique à l'aperçu.
     im = Image.new("RGB", STORY, SABLE)
     bloc(ImageDraw.Draw(im), OLIVE, ENCRE, TERRA, 600)
-    im = recentrer(im, SABLE, H / 2)
-    cadre(ImageDraw.Draw(im), FILET)
-    sauver(im, out / "couverture-sable.jpg")
+    # Sans cadre, comme les cartes de la grille.
+    sauver(recentrer(im, SABLE, H / 2), out / "couverture-sable.jpg")
 
     # Nuit, le fond de l'ouverture du site.
     im = Image.new("RGB", STORY, NUIT)
