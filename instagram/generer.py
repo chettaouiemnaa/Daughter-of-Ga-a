@@ -78,28 +78,21 @@ def recentrer(im, fond, milieu=None):
 
 
 # Le logo, tel que le site l'affiche à l'ouverture : Cormorant Garamond
-# léger (300), droit, sur une seule ligne, et un filet terracotta centré
-# dessous. Proportions relevées sur le site : filet = largeur du nom / 2,42,
-# posé à 0,15 largeur sous la ligne de base.
+# léger (300), droit, sur une seule ligne. Sans le filet du site.
 LOGO = "Daughter of Gaïa"
 NUIT = "#1A130C"  # le fond du rideau d'ouverture du site
 
 
-def logo(d, y, taille, couleur, filet=TERRA, W=1080, espacement=0.0, ouverture=1.0):
-    """Dessine le logo, haut du texte en y. espacement en em (0,5 au début
-    de l'animation du site, presque 0 à la fin) ; ouverture du filet de 0 à 1."""
+def logo(d, y, taille, couleur, W=1080, espacement=0.0):
+    """Dessine le logo, haut du texte en y, et renvoie où placer la ligne
+    suivante. espacement en em : 0,5 au début de l'animation du site, 0 à la fin."""
     f = serif(taille, 300)
     if espacement:
         centre(d, y, LOGO, f, couleur, W, taille * espacement)
     else:
         centre(d, y, LOGO, f, couleur, W)
     largeur = d.textlength(LOGO, font=f)
-    yf = y + f.getmetrics()[0] + largeur * 0.15
-    if filet is not None and ouverture > 0:
-        l = largeur / 2.42 * ouverture
-        ep = max(2, round(largeur * 0.005))
-        d.rectangle(((W - l) / 2, yf, (W + l) / 2, yf + ep - 1), fill=filet)
-    return yf
+    return y + f.getmetrics()[0] + largeur * 0.06
 
 
 def taille_logo(largeur_voulue):
@@ -108,18 +101,17 @@ def taille_logo(largeur_voulue):
     return round(100 * largeur_voulue / d.textlength(LOGO, font=serif(100, 300)))
 
 
-def avec_ombre(fond, dessiner, force=0.75, flou=26, filet=BLANC):
-    """Pose ce que dessine dessiner(d, couleur, filet) sur fond, détaché par
-    une ombre douce : lisible sur n'importe quelle image. Le filet passe en
-    crème : le terracotta disparaîtrait sur le mur ocre."""
+def avec_ombre(fond, dessiner, force=0.75, flou=26):
+    """Pose ce que dessine dessiner(d, couleur) sur fond, détaché par une
+    ombre douce : lisible sur n'importe quelle image."""
     masque = Image.new("L", fond.size, 0)
-    dessiner(ImageDraw.Draw(masque), 255, 255)
+    dessiner(ImageDraw.Draw(masque), 255)
     ombre = masque.filter(ImageFilter.MaxFilter(11)).filter(ImageFilter.GaussianBlur(flou))
     im = fond.convert("RGBA")
     calque = Image.new("RGBA", fond.size, (0, 0, 0, 0))
     calque.paste(Image.new("RGBA", fond.size, ENCRE), (0, 0), ombre.point(lambda v: int(v * force)))
     im = Image.alpha_composite(im, calque)
-    dessiner(ImageDraw.Draw(im), BLANC, filet)
+    dessiner(ImageDraw.Draw(im), BLANC)
     return im
 
 
@@ -324,9 +316,9 @@ def stories():
 
     # L'annonce à publier depuis le compte perso : le logo sur le mur ocre,
     # et un emplacement libre pour l'autocollant « Mention » ou « Lien ».
-    def textes(d, c, f):
+    def textes(d, c):
         centre(d, 460, "LE NOM DU PROJET", sans(28, 400), c, W, 8)
-        logo(d, 530, t, c, f, W)
+        logo(d, 530, t, c, W)
         centre(d, 1600, "Suivez l'aventure", sans(32, 400), c, W, 3)
     fond = photo("trois-chevaux.jpg", STORY, (0.5, 0.55))
     sauver(avec_ombre(fond, textes).convert("RGB"), out / "annonce-compte-perso.jpg")
@@ -355,44 +347,44 @@ def fin_de_video():
     t = taille_logo(820)
     MILIEU = 900
 
-    def ecran(d, c_sur, c_nom, c_filet, c_sous, sur="PRIVATE EXPERIENCES", y=760):
+    def ecran(d, c_sur, c_nom, c_sous, sur="PRIVATE EXPERIENCES", y=760):
         if sur:
             centre(d, y - 80, sur, sans(28, 400), c_sur, W, 8)
-        yf = logo(d, y, t, c_nom, c_filet, W)
+        yf = logo(d, y, t, c_nom, W)
         centre(d, yf + 100, "LA SOUKRA  —  TUNIS", sans(26, 400), c_sous, W, 7)
         centre(d, yf + 157, "@daughterofgaiatunis", sans(30, 400), c_sous, W, 1)
 
     # Fond sable : aussi la couverture de la vidéo dans la grille.
     im = Image.new("RGB", STORY, SABLE)
-    ecran(ImageDraw.Draw(im), OLIVE, ENCRE, TERRA, TERRA)
+    ecran(ImageDraw.Draw(im), OLIVE, ENCRE, TERRA)
     sauver(recentrer(im, SABLE, MILIEU), out / "fin-sable.jpg")
 
     # Fond nuit : exactement le rideau d'ouverture du site.
     im = Image.new("RGB", STORY, NUIT)
-    ecran(ImageDraw.Draw(im), FILET, SABLE, TERRA, FILET)
+    ecran(ImageDraw.Draw(im), FILET, SABLE, FILET)
     sauver(recentrer(im, NUIT, MILIEU), out / "fin-encre.jpg")
 
     # Calque transparent à poser sur le dernier plan de la vidéo, dans CapCut
     # (« Incrustation »).
     vide = Image.new("RGBA", STORY, (0, 0, 0, 0))
-    avec_ombre(vide, lambda d, c, f: ecran(d, c, c, f, c)).save(out / "nom-transparent.png")
+    avec_ombre(vide, lambda d, c: ecran(d, c, c, c)).save(out / "nom-transparent.png")
 
     # Sur la photo des trois chevaux : le lieu et le logo sur le mur ocre,
     # au-dessus des chevaux.
-    def sur_photo(d, c, f):
+    def sur_photo(d, c):
         centre(d, 330, "LA SOUKRA  —  TUNIS", sans(28, 400), c, W, 8)
-        logo(d, 400, t, c, f, W)
+        logo(d, 400, t, c, W)
     fond = photo("trois-chevaux.jpg", STORY, (0.5, 0.55))
     sauver(avec_ombre(fond, sur_photo).convert("RGB"), out / "fin-photo.jpg")
 
     # Version animée : l'ouverture du site. Les lettres se resserrent (0,5 em
-    # vers 0) en apparaissant, le filet se déploie depuis le centre, puis le
+    # vers 0) en apparaissant, puis le
     # lieu et le compte arrivent en fondu.
     def ease(x):
         x = min(max(x, 0.0), 1.0)
         return 1 - (1 - x) ** 4
     fixe = Image.new("RGB", STORY, NUIT)
-    ecran(ImageDraw.Draw(fixe), FILET, SABLE, TERRA, FILET)
+    ecran(ImageDraw.Draw(fixe), FILET, SABLE, FILET)
     boite = ImageChops.difference(fixe, Image.new("RGB", STORY, NUIT)).getbbox()
     dy = int(MILIEU - (boite[1] + boite[3]) / 2)
     y_nom = 760 + dy
@@ -401,19 +393,14 @@ def fin_de_video():
         for i in range(fps * duree):
             s_ = i / fps
             p_nom = ease((s_ - 0.3) / 1.6)
-            p_filet = ease((s_ - 0.9) / 1.4)
             p_sous = ease((s_ - 2.0) / 1.0)
             im = Image.new("RGB", STORY, NUIT)
             calque = Image.new("RGBA", STORY, (0, 0, 0, 0))
             d = ImageDraw.Draw(calque)
             a = int(255 * p_nom)
-            logo(d, y_nom, t, (237, 228, 211, a), None, W, espacement=0.5 * (1 - p_nom))
+            logo(d, y_nom, t, (237, 228, 211, a), W, espacement=0.5 * (1 - p_nom))
             im.paste(calque, (0, 0), calque)
-            if p_filet > 0:
-                logo(ImageDraw.Draw(calque2 := Image.new("RGBA", STORY, (0, 0, 0, 0))),
-                     y_nom, t, (0, 0, 0, 0), TERRA, W, ouverture=p_filet)
-                im.paste(calque2, (0, 0), calque2)
-            yf = logo(ImageDraw.Draw(Image.new("L", (1, 1))), y_nom, t, 0, None, W)
+            yf = logo(ImageDraw.Draw(Image.new("L", (1, 1))), y_nom, t, 0, W)
             if p_sous > 0:
                 c3 = Image.new("RGBA", STORY, (0, 0, 0, 0))
                 d3 = ImageDraw.Draw(c3)
