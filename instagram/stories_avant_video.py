@@ -1,5 +1,5 @@
-"""Deux stories à publier avant la vidéo qui révèle le nom. Le nom n'y
-apparaît pas : la vidéo le révèle.
+"""Deux stories à publier avant la vidéo sur l'histoire du nom, avec les
+textes choisis : la question, puis le nom et ceux qui vivent ici.
 
 Elles ne reprennent rien du texte de la vidéo (la nature, Gaïa, la Terre,
 « ralentir ») : la première pose la question, la seconde présente ceux qui
@@ -29,17 +29,15 @@ def lignes(d, y, textes, f, couleur, interligne):
 # Story 1 : la question.
 im = Image.new("RGB", STORY, CREME)
 d = ImageDraw.Draw(im)
-centre(d, 560, "AVANT LA VIDÉO", sans(26, 300), OLIVE, W, 10)
-y = lignes(d, 660, ["Un nom ne se choisit", "pas au hasard."], f_titre, ENCRE, 112)
-y = lignes(d, y + 60, ["Celui-ci, je l'ai porté", "longtemps avant", "de le prononcer."], f_italique, ENCRE, 112)
+y = lignes(d, 700, ["Un nom ne se choisit", "pas au hasard."], f_titre, ENCRE, 112)
+y = lignes(d, y + 60, ["Celui-ci m'est venu", "tout naturellement."], f_italique, ENCRE, 112)
 ligne_domaine(d, W / 2, y + 110, TERRA, taille=26, esp=7, graisse=300, ep=1.5)
 sauver(recentrer(im, CREME, H / 2), OUT / "avant-video-1.jpg")
 
-# Story 2 : ceux qui vivent ici, et le rendez-vous.
+# Story 2 : le nom, et ceux qui vivent ici.
 im = Image.new("RGB", STORY, CREME)
 d = ImageDraw.Draw(im)
-centre(d, 330, "ILS VIVENT ICI", sans(26, 300), OLIVE, W, 10)
-bw, bh, gap, top = 290, 560, 24, 410
+bw, bh, gap, top = 290, 560, 24, 400
 x0 = (W - (3 * bw + 2 * gap)) // 2
 bandes = [("aiko.jpg", (0.5, 0.4), "AÏKO"), ("chevaux-fenetre.jpg", (0.55, 0.6), "IRIS & STELLA"),
           ("trois-chevaux.jpg", (0.62, 0.85), "PONETTE")]
@@ -47,7 +45,10 @@ for i, (nom, pos, prenom) in enumerate(bandes):
     x = x0 + i * (bw + gap)
     im.paste(photo(nom, (bw, bh), pos), (x, top))
     centre(d, top + bh + 24, prenom, sans(20, 400), OLIVE, 2 * x + bw, 5)
-y = lignes(d, 1130, ["Ce nom leur ressemble."], f_titre, ENCRE, 112)
-y = lignes(d, y + 30, ["Je vous raconte pourquoi,", "dans quelques instants."], f_italique, ENCRE, 100)
+f_logo = serif(taille_logo(820), 300)
+y_nom = 1110
+centre(d, y_nom, LOGO, f_logo, ENCRE, W)
+y = ligne_domaine(d, W / 2, y_nom + f_logo.getmetrics()[0] + 55, TERRA, taille=26, esp=7, graisse=300, ep=1.5)
+lignes(d, y + 90, ["Un nom qui prend", "tout son sens ici."], f_italique, ENCRE, 106)
 sauver(im, OUT / "avant-video-2.jpg")
 print("ok")
