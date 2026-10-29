@@ -1,0 +1,52 @@
+"""Story de remerciement après la révélation du nom : merci pour l'accueil,
+et la promesse de la suite. Deux versions : crème avec Aïko dans l'arche,
+ou la photo des deux pies sous le texte.
+
+    python3 instagram/story_merci.py
+"""
+import sys
+sys.argv = sys.argv[:1]
+from generer import *
+
+OUT = RACINE / "stories"
+W, H = STORY
+CREME = "#E3D6BE"
+f_titre = serif(86, 300)
+f_italique = italique(86, 300)
+
+
+def masque_arche(w, h):
+    m = Image.new("L", (w, h), 0)
+    d = ImageDraw.Draw(m)
+    d.pieslice((0, 0, w, w), 180, 360, fill=255)
+    d.rectangle((0, w // 2, w, h), fill=255)
+    return m
+
+
+def textes(d, y, couleur, c_ligne):
+    centre(d, y, "Merci pour ce si bel accueil.", f_titre, couleur, W)
+    centre(d, y + 110, "Ce n'est que le début.", f_italique, couleur, W)
+    return ligne_domaine(d, W / 2, y + 290, c_ligne, taille=26, esp=7, graisse=300, ep=1.5)
+
+
+# 1. Crème : Aïko s'avance dans l'arche.
+im = Image.new("RGB", STORY, CREME)
+d = ImageDraw.Draw(im)
+aw, ah = 600, 820
+im.paste(photo("aiko.jpg", (aw, ah), (0.5, 0.55)), ((W - aw) // 2, 330), masque_arche(aw, ah))
+textes(d, 1250, ENCRE, TERRA)
+sauver(recentrer(im, CREME, H / 2), OUT / "merci-1-arche.jpg")
+
+# 2. Les deux pies qui broutent, le texte posé au-dessus sur le crème.
+im = Image.new("RGB", STORY, CREME)
+haut = 820
+im.paste(photo("chevaux-pie-broutent.jpg", (W, H - haut), (0.5, 0.75)), (0, haut))
+textes(ImageDraw.Draw(im), 300, ENCRE, TERRA)
+sauver(im, OUT / "merci-2-photo.jpg")
+
+# Aperçu côte à côte.
+pl = Image.new("RGB", (2 * 560, 960), "white")
+for i, n in enumerate(["merci-1-arche", "merci-2-photo"]):
+    pl.paste(Image.open(OUT / f"{n}.jpg").resize((540, 960)), (i * 560 + 10, 0))
+sauver(pl, OUT / "merci-apercu.jpg")
+print("ok")
