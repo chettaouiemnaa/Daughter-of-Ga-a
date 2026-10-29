@@ -1,5 +1,5 @@
-"""Story de remerciement après la révélation du nom : merci pour l'accueil,
-et la promesse de la suite. Deux versions : crème avec Aïko dans l'arche,
+"""Story de remerciement après la révélation du nom : merci pour les
+commentaires et les messages. Deux versions : crème avec Aïko dans l'arche,
 ou la photo des deux pies sous le texte.
 
     python3 instagram/story_merci.py
@@ -11,8 +11,10 @@ from generer import *
 OUT = RACINE / "stories"
 W, H = STORY
 CREME = "#E3D6BE"
-f_titre = serif(86, 300)
-f_italique = italique(86, 300)
+f_titre = serif(76, 300)
+f_italique = italique(76, 300)
+PHRASE = "Merci pour chacun de vos mots."
+SUITE = "Ils m'ont profondément touchée."
 
 
 def masque_arche(w, h):
@@ -24,9 +26,9 @@ def masque_arche(w, h):
 
 
 def textes(d, y, couleur, c_ligne):
-    centre(d, y, "Merci pour ce si bel accueil.", f_titre, couleur, W)
-    centre(d, y + 110, "Ce n'est que le début.", f_italique, couleur, W)
-    return ligne_domaine(d, W / 2, y + 290, c_ligne, taille=26, esp=7, graisse=300, ep=1.5)
+    centre(d, y, PHRASE, f_titre, couleur, W)
+    centre(d, y + 100, SUITE, f_italique, couleur, W)
+    return ligne_domaine(d, W / 2, y + 270, c_ligne, taille=26, esp=7, graisse=300, ep=1.5)
 
 
 # 1. Crème : Aïko s'avance dans l'arche.
