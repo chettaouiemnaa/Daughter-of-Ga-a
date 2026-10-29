@@ -14,6 +14,7 @@ CREME = "#E3D6BE"
 f_titre = serif(76, 300)
 f_italique = italique(76, 300)
 PHRASE = "Merci pour chacun de vos mots."
+f_logo = serif(taille_logo(560), 300)
 SUITE = "Ils m'ont profondément touchée."
 
 
@@ -28,7 +29,10 @@ def masque_arche(w, h):
 def textes(d, y, couleur, c_ligne):
     centre(d, y, PHRASE, f_titre, couleur, W)
     centre(d, y + 100, SUITE, f_italique, couleur, W)
-    return ligne_domaine(d, W / 2, y + 270, c_ligne, taille=26, esp=7, graisse=300, ep=1.5)
+    # Toujours la signature complète : le logo, puis la ligne du domaine.
+    y_nom = y + 260
+    centre(d, y_nom, LOGO, f_logo, couleur, W)
+    return ligne_domaine(d, W / 2, y_nom + f_logo.getmetrics()[0] + 45, c_ligne, taille=24, esp=7, graisse=300, ep=1.5)
 
 
 # 1. Crème : Aïko s'avance dans l'arche.
@@ -36,14 +40,14 @@ im = Image.new("RGB", STORY, CREME)
 d = ImageDraw.Draw(im)
 aw, ah = 600, 820
 im.paste(photo("aiko.jpg", (aw, ah), (0.5, 0.55)), ((W - aw) // 2, 330), masque_arche(aw, ah))
-textes(d, 1250, ENCRE, TERRA)
+textes(d, 1220, ENCRE, TERRA)
 sauver(recentrer(im, CREME, H / 2), OUT / "merci-1-arche.jpg")
 
 # 2. Les deux pies qui broutent, le texte posé au-dessus sur le crème.
 im = Image.new("RGB", STORY, CREME)
-haut = 820
+haut = 940
 im.paste(photo("chevaux-pie-broutent.jpg", (W, H - haut), (0.5, 0.75)), (0, haut))
-textes(ImageDraw.Draw(im), 300, ENCRE, TERRA)
+textes(ImageDraw.Draw(im), 290, ENCRE, TERRA)
 sauver(im, OUT / "merci-2-photo.jpg")
 
 # Aperçu côte à côte.
