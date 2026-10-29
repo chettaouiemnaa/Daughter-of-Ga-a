@@ -50,9 +50,24 @@ im.paste(photo("chevaux-pie-broutent.jpg", (W, H - haut), (0.5, 0.75)), (0, haut
 textes(ImageDraw.Draw(im), 290, ENCRE, TERRA)
 sauver(im, OUT / "merci-2-photo.jpg")
 
+# 3. Autres photos dans l'arche : Iris et Stella, les chevaux à la vasque, Iris au bar.
+# Chaque photo est d'abord recadrée (zone en px) pour approcher les chevaux.
+AUTRES = [("chevaux-fenetre.jpg", (30, 330, 790, 1370), "merci-3-iris-stella"),
+          ("terrasse-vasque.jpg", (0, 260, 700, 1218), "merci-4-vasque"),
+          ("cheval-bar.jpg", None, "merci-5-bar")]
+for nom, zone, sortie in AUTRES:
+    src = ImageOps.exif_transpose(Image.open(PHOTOS / nom)).convert("RGB")
+    if zone:
+        src = src.crop(zone)
+    im = Image.new("RGB", STORY, CREME)
+    im.paste(ImageOps.fit(src, (aw, ah), Image.LANCZOS), ((W - aw) // 2, 330), masque_arche(aw, ah))
+    textes(ImageDraw.Draw(im), 1220, ENCRE, TERRA)
+    sauver(recentrer(im, CREME, H / 2), OUT / f"{sortie}.jpg")
+
 # Aperçu côte à côte.
-pl = Image.new("RGB", (2 * 560, 960), "white")
-for i, n in enumerate(["merci-1-arche", "merci-2-photo"]):
+APERCU = ["merci-1-arche", "merci-2-photo"] + [a[2] for a in AUTRES]
+pl = Image.new("RGB", (len(APERCU) * 560, 960), "white")
+for i, n in enumerate(APERCU):
     pl.paste(Image.open(OUT / f"{n}.jpg").resize((540, 960)), (i * 560 + 10, 0))
 sauver(pl, OUT / "merci-apercu.jpg")
 print("ok")
