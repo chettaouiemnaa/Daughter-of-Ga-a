@@ -2,6 +2,7 @@
 
 Le texte incrusté (en anglais) a été effacé de la vidéo : `histoire-sans-texte.mp4`.
 Ci-dessous, le texte d'origine avec ses repères de temps, puis la version française à dire en voix off.
+La fin est réécrite : Hera et Eros sont repartis avec le vieil homme, guéri, après un an de soins.
 
 ## Texte d'origine (anglais)
 
@@ -53,7 +54,14 @@ J'ai vu une lueur d'espoir dans les yeux du vieil homme, comme si on venait de l
 
 Depuis, il vient de temps en temps leur rendre visite.
 Il s'assoit dans le coin du jardin que j'ai aménagé rien que pour lui, un endroit où il peut les regarder, tranquillement.
-Il regarde Hera et son petit, aujourd'hui en pleine santé, pleins de vie, courir, se rouler dans l'herbe… libres.
+Il regarde Hera et Eros, aujourd'hui en pleine santé, pleins de vie, courir, se rouler dans l'herbe… libres.
 
-Un jour, alors que nous étions assis en silence, il s'est tourné vers moi, la voix tremblante d'émotion, et m'a dit :
-« Hera est pleine. »
+Pendant un an, je les ai soignés, jour après jour.
+Et puis, le vieil homme a guéri. Il est reparti avec eux.
+Aujourd'hui, Hera et Eros vivent loin d'ici, dans une ferme.
+
+Ils ne sont plus là.
+Mais c'est avec eux que tout a commencé.
+
+> Phrase de fin possible, si tu ajoutes à la fin un plan d'Aïko, Iris, Stella et Ponette :
+> « Depuis, d'autres sont arrivés. Et c'est pour eux que ce lieu existe. »
