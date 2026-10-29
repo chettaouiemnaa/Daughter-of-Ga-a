@@ -48,7 +48,7 @@ W, H = STORY
 # Fond blanc cassé : la couverture du Reel, crème, se détache ainsi du fond.
 im = Image.new("RGB", STORY, BLANC)
 d = ImageDraw.Draw(im)
-centre(d, 250, "SUIVEZ L’AVENTURE", sans(26, 300), OLIVE, W, 10)
+centre(d, 215, "In love with the new feed", italique(72, 300), ENCRE, W)
 gh = 1000
 gw = round(gh * g.width / g.height)
 im.paste(grille(BLANC).resize((gw, gh), Image.LANCZOS), ((W - gw) // 2, 330))
@@ -56,6 +56,6 @@ f_logo = serif(taille_logo(440), 300)
 y_nom = 330 + gh + 70
 centre(d, y_nom, LOGO, f_logo, ENCRE, W)
 y = ligne_domaine(d, W / 2, y_nom + f_logo.getmetrics()[0] + 45, TERRA, taille=20, esp=6, graisse=300, ep=1.5, trait=50, ecart=18)
-centre(d, y + 55, "@daughterofgaiatunis", sans(28, 300), ENCRE, W, 2)
-sauver(recentrer(im, BLANC, H / 2), OUT / "story-fil.jpg")
+# Le compte n'est pas écrit : l'autocollant Lien ou Mention se pose sous la signature.
+sauver(recentrer(im, BLANC, H / 2 - 40), OUT / "story-fil.jpg")
 print("ok")
