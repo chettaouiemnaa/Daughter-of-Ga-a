@@ -18,6 +18,14 @@ LARGEUR = 900   # largeur de la signature sur la story
 HAUT = 330      # haut du bloc : sous la barre de progression et le nom du compte
 
 
+def ombre_douce(im, force=0.7, flou=22, garder_texte=True):
+    """Ombre douce sous l'encre : lisible sur le feuillage comme sur le ciel."""
+    ombre = im.getchannel("A").filter(ImageFilter.MaxFilter(9)).filter(ImageFilter.GaussianBlur(flou))
+    fond = Image.new("RGBA", im.size, ENCRE)
+    fond.putalpha(ombre.point(lambda v: int(v * force)))
+    return Image.alpha_composite(fond, im) if garder_texte else fond
+
+
 def calque(phrase=None):
     # Un peu plus gras que sur les posts : la vidéo bouge et le fond est chargé.
     sig = signature(BLANC, BLANC, g_nom=450, g_lieu=500)
@@ -32,11 +40,7 @@ def calque(phrase=None):
         y = im.getbbox()[3] + 34
     im.paste(sig, ((W - sig.width) // 2, y), sig)
 
-    # Ombre douce sous l'encre : lisible sur le feuillage comme sur le ciel.
-    masque = im.getchannel("A")
-    ombre = masque.filter(ImageFilter.MaxFilter(9)).filter(ImageFilter.GaussianBlur(22))
-    fond = Image.new("RGBA", (W, H), ENCRE)
-    fond.putalpha(ombre.point(lambda v: int(v * 0.7)))
+    fond = ombre_douce(im, garder_texte=False)
     # Et un voile sombre qui descend du haut, pour calmer le feuillage.
     voile = Image.new("L", (1, H))
     bas = im.getbbox()[3] + 260

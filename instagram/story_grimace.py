@@ -1,74 +1,41 @@
 """Story d'Aïko qui tire la langue derrière le cheval en bois.
 
-Même style que les stories « Merci » : fond sable, photo en arche, la phrase
-en Cormorant, la signature dessous.
+Photo plein écran. La phrase en haut, sur la crinière, au-dessus des yeux ;
+la signature en petit en bas au centre, comme sur les photos du fil.
 
     python3 instagram/story_grimace.py
 """
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
-from signature import ENCRE, POLICES, SABLE, TERRA, signature
+from signature import BLANC, POLICES, signature
+from story_video import ombre_douce
 
 RACINE = Path(__file__).resolve().parent
 W, H = 1080, 1920
-PHOTO_L = 820  # largeur de l'arche
+# Cadrage un peu à gauche du centre : la queue du cheval en bois reste entière.
+CADRAGE = (0.37, 0.5)
 PHRASES = {
-    "immobile": ("Moi aussi je peux rester immobile.", "Regardez."),
+    "clown": "Le clown du domaine",
     "sans-texte": None,
 }
 
 
-def police(nom, taille, graisse):
-    f = ImageFont.truetype(str(POLICES / nom), taille)
-    f.set_variation_by_axes([graisse])
-    return f
-
-
-def arche(im):
-    """Coupe le haut de l'image en demi-cercle."""
-    w, h = im.size
-    masque = Image.new("L", (w * 4, h * 4), 0)
-    d = ImageDraw.Draw(masque)
-    d.ellipse((0, 0, w * 4, w * 4), fill=255)
-    d.rectangle((0, w * 2, w * 4, h * 4), fill=255)
-    im = im.convert("RGBA")
-    im.putalpha(masque.resize((w, h), Image.LANCZOS))
-    return im
-
-
-def story(lignes):
-    src = ImageOps.exif_transpose(Image.open(RACINE / "photos" / "aiko-grimace.png")).convert("RGB")
-    photo = arche(src.resize((PHOTO_L, round(src.height * PHOTO_L / src.width)), Image.LANCZOS))
-    sig = signature(ENCRE, TERRA)
-    sig = sig.resize((470, round(sig.height * 470 / sig.width)), Image.LANCZOS)
-
-    # On empile phrase, photo, signature, puis on centre le tout dans la zone
-    # libre de la story (entre la barre de progression et la barre de réponse).
-    im = Image.new("RGBA", (W, H), SABLE)
-    d = ImageDraw.Draw(im)
-    blocs, y = [], 0
-    if lignes:
-        polices = (police("CormorantGaramond[wght].ttf", 60, 400),
-                   police("CormorantGaramond-Italic[wght].ttf", 60, 400))
-        for texte, f in zip(lignes, polices):
-            blocs.append(("texte", texte, f, y))
-            y += 76
-        y += 40
-    blocs.append(("photo", photo, None, y))
-    y += photo.height + 46
-    blocs.append(("photo", sig, None, y))
-    y += sig.height
-    haut = (250 + 1700) / 2 - y / 2
-    for genre, contenu, f, yb in blocs:
-        if genre == "texte":
-            d.text((W / 2, haut + yb), contenu, font=f, fill=ENCRE, anchor="mt")
-        else:
-            im.paste(contenu, ((W - contenu.width) // 2, round(haut + yb)), contenu)
-    return im.convert("RGB")
+def calque(phrase):
+    im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    if phrase:
+        f = ImageFont.truetype(str(POLICES / "CormorantGaramond-Italic[wght].ttf"), 92)
+        f.set_variation_by_axes([500])
+        ImageDraw.Draw(im).text((W / 2, 235), phrase, font=f, fill=BLANC, anchor="mt")
+    sig = signature(BLANC, BLANC, g_nom=450, g_lieu=500)
+    sig = sig.resize((440, round(sig.height * 440 / sig.width)), Image.LANCZOS)
+    im.paste(sig, ((W - sig.width) // 2, 1650), sig)
+    return ombre_douce(im)
 
 
 if __name__ == "__main__":
-    out = RACINE / "stories"
-    for nom, lignes in PHRASES.items():
-        story(lignes).save(out / f"grimace-{nom}.jpg", quality=92)
+    src = ImageOps.exif_transpose(Image.open(RACINE / "photos" / "aiko-grimace.png")).convert("RGB")
+    fond = ImageOps.fit(src, (W, H), Image.LANCZOS, centering=CADRAGE).convert("RGBA")
+    for nom, phrase in PHRASES.items():
+        im = Image.alpha_composite(fond, calque(phrase)).convert("RGB")
+        im.save(RACINE / "stories" / f"grimace-{nom}.jpg", quality=92)
