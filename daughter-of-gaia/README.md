@@ -30,9 +30,9 @@ En haut du fichier, dans l'ordre :
 
 1. **Constantes d'images** — `P_BAR_NUIT`, `P_CHEVAL_BAR`, `P_JARDIN`,
    `P_LANTERNES` (le domaine) et `V_PERGOLA`, `V_PISCINE`, `V_JARDIN_V`,
-   `V_PALMIERS`, `V_SALON` (la villa de tournage). Ce sont des data-URI
-   base64 fortement compressées, uniquement pour la maquette.
-   **À remplacer par des URL d'images hébergées.**
+   `V_PALMIERS`, `V_SALON` (la villa de tournage). Ce sont des chemins vers
+   `public/images`, servis tels quels. Les fichiers sont encore en JPEG pleine
+   taille : voir « Points à traiter ».
 2. **`T`** — dictionnaire de traduction `{ fr: {...}, en: {...} }`.
    Tout le texte visible du site est là, et nulle part ailleurs.
    Les deux arbres de clés sont identiques.
@@ -55,27 +55,55 @@ Navigation par état local (`page`), pas de routeur.
 Un espace **administration** est accessible par le bouton discret en pied de page.
 Il permet de bloquer ou libérer des dates dans le calendrier.
 
-## Points à traiter avant mise en ligne
+## Ce qui est en place
 
-**Sécurité — critique.** Le code d'accès administrateur est en clair dans
-`App.jsx` (constante `CODE_ADMIN`). N'importe qui peut le lire dans le source.
-Il faut une authentification côté serveur avant toute publication.
+**Sécurité.** Le code d'accès n'est pas dans la page. Il est envoyé à
+`api/dates.js`, qui le compare à la variable d'environnement `ADMIN_CODE` avec
+`crypto.timingSafeEqual`. Cinq échecs depuis une même adresse ferment la porte
+un quart d'heure. Les en-têtes de sécurité sont déclarés dans `vercel.json`.
 
-**Persistance.** Les dates bloquées passent par `window.storage`, remplacé par
-`localStorage` hors de l'aperçu Claude (voir `main.jsx`). Il faut une vraie base
-de données pour que les disponibilités soient partagées entre visiteurs.
+**Persistance.** Les dates bloquées vivent dans Redis (`REDIS_URL`, `KV_URL` ou
+`STORAGE_URL`), donc partagées entre tous les visiteurs. Si la base ne répond
+pas, le calendrier s'affiche sans date barrée plutôt que de barrer au hasard.
 
-**Formulaire de devis.** Il ne fait qu'afficher un message de confirmation.
-Aucun envoi. À brancher sur un service d'e-mail ou une API.
+**Formulaire de devis.** Envoyé à `formsubmit.co`, qui dépose la demande dans
+`contact@daughterofgaia.com`. Champ leurre anti-robot, garde anti-double-clic,
+et l'adresse affichée en repli si le relais refuse.
 
-**Images.** Les base64 doivent sortir du fichier. Prévoir des formats modernes
-(AVIF / WebP), plusieurs tailles, et `loading="lazy"` déjà en place.
+**Routage.** `/` et `/tournages` sont de vraies adresses, avec historique de
+navigation. `generer-pages.mjs` fabrique un HTML propre pour `/tournages` au
+moment de la construction.
 
-**Routage.** Remplacer l'état `page` par de vraies URL (`/`, `/tournages`)
-pour le référencement et le partage de liens.
+**Référencement.** Données structurées `EventVenue` et `FAQPage`, sitemap,
+robots.txt, aperçus de partage, et un `<noscript>` qui contient un vrai texte
+de présentation.
 
-**Référencement.** Métadonnées minimales dans `index.html`. À compléter :
-données structurées, sitemap, balises alternates fr/en.
+## Points à traiter
+
+**Images — le plus rentable.** 4,4 Mo de JPEG dans `public/images`, dont six
+fichiers en 1800 × 2400 servis tels quels aux téléphones. Mesuré : passer en
+WebP sans changer les dimensions ne gagne que 23 %, mais servir une version
+800 px aux petits écrans fait −70 %. À faire : plusieurs tailles et un `srcset`.
+Le chargement différé, lui, est en place partout.
+
+**Pages légales.** Le site recueille nom, e-mail, téléphone et description de
+projet, et les fait transiter par un tiers. Il n'a ni mentions légales ni
+politique de confidentialité.
+
+**Version anglaise.** Le site est bilingue mais la langue n'est qu'un état
+interne : aucune URL anglaise, aucun `hreflang`, donc rien d'indexable. La
+piste : faire produire `/en` et `/en/tournages` par `generer-pages.mjs`.
+
+**Trace des demandes.** Le formulaire n'écrit nulle part. Un e-mail perdu est
+une demande perdue, et rien ne permet de les compter. Redis est déjà branché.
+
+**Accessibilité — ce qui reste.** La galerie horizontale ne se parcourt pas au
+clavier, le contenu n'est dans aucune balise `<main>`, l'attribut `lang` du
+`<html>` ne suit pas le sélecteur de langue, et le parallaxe (piloté en
+JavaScript) ignore `prefers-reduced-motion`.
+
+**Calendrier.** Les dates se barrent à la main. Une réservation confirmée ne
+bloque pas sa date automatiquement.
 
 ## Pistes de découpage
 
@@ -99,13 +127,22 @@ src/
 | Sable | `#EDE4D3` |
 | Blanc cassé | `#F6F1E7` |
 | Encre | `#2B2118` |
-| Olive | `#6B7355` |
+| Olive | `#626A4E` |
 | Terracotta | `#B5654A` |
+| Terracotta lisible | `#97543E` |
 | Filet | `#C7B79A` |
+| Filet de champ | `#8C816D` |
+| Mention | `#6D6654` |
+
+Les quatre dernières valeurs existent pour le contraste : le terracotta de
+marque (3,38:1 sur le sable) reste aux titres et aux accents, sa variante
+sombre porte les messages d'erreur ; le filet clair reste décoratif, le filet
+sombre dessine les champs de formulaire.
 
 Titres en **Cormorant Garamond** (graisse 300), textes en **Jost** (300),
-mentions en **IBM Plex Mono**. Chargées depuis Google Fonts dans le `<style>`
-du composant — à basculer en `@font-face` local pour la performance.
+mentions en **IBM Plex Mono**. Appelées depuis Google Fonts par un
+`<link rel="stylesheet">` dans le `<head>` d'`index.html`. Les héberger en
+`@font-face` local reste le prochain gain.
 
 Parti pris visuel : aucun trait de séparation, tout centré sauf la section
 « Le refuge », photographies plutôt qu'illustrations, mouvement lent et continu.

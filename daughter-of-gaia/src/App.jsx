@@ -80,7 +80,7 @@ const ADRESSE_DEVIS = "contact@daughterofgaia.com";
 const RELAIS_DEVIS = `https://formsubmit.co/ajax/${ADRESSE_DEVIS}`;
 
 /* Palette : sable #EDE4D3 · blanc cassé #F6F1E7 · encre #2B2118
-   olive #6B7355 · terracotta #B5654A · ligne #C7B79A */
+   olive #626A4E · terracotta #B5654A · ligne #C7B79A */
 
 const T = {
 fr: {
@@ -205,6 +205,7 @@ fr: {
     afficher: "Afficher le code", masquer: "Masquer le code",
     verification: "Vérification…",
     erreurServeur: "Connexion au serveur impossible. Réessayez dans un instant.",
+    tropDEssais: "Trop de tentatives. Réessayez dans un quart d'heure.",
     erreurEnreg: "La date n'a pas pu être enregistrée. Vérifiez votre connexion et réessayez.",
     baseAbsente: "La base de données n'est pas encore configurée sur le serveur." },
 },
@@ -330,6 +331,7 @@ en: {
     afficher: "Show code", masquer: "Hide code",
     verification: "Checking…",
     erreurServeur: "Could not reach the server. Please try again shortly.",
+    tropDEssais: "Too many attempts. Please try again in fifteen minutes.",
     erreurEnreg: "The date could not be saved. Check your connection and try again.",
     baseAbsente: "The database is not configured on the server yet." },
 },
@@ -460,7 +462,7 @@ function MenuMobile({ ouvert, fermer, t, lang, setLang, entrees = [], masqueDes 
               className="mono text-xs uppercase tracking-[0.2em] px-5 h-11 rounded-full transition-colors duration-500"
               style={{ border: "1px solid #C7B79A",
                        background: lang === l ? "#2B2118" : "transparent",
-                       color: lang === l ? "#F6F1E7" : "#6B7355" }}>
+                       color: lang === l ? "#F6F1E7" : "#626A4E" }}>
               {l}
             </button>
           ))}
@@ -527,21 +529,38 @@ function LumiereFiltree() {
 /* Photos qui se succèdent en fondu, avec zoom lent */
 function Diaporama({ images, interval = 6500, overlay }) {
   const [i, setI] = useState(0);
+
+  /* Les photos n'entrent dans la page qu'une fois leur tour approchant.
+     Toutes présentes dès le départ, elles se téléchargeaient ensemble —
+     trois pleines pages d'images pour une seule visible. loading="lazy"
+     n'y changeait rien : superposées en plein écran, elles sont toutes
+     « dans la fenêtre » aux yeux du navigateur. */
+  const [chargees, setChargees] = useState(() => new Set([0]));
   useEffect(() => {
     const t = setInterval(() => setI((v) => (v + 1) % images.length), interval);
     return () => clearInterval(t);
   }, [images.length, interval]);
+
+  /* La suivante est demandée une seconde et demie après l'arrivée de la
+     courante : le premier écran reste léger, et la photo est prête bien
+     avant le fondu. */
+  useEffect(() => {
+    const suivante = (i + 1) % images.length;
+    const t = setTimeout(() => setChargees((vues) => (vues.has(suivante) ? vues : new Set([...vues, suivante]))), 1500);
+    return () => clearTimeout(t);
+  }, [i, images.length]);
+
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {images.map((im, k) => (
-        <img key={k} src={im.src} alt={im.alt} className="absolute inset-0 w-full h-full object-cover"
+      {images.map((im, k) => (!chargees.has(k) ? null : (
+        <img key={k} src={im.src} alt={im.alt} decoding="async" className="absolute inset-0 w-full h-full object-cover"
           style={{
             objectPosition: im.pos || "center",
             opacity: k === i ? 1 : 0,
             transform: k === i ? "scale(1.14)" : "scale(1.02)",
             transition: "opacity 2.4s ease, transform 8s ease-out",
           }} />
-      ))}
+      )))}
       {overlay}
     </div>
   );
@@ -633,7 +652,7 @@ function GalerieHorizontale({ items }) {
         <div className="flex gap-4 px-8" style={{ width: "max-content" }}>
           {items.map((g, i) => (
             <figure key={i} className="shrink-0 relative overflow-hidden gal-fig" style={{ width: "76vw", height: "58vh", scrollSnapAlign: "center" }}>
-              <img src={g.src} alt={g.l} className="w-full h-full object-cover gal-img" style={{ objectPosition: g.pos || "center" }} />
+              <img src={g.src} alt={g.l} loading="lazy" decoding="async" className="w-full h-full object-cover gal-img" style={{ objectPosition: g.pos || "center" }} />
               <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(20,14,8,.55), transparent 50%)" }} />
               <figcaption className="absolute bottom-5 inset-x-0 text-center mono text-[9px] uppercase tracking-[0.24em]" style={{ color: "rgba(246,241,231,.95)" }}>
                 {g.l}
@@ -651,7 +670,7 @@ function GalerieHorizontale({ items }) {
           {items.map((g, i) => (
             <figure key={i} className="shrink-0 relative overflow-hidden gal-fig group"
               style={{ width: g.w, height: g.h }}>
-              <img src={g.src} alt={g.l} className="w-full h-full object-cover gal-img"
+              <img src={g.src} alt={g.l} loading="lazy" decoding="async" className="w-full h-full object-cover gal-img"
                 style={{ objectPosition: g.pos || "center" }} />
               <div className="absolute inset-0 transition-opacity duration-700 opacity-0 group-hover:opacity-100"
                 style={{ background: "linear-gradient(to top, rgba(20,14,8,.55), transparent 55%)" }} />
@@ -707,7 +726,7 @@ function Progression() {
   }, []);
   return (
     <div className="fixed top-0 left-0 right-0 z-[70] h-[2px] pointer-events-none" aria-hidden="true">
-      <div style={{ width: `${p}%`, height: "100%", background: "linear-gradient(90deg,#6B7355,#B5654A)", transition: "width .1s linear" }} />
+      <div style={{ width: `${p}%`, height: "100%", background: "linear-gradient(90deg,#626A4E,#B5654A)", transition: "width .1s linear" }} />
     </div>
   );
 }
@@ -983,7 +1002,7 @@ function Calendrier({ blocked, onDayClick, admin = false, lang = "fr" }) {
           className="flex items-center justify-center w-11 h-11 -mr-2 disabled:opacity-25 transition-transform hover:translate-x-1" aria-label="Mois suivant"><ChevronRight size={18} /></button>
       </div>
       <div className="grid grid-cols-7 mb-3">
-        {JOURS_L.map((d, i) => <span key={i} className="mono text-[9px] text-center tracking-widest" style={{ color: "#9a8f76" }}>{d}</span>)}
+        {JOURS_L.map((d, i) => <span key={i} className="mono text-[9px] text-center tracking-widest" style={{ color: "#6D6654" }}>{d}</span>)}
       </div>
       <div className="grid grid-cols-7 gap-y-1 pb-6 transition-opacity duration-200" style={{ opacity: fade ? 0 : 1 }}>
         {cells.map((d, i) => {
@@ -1143,6 +1162,7 @@ export default function App() {
         body: JSON.stringify({ code: codeInput, action: "verifier" }),
       });
       const data = await r.json().catch(() => null);
+      if (r.status === 429) { setCodeError(t.admin.tropDEssais); return; }
       if (r.status === 401) { setCodeError(t.admin.erreur); return; }
       if (r.status === 503 || (data && data.erreur === "base_non_configuree")) {
         setCodeError(t.admin.baseAbsente); return;
@@ -1241,7 +1261,6 @@ export default function App() {
 
   const styleTag = (
     <style>{`
-      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400;500&family=IBM+Plex+Mono:wght@300;400&display=swap');
       .display{font-family:'Cormorant Garamond',serif;}
       .body-font{font-family:'Jost',sans-serif;font-weight:300;}
       .mono{font-family:'IBM Plex Mono',monospace;}
@@ -1303,8 +1322,8 @@ export default function App() {
       .grain-doux{position:absolute;inset:0;opacity:.05;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");}
       .day-cell{transition:color .3s,transform .25s;}
       .day-cell:hover:not(:disabled){transform:scale(1.25);color:#B5654A;}
-      .champ-date{color:#2B2118;border-bottom:1px solid #C7B79A;transition:color .35s,border-color .35s;}
-      .champ-date-vide{color:#9a8f76;}
+      .champ-date{color:#2B2118;border-bottom:1px solid #8C816D;transition:color .35s,border-color .35s;}
+      .champ-date-vide{color:#6D6654;}
       .champ-date:hover,.champ-date:focus-visible{color:#B5654A;border-color:#B5654A;}
       .link-u{position:relative;}
       .link-u::after{content:'';position:absolute;left:0;bottom:-4px;height:1px;width:100%;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .6s cubic-bezier(.22,1,.36,1);}
@@ -1337,7 +1356,7 @@ export default function App() {
         .text-\\[9px\\]{font-size:11px;}
         .text-\\[10px\\]{font-size:11px;}
       }
-      input:focus,select:focus,textarea:focus{outline:none;border-color:#6B7355 !important;}
+      input:focus,select:focus,textarea:focus{outline:none;border-color:#626A4E !important;}
       ::selection{background:#B5654A;color:#F6F1E7;}
       @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none !important;transition-duration:.01ms !important;}}
     `}</style>
@@ -1364,7 +1383,7 @@ export default function App() {
         <button key={l} onClick={() => setLang(l)}
           className="mono text-[9px] uppercase tracking-[0.18em] px-2.5 py-1 transition-colors duration-500"
           style={{ background: lang === l ? "#2B2118" : "transparent",
-                   color: lang === l ? "#F6F1E7" : "#6B7355" }}>
+                   color: lang === l ? "#F6F1E7" : "#626A4E" }}>
           {l}
         </button>
       ))}
@@ -1387,19 +1406,19 @@ export default function App() {
               <Eyebrow>{t.admin.acces}</Eyebrow>
               <h1 className="display text-4xl mb-8" style={{ fontWeight: 300 }}>{t.admin.code}</h1>
               <div className="relative">
-                <input type={codeVisible ? "text" : "password"} value={codeInput}
+                <input type={codeVisible ? "text" : "password"} value={codeInput} aria-label={t.admin.codePh}
                   onChange={(e) => setCodeInput(e.target.value)} autoComplete="current-password"
                   className="body-font w-full pl-0 pr-12 py-3 bg-transparent"
-                  style={{ borderBottom: "1px solid #C7B79A" }} placeholder={t.admin.codePh} />
+                  style={{ borderBottom: "1px solid #8C816D" }} placeholder={t.admin.codePh} />
                 <button type="button" onClick={() => setCodeVisible(!codeVisible)}
                   aria-label={codeVisible ? t.admin.masquer : t.admin.afficher}
                   aria-pressed={codeVisible}
                   className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-11 h-11 transition-opacity hover:opacity-100 opacity-55"
-                  style={{ color: "#6B7355" }}>
+                  style={{ color: "#626A4E" }}>
                   {codeVisible ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
               </div>
-              {codeError && <p className="body-font text-sm mt-3" style={{ color: "#B5654A" }} role="alert">{codeError}</p>}
+              {codeError && <p className="body-font text-sm mt-3" style={{ color: "#97543E" }} role="alert">{codeError}</p>}
               <button type="submit" disabled={verif || !codeInput}
                 className="btn btn-solid body-font mt-8 px-10 py-3.5 text-sm uppercase tracking-[0.2em] disabled:opacity-60"
                 style={{ background: "#666E51", color: "#F6F1E7" }}>
@@ -1417,10 +1436,10 @@ export default function App() {
                 {t.admin.aide}
               </p>
               {loading ? <Loader2 className="animate-spin" color="#B5654A" /> : <Calendrier blocked={blocked} admin lang={lang} onDayClick={toggleBlocked} />}
-              {saving && <p className="mono text-[10px] flex items-center gap-2 mt-2" style={{ color: "#6B7355" }}><Loader2 size={11} className="animate-spin" /> {t.admin.enreg}</p>}
-              {adminErreur && <p className="body-font text-sm mt-3" style={{ color: "#B5654A" }} role="alert">{adminErreur}</p>}
+              {saving && <p className="mono text-[10px] flex items-center gap-2 mt-2" style={{ color: "#626A4E" }}><Loader2 size={11} className="animate-spin" /> {t.admin.enreg}</p>}
+              {adminErreur && <p className="body-font text-sm mt-3" style={{ color: "#97543E" }} role="alert">{adminErreur}</p>}
               <div className="mt-12 max-w-xl">
-                <p className="mono text-[10px] uppercase tracking-[0.25em] mb-4" style={{ color: "#6B7355" }}>{t.admin.bloquees} — {blocked.size}</p>
+                <p className="mono text-[10px] uppercase tracking-[0.25em] mb-4" style={{ color: "#626A4E" }}>{t.admin.bloquees} — {blocked.size}</p>
                 {blocked.size === 0 ? <p className="body-font text-sm" style={{ color: "#5a4f42" }}>{t.admin.aucune}</p> : (
                   <div className="flex flex-wrap gap-2">
                     {[...blocked].sort().map((k) => { const [y, m, d] = k.split("-");
@@ -1487,7 +1506,7 @@ export default function App() {
           <div className="max-w-6xl mx-auto px-8 py-5 flex flex-col items-center gap-3 transition-opacity duration-500"
             style={{ opacity: navSolid ? 1 : 0, pointerEvents: navSolid ? "auto" : "none" }}>
             <button onClick={() => allerA("accueil")} className="display text-base tracking-[0.08em] flex items-center min-h-[44px]">Daughter of Gaïa</button>
-            <div className="hidden sm:flex items-center gap-8 mono text-[10px] uppercase tracking-[0.2em] leading-none" style={{ color: "#6B7355" }}>
+            <div className="hidden sm:flex items-center gap-8 mono text-[10px] uppercase tracking-[0.2em] leading-none" style={{ color: "#626A4E" }}>
               <a href="#decors" className="link-u">{t.tournages.nav.decors}</a>
               <a href="#maison" className="link-u">{t.tournages.nav.maison}</a>
               <a href="#pratique" className="link-u">{t.tournages.nav.pratique}</a>
@@ -1541,7 +1560,7 @@ export default function App() {
               <div key={i}>
                 <VoletsReveal className="relative w-full h-[50vh] sm:h-[74vh] zoom-wrap">
                   <Parallax speed={-0.06} className="absolute inset-0 -top-14 -bottom-14">
-                    <img src={DECOR_IMG[i].src} alt={d.t} className="w-full h-full object-cover" style={{ objectPosition: DECOR_IMG[i].pos }} />
+                    <img src={DECOR_IMG[i].src} alt={d.t} loading="lazy" decoding="async" className="w-full h-full object-cover" style={{ objectPosition: DECOR_IMG[i].pos }} />
                   </Parallax>
                 </VoletsReveal>
                 <Reveal delay={120}>
@@ -1710,7 +1729,7 @@ export default function App() {
 
           <a href="#" className="display text-base tracking-[0.08em] flex items-center min-h-[44px]">Daughter of Gaïa</a>
 
-          <div className="hidden lg:flex items-center gap-8 mono text-[10px] uppercase tracking-[0.2em] leading-none" style={{ color: "#6B7355" }}>
+          <div className="hidden lg:flex items-center gap-8 mono text-[10px] uppercase tracking-[0.2em] leading-none" style={{ color: "#626A4E" }}>
             <a href="#domaine" className="link-u">{t.nav.domaine}</a>
             <a href="#histoire" className="link-u">{t.nav.histoire}</a>
             <a href="#experiences" className="link-u">{t.nav.experiences}</a>
@@ -1784,7 +1803,7 @@ export default function App() {
             {t.domaine.texte}
           </MaskText>
           <Reveal delay={320}>
-            <p className="display italic text-xl sm:text-2xl mt-9 max-w-2xl mx-auto leading-snug" style={{ color: "#6B7355", fontWeight: 300 }}>
+            <p className="display italic text-xl sm:text-2xl mt-9 max-w-2xl mx-auto leading-snug" style={{ color: "#626A4E", fontWeight: 300 }}>
               {t.domaine.citation}
             </p>
           </Reveal>
@@ -1805,7 +1824,7 @@ export default function App() {
                   <p className="display text-3xl sm:text-4xl" style={{ fontWeight: 300 }}>
                     {/^\d/.test(e.v) ? <CountUp value={e.v} delay={i * 160} /> : e.v}
                   </p>
-                  <p className="mono text-[9px] uppercase tracking-[0.2em] mt-2.5" style={{ color: "#6B7355" }}>{e.t}</p>
+                  <p className="mono text-[9px] uppercase tracking-[0.2em] mt-2.5" style={{ color: "#626A4E" }}>{e.t}</p>
                 </div>
               </Reveal>
             ))}
@@ -1866,7 +1885,7 @@ export default function App() {
                 <span className="mono text-[10px] block mb-3" style={{ color: "#B5654A" }}>{String(i + 1).padStart(2, "0")}</span>
                 <div className="flex items-center justify-center gap-3 flex-wrap">
                   <h3 className="display text-2xl sm:text-3xl" style={{ fontWeight: 400 }}>{p.t}</h3>
-                  {p.soon && <span className="mono text-[8px] uppercase tracking-[0.2em] px-2 py-1" style={{ color: "#6B7355", background: "#e5dcc8" }}>{t.experiences.bientot}</span>}
+                  {p.soon && <span className="mono text-[8px] uppercase tracking-[0.2em] px-2 py-1" style={{ color: "#626A4E", background: "#e5dcc8" }}>{t.experiences.bientot}</span>}
                 </div>
                 <p className="body-font text-sm mt-3 leading-relaxed max-w-lg mx-auto" style={{ color: "#5a4f42" }}>{p.d}</p>
               </div>
@@ -1887,7 +1906,7 @@ export default function App() {
           {[...Array(2)].map((_, k) => (
             <span key={k} className="flex items-center">
               {t.bandeau.map((mot, i) => (
-                <span key={i} className="display text-2xl sm:text-4xl flex items-center" style={{ color: "#c0b298", fontWeight: 300 }}>
+                <span key={i} className="display text-2xl sm:text-4xl flex items-center" style={{ color: "#857C6A", fontWeight: 300 }}>
                   <span className="px-10">{mot}</span>
                   <span style={{ color: "#B5654A", fontSize: ".4em" }}>✦</span>
                 </span>
@@ -1901,7 +1920,7 @@ export default function App() {
       <section className="relative w-full overflow-hidden my-16">
         <button onClick={() => allerA("tournages")} className="block w-full text-left group">
           <VoletsReveal className="relative w-full h-[56vh] sm:h-[70vh]">
-            <img src={V_PERGOLA} alt={t.decors[0].t}
+            <img src={V_PERGOLA} alt={t.decors[0].t} loading="lazy" decoding="async"
               className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105"
               style={{ objectPosition: "center 55%" }} />
             <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(20,14,8,.30), rgba(20,14,8,.70))" }} />
@@ -1930,7 +1949,7 @@ export default function App() {
             {t.galerie.titre}
           </WordReveal>
           <Reveal delay={200}>
-            <p className="mono text-[10px] uppercase tracking-[0.24em] mb-4 tick flex items-center justify-center gap-3" style={{ color: "#9a8f76" }}>
+            <p className="mono text-[10px] uppercase tracking-[0.24em] mb-4 tick flex items-center justify-center gap-3" style={{ color: "#6D6654" }}>
               {t.galerie.faire} <ArrowRight size={12} />
             </p>
           </Reveal>
@@ -1995,7 +2014,7 @@ export default function App() {
                   if (isB) return; setSelectedDate(label); versDevis();
                 }} />
               </div>
-              <p className="mono text-[10px] uppercase tracking-[0.2em] mt-6" style={{ color: "#9a8f76" }}>
+              <p className="mono text-[10px] uppercase tracking-[0.2em] mt-6" style={{ color: "#6D6654" }}>
                 {t.dispo.note}
               </p>
             </>
@@ -2028,39 +2047,39 @@ export default function App() {
                 aria-hidden="true" value={piege} onChange={(e) => setPiege(e.target.value)}
                 style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0 }} />
               <div>
-                <label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.date}</label>
+                <span className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.date}</span>
                 <button type="button" onClick={versCalendrier}
-                  aria-label={selectedDate ? `${selectedDate} — ${t.devis.dateModifier}` : t.devis.datePh}
+                  aria-label={selectedDate ? `${t.devis.date} : ${selectedDate} — ${t.devis.dateModifier}` : `${t.devis.date} : ${t.devis.datePh}`}
                   className={`champ-date body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center flex items-center justify-center gap-2${selectedDate ? "" : " champ-date-vide"}`}>
                   <CalendarDays size={13} aria-hidden="true" />
                   <span>{selectedDate || t.devis.datePh}</span>
                 </button>
               </div>
               <div className="grid sm:grid-cols-2 gap-8">
-                <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.nom}</label>
+                <div><label htmlFor="champ-nom" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.nom}</label>
                   <input id="champ-nom" type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
-                <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.email}</label>
-                  <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
+                <div><label htmlFor="champ-email" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.email}</label>
+                  <input id="champ-email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
               </div>
               <div className="grid sm:grid-cols-2 gap-8">
-                <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.tel}</label>
-                  <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
-                <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.invites}</label>
-                  <input type="number" min="1" value={form.guests} onChange={(e) => setForm({ ...form, guests: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
+                <div><label htmlFor="champ-tel" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.tel}</label>
+                  <input id="champ-tel" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
+                <div><label htmlFor="champ-invites" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.invites}</label>
+                  <input id="champ-invites" type="number" min="1" value={form.guests} onChange={(e) => setForm({ ...form, guests: e.target.value })}
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
               </div>
-              <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.type}</label>
-                <select value={form.type || t.prestations[0].t} onChange={(e) => setForm({ ...form, type: e.target.value })}
-                  className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }}>
+              <div><label htmlFor="champ-type" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.type}</label>
+                <select id="champ-type" value={form.type || t.prestations[0].t} onChange={(e) => setForm({ ...form, type: e.target.value })}
+                  className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }}>
                   {t.prestations.map((p) => <option key={p.t}>{p.t}</option>)}<option>{t.devis.autre}</option>
                 </select></div>
-              <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.projet}</label>
-                <textarea rows={3} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
+              <div><label htmlFor="champ-projet" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.projet}</label>
+                <textarea id="champ-projet" rows={3} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
                   placeholder={t.devis.projetPh}
-                  className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm resize-none text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
+                  className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm resize-none text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
               <div className="text-center pt-4">
                 <button type="submit" disabled={envoi === "envoi"}
                   className="btn btn-solid body-font px-12 py-4 text-[11px] uppercase tracking-[0.28em] disabled:opacity-60"
@@ -2071,9 +2090,9 @@ export default function App() {
                   </span>
                 </button>
                 {envoi === "erreur" && (
-                  <p className="body-font text-sm mt-6 max-w-sm mx-auto" style={{ color: "#B5654A" }} role="alert">
+                  <p className="body-font text-sm mt-6 max-w-sm mx-auto" style={{ color: "#97543E" }} role="alert">
                     {t.devis.erreur}{" "}
-                    <a href={`mailto:${ADRESSE_DEVIS}`} className="link-u" style={{ color: "#B5654A" }}>
+                    <a href={`mailto:${ADRESSE_DEVIS}`} className="link-u" style={{ color: "#97543E" }}>
                       {ADRESSE_DEVIS}
                     </a>
                   </p>

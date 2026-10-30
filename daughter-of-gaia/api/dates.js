@@ -16,6 +16,12 @@ import { createClient } from "redis";
 
 const CLE = "gaia-dates-bloquees";
 
+/* Le code etait verifie sans limite : rien n'empechait un robot d'en essayer
+   des milliers par minute. On compte les echecs par adresse, et on ferme la
+   porte un quart d'heure au bout de cinq. */
+const ESSAIS_MAX = 5;
+const DUREE_BLOCAGE = 15 * 60;   // secondes
+
 /* Selon le connecteur choisi, Vercel expose l'adresse sous des noms
    différents. On les accepte tous plutôt que d'en imposer un. */
 const URL_BASE =
@@ -73,6 +79,35 @@ function codeValide(fourni) {
   return crypto.timingSafeEqual(a, b);
 }
 
+/* Derriere Vercel, l'adresse du visiteur arrive dans x-forwarded-for ;
+   la premiere valeur de la liste est celle du client. */
+function adresse(req) {
+  const entete = req.headers["x-forwarded-for"];
+  const premiere = (Array.isArray(entete) ? entete[0] : String(entete || "")).split(",")[0];
+  return premiere.trim() || (req.socket && req.socket.remoteAddress) || "inconnue";
+}
+
+const cleEssais = (ip) => `gaia-essais:${ip}`;
+
+async function essaisRecents(ip) {
+  const c = await client();
+  return Number(await c.get(cleEssais(ip))) || 0;
+}
+
+/* Le compteur expire de lui-meme : le premier echec arme le delai. */
+async function noterEchec(ip) {
+  const c = await client();
+  const cle = cleEssais(ip);
+  const n = await c.incr(cle);
+  if (n === 1) await c.expire(cle, DUREE_BLOCAGE);
+  return n;
+}
+
+async function oublierEchecs(ip) {
+  const c = await client();
+  await c.del(cleEssais(ip));
+}
+
 /* Une date valide ressemble à 2026-7-20 (année-mois-jour, sans zéro devant) */
 function dateValide(d) {
   return typeof d === "string" && /^\d{4}-\d{1,2}-\d{1,2}$/.test(d);
@@ -96,7 +131,17 @@ export default async function handler(req, res) {
     const { code, action, date } = corps;
 
     if (!CODE) return res.status(500).json({ erreur: "code_non_configure" });
-    if (!codeValide(code)) return res.status(401).json({ erreur: "code_incorrect" });
+
+    const ip = adresse(req);
+    if (await essaisRecents(ip) >= ESSAIS_MAX) {
+      res.setHeader("Retry-After", String(DUREE_BLOCAGE));
+      return res.status(429).json({ erreur: "trop_d_essais" });
+    }
+    if (!codeValide(code)) {
+      const n = await noterEchec(ip);
+      return res.status(401).json({ erreur: "code_incorrect", restants: Math.max(0, ESSAIS_MAX - n) });
+    }
+    await oublierEchecs(ip);
 
     /* ── Vérification du code seule (écran de connexion) ── */
     if (action === "verifier") {
