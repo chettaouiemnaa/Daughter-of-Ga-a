@@ -97,10 +97,13 @@ piste : faire produire `/en` et `/en/tournages` par `generer-pages.mjs`.
 **Trace des demandes.** Le formulaire n'écrit nulle part. Un e-mail perdu est
 une demande perdue, et rien ne permet de les compter. Redis est déjà branché.
 
-**Accessibilité — ce qui reste.** La galerie horizontale ne se parcourt pas au
-clavier, le contenu n'est dans aucune balise `<main>`, l'attribut `lang` du
-`<html>` ne suit pas le sélecteur de langue, et le parallaxe (piloté en
-JavaScript) ignore `prefers-reduced-motion`.
+**Accessibilité — ce qui reste.** L'attribut `lang` du `<html>` ne suit pas le
+sélecteur de langue : une synthèse vocale lit l'anglais avec une prononciation
+française. Et le parallaxe, piloté en JavaScript, échappe à la règle CSS
+`prefers-reduced-motion` qui neutralise toutes les autres animations.
+
+axe-core ne relève plus aucune violation sur l'accueil (mobile et bureau) ni
+sur la page tournages.
 
 **Calendrier.** Les dates se barrent à la main. Une réservation confirmée ne
 bloque pas sa date automatiquement.
