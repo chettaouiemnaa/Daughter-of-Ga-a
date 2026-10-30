@@ -34,8 +34,8 @@ def story():
     d = ImageDraw.Draw(im)
     titre = police("CormorantGaramond[wght].ttf", 96, 400)
     ital = police("CormorantGaramond-Italic[wght].ttf", 96, 400)
-    d.text((W / 2, 700), "Qui se cache", font=titre, fill=BLANC, anchor="mt")
-    d.text((W / 2, 812), "derrière cette fenêtre ?", font=ital, fill=BLANC, anchor="mt")
+    d.text((W / 2, 700), "Jetez un œil", font=titre, fill=BLANC, anchor="mt")
+    d.text((W / 2, 812), "par la fenêtre…", font=ital, fill=BLANC, anchor="mt")
 
     # « NOUVEAU POST » en petites capitales espacées, puis l'invitation.
     caps, esp = police("Jost[wght].ttf", 30, 500), 9
