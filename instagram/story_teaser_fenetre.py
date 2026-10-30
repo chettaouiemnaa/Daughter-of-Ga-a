@@ -22,7 +22,7 @@ def police(nom, taille, graisse):
     return f
 
 
-def story():
+def story(invitation=True):
     src = ImageOps.exif_transpose(Image.open(RACINE / "photos" / "fenetre-mur-ocre.png")).convert("RGB")
     fond = ImageOps.fit(src, (W, H), Image.LANCZOS, centering=(0.5, 0.55))
     fond = fond.filter(ImageFilter.GaussianBlur(28)).convert("RGBA")
@@ -45,8 +45,9 @@ def story():
     for c in texte:
         d.text((x, 1000), c, font=caps, fill=BLANC, anchor="lt")
         x += d.textlength(c, font=caps) + esp
-    d.text((W / 2, 1062), "Touchez pour découvrir", font=police("CormorantGaramond-Italic[wght].ttf", 58, 400),
-           fill=BLANC, anchor="mt")
+    if invitation:
+        d.text((W / 2, 1062), "Touchez pour découvrir", font=police("CormorantGaramond-Italic[wght].ttf", 58, 400),
+               fill=BLANC, anchor="mt")
 
     sig = signature(BLANC, BLANC, g_nom=450, g_lieu=500)
     sig = sig.resize((440, round(sig.height * 440 / sig.width)), Image.LANCZOS)
@@ -56,3 +57,6 @@ def story():
 
 if __name__ == "__main__":
     story().save(RACINE / "stories" / "teaser-fenetre.jpg", quality=92)
+    # Sans « Touchez pour découvrir » : seul le post qui dépasse sur les côtés
+    # s'ouvre au toucher, pas cette image.
+    story(invitation=False).save(RACINE / "stories" / "teaser-fenetre-sans-invitation.jpg", quality=92)
