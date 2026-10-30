@@ -25,13 +25,13 @@ def police(nom, taille, graisse):
     return f
 
 
-def signature(c_nom, c_lieu, avec_lieu=True):
+def signature(c_nom, c_lieu, avec_lieu=True, g_nom=300, g_lieu=400):
     mesure = ImageDraw.Draw(Image.new("L", (1, 1)))
     taille = round(100 * LARGEUR_LOGO / mesure.textlength(LOGO, font=police("CormorantGaramond[wght].ttf", 100, 300)))
-    f_nom = police("CormorantGaramond[wght].ttf", taille, 300)
+    f_nom = police("CormorantGaramond[wght].ttf", taille, g_nom)
     # Mêmes rapports que la ligne des stories (logo ≈ 5,3 × le corps du lieu).
     k = LARGEUR_LOGO / 160
-    f_lieu = police("Jost[wght].ttf", round(5.2 * k), 400)
+    f_lieu = police("Jost[wght].ttf", round(5.2 * k), g_lieu)
     esp, gap, trait, ecart, ep = 1.6 * k, 5.5 * k, 17 * k, 6 * k, max(2, 0.45 * k)
 
     W, H = LARGEUR_LOGO + 1200, taille * 3
