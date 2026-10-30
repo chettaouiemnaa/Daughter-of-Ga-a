@@ -482,7 +482,7 @@ function Rideau() {
   }, []);
   if (phase === 2) return null;
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none"
+    <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none" aria-hidden="true"
       style={{ background: "#1a130c", clipPath: phase >= 1 ? "inset(0 0 100% 0)" : "inset(0 0 0 0)",
                transition: "clip-path 1.4s cubic-bezier(.76,0,.24,1)" }}>
       <div style={{ opacity: phase >= 1 ? 0 : 1, transition: "opacity .7s ease" }} className="text-center">
@@ -614,7 +614,7 @@ function LetterReveal({ children, className = "", style = {}, delay = 0 }) {
 }
 
 /* Galerie qui défile horizontalement au scroll */
-function GalerieHorizontale({ items }) {
+function GalerieHorizontale({ items, label }) {
   const outer = useRef(null);
   const track = useRef(null);
   const [dist, setDist] = useState(0);
@@ -647,8 +647,12 @@ function GalerieHorizontale({ items }) {
 
   return (
     <>
-      {/* Mobile : défilement tactile classique */}
-      <div className="lg:hidden overflow-x-auto pb-6" style={{ scrollSnapType: "x mandatory" }}>
+      {/* Mobile : défilement tactile classique.
+          tabIndex rend la bande atteignable au clavier — sans lui, les
+          flèches ne peuvent pas la faire défiler, et les photos qui
+          dépassent de l'écran restent hors de portée. */}
+      <div className="lg:hidden overflow-x-auto pb-6" tabIndex={0} role="region" aria-label={label}
+        style={{ scrollSnapType: "x mandatory" }}>
         <div className="flex gap-4 px-8" style={{ width: "max-content" }}>
           {items.map((g, i) => (
             <figure key={i} className="shrink-0 relative overflow-hidden gal-fig" style={{ width: "76vw", height: "58vh", scrollSnapAlign: "center" }}>
@@ -1463,6 +1467,7 @@ export default function App() {
         <Grain />
         <Progression />
 
+        <main>
         {/* HERO */}
         <section className="relative h-[100svh] w-full overflow-hidden">
           <div className="absolute inset-0" style={{ transform: `translate3d(0,${scrollY * 0.3}px,0)` }}>
@@ -1620,6 +1625,7 @@ export default function App() {
             </Reveal>
           </div>
         </section>
+        </main>
 
         {/* CONTACT */}
         <footer id="contact-t" style={{ background: "#2B2118", color: "#EDE4D3" }}>
@@ -1667,6 +1673,7 @@ export default function App() {
       <Grain />
       <Progression />
 
+      <main>
       {/* ── HERO ── */}
       <section className="relative h-[100svh] w-full overflow-hidden">
         <div className="absolute inset-0" style={{ transform: `translate3d(0,${scrollY * 0.32}px,0)` }}>
@@ -1954,7 +1961,7 @@ export default function App() {
             </p>
           </Reveal>
         </div>
-        <GalerieHorizontale items={[
+        <GalerieHorizontale label={t.galerie.titre} items={[
           { src: IMAGES.lieu, l: t.galerie.legendes[0], pos: "center 30%", w: "min(78vw,420px)", h: "min(64vh,560px)" },
           { src: IMAGES.hero, l: t.galerie.legendes[1], pos: "70% center", w: "min(88vw,640px)", h: "min(52vh,450px)" },
           { src: IMAGES.histoire, l: t.galerie.legendes[2], pos: "center 20%", w: "min(72vw,380px)", h: "min(68vh,590px)" },
@@ -2116,6 +2123,7 @@ export default function App() {
         </div>
         </div>
       </section>
+      </main>
 
       {/* ── CONTACT ── */}
       <footer id="contact" style={{ background: "#2B2118", color: "#EDE4D3" }}>
