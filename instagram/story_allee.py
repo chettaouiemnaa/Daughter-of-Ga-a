@@ -1,14 +1,14 @@
 """Story : l'allée qui mène au portail, et un cheval qui attend derrière.
 
-Plein écran. Tout le texte est en haut, sur le feuillage sombre : les pierres
-claires de l'allée, en bas, noient la signature.
+Plein écran. La phrase en blanc en haut, sur le feuillage sombre ; la
+signature en bas, en brun foncé, sur les pierres claires de l'allée.
 
     python3 instagram/story_allee.py
 """
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 
-from signature import BLANC, POLICES, signature
+from signature import BLANC, ENCRE, POLICES, SABLE, signature
 from story_video import ombre_douce
 
 RACINE = Path(__file__).resolve().parent
@@ -31,11 +31,18 @@ def story(phrase):
         for ligne in phrase:
             d.text((W / 2, y), ligne, font=f, fill=BLANC, anchor="mt")
             y += 86
-        y += 40
-    sig = signature(BLANC, BLANC, g_nom=450, g_lieu=500)
+    im = Image.alpha_composite(fond, ombre_douce(calque, force=0.8))
+    # Sur le gravier moucheté, l'encre seule se perd : un halo sable, large et
+    # doux, la détache du fond.
+    sig = signature(ENCRE, ENCRE, g_nom=500, g_lieu=600)
     sig = sig.resize((560, round(sig.height * 560 / sig.width)), Image.LANCZOS)
-    calque.paste(sig, ((W - sig.width) // 2, y), sig)
-    return Image.alpha_composite(fond, ombre_douce(calque, force=0.8)).convert("RGB")
+    pose = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    pose.paste(sig, ((W - sig.width) // 2, 1620), sig)
+    lueur = pose.getchannel("A").filter(ImageFilter.MaxFilter(21)).filter(ImageFilter.GaussianBlur(26))
+    halo = Image.new("RGBA", (W, H), SABLE)
+    halo.putalpha(lueur.point(lambda v: min(255, int(v * 1.1))))
+    im = Image.alpha_composite(Image.alpha_composite(im, halo), pose)
+    return im.convert("RGB")
 
 
 if __name__ == "__main__":
