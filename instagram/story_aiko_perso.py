@@ -74,20 +74,32 @@ def version_photo():
 
 
 def safe_place():
-    """Sa deuxième mise en page, avec « My safe place » sous la photo en couleur."""
+    """Sa deuxième mise en page, avec « My safe place » en petit sous la photo
+    en couleur : en capitales espacées, ou en minuscules, en Jost léger."""
     src = Image.open(RACINE / "photos" / "aiko-perso-nb-2.jpg").convert("RGB").resize((W, H), Image.LANCZOS)
-    haut = 1500  # le bas de la photo en couleur tombe vers y = 1531
+    y = 1600  # sous la photo en couleur, dont le bas tombe vers y = 1531
     voile = Image.new("L", (1, H), 0)
-    for y in range(haut, haut + 260):
-        voile.putpixel((0, y), int(170 * min(1.0, (y - haut) / 70, (haut + 260 - y) / 70)))
+    for v in range(y - 80, y + 80):
+        voile.putpixel((0, v), int(120 * min(1.0, (v - y + 80) / 50, (y + 80 - v) / 50)))
     fond = Image.new("RGBA", (W, H), "#0E0E0E")
     fond.putalpha(voile.resize((W, H)))
-    texte = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    f = ImageFont.truetype(str(POLICES / "CormorantGaramond-Italic[wght].ttf"), 104)
-    f.set_variation_by_axes([450])
-    ImageDraw.Draw(texte).text((W / 2, haut + 130), "My safe place", font=f, fill=BLANC, anchor="mm")
-    im = Image.alpha_composite(src.convert("RGBA"), Image.alpha_composite(fond, ombre_douce(texte, force=0.6, flou=16)))
-    im.convert("RGB").save(RACINE / "stories" / "aiko-my-safe-place.jpg", quality=92)
+
+    def jost(taille, graisse):
+        f = ImageFont.truetype(str(POLICES / "Jost[wght].ttf"), taille)
+        f.set_variation_by_axes([graisse])
+        return f
+
+    for nom, texte, f, esp in (("capitales", "MY SAFE PLACE", jost(34, 400), 12),
+                               ("minuscules", "my safe place", jost(44, 300), 3)):
+        calque = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        d = ImageDraw.Draw(calque)
+        larg = sum(d.textlength(c, font=f) for c in texte) + esp * (len(texte) - 1)
+        x = W / 2 - larg / 2
+        for c in texte:
+            d.text((x, y), c, font=f, fill=BLANC, anchor="lm")
+            x += d.textlength(c, font=f) + esp
+        im = Image.alpha_composite(src.convert("RGBA"), Image.alpha_composite(fond, ombre_douce(calque, force=0.5, flou=12)))
+        im.convert("RGB").save(RACINE / "stories" / f"aiko-my-safe-place-{nom}.jpg", quality=92)
 
 
 if __name__ == "__main__":
