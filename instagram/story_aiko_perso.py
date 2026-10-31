@@ -73,9 +73,27 @@ def version_photo():
     im.save(RACINE / "stories" / "aiko-perso-nb-phrase.jpg", quality=92)
 
 
+def safe_place():
+    """Sa deuxième mise en page, avec « My safe place » sous la photo en couleur."""
+    src = Image.open(RACINE / "photos" / "aiko-perso-nb-2.jpg").convert("RGB").resize((W, H), Image.LANCZOS)
+    haut = 1500  # le bas de la photo en couleur tombe vers y = 1531
+    voile = Image.new("L", (1, H), 0)
+    for y in range(haut, haut + 260):
+        voile.putpixel((0, y), int(170 * min(1.0, (y - haut) / 70, (haut + 260 - y) / 70)))
+    fond = Image.new("RGBA", (W, H), "#0E0E0E")
+    fond.putalpha(voile.resize((W, H)))
+    texte = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    f = ImageFont.truetype(str(POLICES / "CormorantGaramond-Italic[wght].ttf"), 104)
+    f.set_variation_by_axes([450])
+    ImageDraw.Draw(texte).text((W / 2, haut + 130), "My safe place", font=f, fill=BLANC, anchor="mm")
+    im = Image.alpha_composite(src.convert("RGBA"), Image.alpha_composite(fond, ombre_douce(texte, force=0.6, flou=16)))
+    im.convert("RGB").save(RACINE / "stories" / "aiko-my-safe-place.jpg", quality=92)
+
+
 if __name__ == "__main__":
     if sys.argv[1:] == ["photo"]:
         version_photo()
+        safe_place()
         sys.exit()
     video = Path(sys.argv[1])
     out = RACINE / "stories" / "video"
