@@ -5,6 +5,7 @@ l'en-tête (« Photothèque », la date, « Sélect. ») en zoomant légèrement
 puis on écrit, en option, une phrase sous la photo.
 
     python3 instagram/story_aiko_perso.py VIDEO.mov
+    python3 instagram/story_aiko_perso.py photo     # la version noir et blanc
 """
 import subprocess
 import sys
@@ -30,19 +31,19 @@ def police(nom, graisse):
     return f
 
 
-def calque():
+def calque(haut=1440, teinte=ENCRE):
     # Un voile sombre sous la photo calme la grille, pour que la phrase se lise.
     voile = Image.new("L", (1, H), 0)
-    for y in range(1440, 1800):
-        t = min(1.0, (y - 1440) / 90, (1800 - y) / 90)
+    for y in range(haut, haut + 360):
+        t = min(1.0, (y - haut) / 90, (haut + 360 - y) / 90)
         voile.putpixel((0, y), int(170 * t))
-    fond = Image.new("RGBA", (W, H), ENCRE)
+    fond = Image.new("RGBA", (W, H), teinte)
     fond.putalpha(voile.resize((W, H)))
 
     im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
     droite, italique = police("CormorantGaramond[wght].ttf", 450), police("CormorantGaramond-Italic[wght].ttf", 450)
-    y = 1500
+    y = haut + 60
     for ligne, ital in LIGNES:
         if ital:
             y += 24
@@ -62,7 +63,20 @@ def rendre(video, sortie, png=None):
                     "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", str(sortie)], check=True)
 
 
+def version_photo():
+    """La version qu'elle a préférée : sa photo en couleur sur la grille en noir
+    et blanc (une image, faite par elle), avec la même phrase sous la photo."""
+    src = Image.open(RACINE / "photos" / "aiko-perso-nb.jpg").convert("RGB").resize((W, H), Image.LANCZOS)
+    # Voile neutre sur la grille en noir et blanc, et texte remonté au ras de
+    # la photo en couleur pour rester au-dessus de la barre de réponse.
+    im = Image.alpha_composite(src.convert("RGBA"), calque(haut=1455, teinte="#0E0E0E")).convert("RGB")
+    im.save(RACINE / "stories" / "aiko-perso-nb-phrase.jpg", quality=92)
+
+
 if __name__ == "__main__":
+    if sys.argv[1:] == ["photo"]:
+        version_photo()
+        sys.exit()
     video = Path(sys.argv[1])
     out = RACINE / "stories" / "video"
     rendre(video, out / "aiko-perso.mp4")
