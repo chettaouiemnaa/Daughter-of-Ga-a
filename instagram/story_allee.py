@@ -10,16 +10,20 @@ le nom sur une dalle et « DOMAINE • LA SOUKRA » sur la suivante.
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 from signature import BLANC, ENCRE, POLICES, TERRA
 from story_video import ombre_douce
 
 RACINE = Path(__file__).resolve().parent
 W, H = 1080, 1920
+# La photo reçue est petite (1086 × 1448) : on part de sa version agrandie ×2
+# par un réseau de super-résolution (EDSR, voir agrandir.py), puis on réduit
+# à la taille de la story, plus net qu'en agrandissant directement.
+SOURCE, ECHELLE = "allee-portail-x2.png", 2
 # Sur la photo d'origine, l'axe de l'allée part du poteau du portail (x = 560,
 # y = 790) et glisse vers la gauche de 0,088 px par ligne en descendant.
-AXE_X, AXE_Y, PENTE = 560, 790, 0.088
+AXE_X, AXE_Y, PENTE = 560 * ECHELLE, 790 * ECHELLE, 0.088
 # Les dalles qui portent la signature, une fois la story à 1080 × 1920
 # (mesurées sur le profil de luminosité de l'allée redressée).
 DALLE_NOM, DALLE_LIEU = (1606, 1648), (1698, 1731)
@@ -34,13 +38,14 @@ def police(nom, taille, graisse):
 
 def redresser(src):
     """Décale chaque ligne sous le portail pour rendre l'axe de l'allée vertical
-    (avec une entrée en douceur sur 80 lignes, sans cassure)."""
+    (avec une entrée en douceur, sans cassure)."""
     a = np.asarray(src)
     h, w, _ = a.shape
     out = np.empty_like(a)
     for y in range(h):
         t = y - AXE_Y
-        s = 0 if t <= 0 else (PENTE * t * t / 160 if t < 80 else PENTE * (t - 40))
+        r = 80 * ECHELLE
+        s = 0 if t <= 0 else (PENTE * t * t / (2 * r) if t < r else PENTE * (t - r / 2))
         xs = np.clip(np.arange(w) - s, 0, w - 1)
         x0 = np.floor(xs).astype(int)
         x1 = np.minimum(x0 + 1, w - 1)
@@ -49,7 +54,8 @@ def redresser(src):
     im = Image.fromarray(out)
     cw = round(h * 9 / 16)
     gauche = AXE_X - cw // 2
-    return im.crop((gauche, 0, gauche + cw, h)).resize((W, H), Image.LANCZOS)
+    im = im.crop((gauche, 0, gauche + cw, h)).resize((W, H), Image.LANCZOS)
+    return im.filter(ImageFilter.UnsharpMask(radius=1.2, percent=35, threshold=2))
 
 
 def nom_sur_dalle(d, dalle):
@@ -93,7 +99,7 @@ def lieu_sur_dalle(d, dalle, couleur=TERRA):
 
 
 def story():
-    fond = redresser(Image.open(RACINE / "photos" / "allee-portail.png").convert("RGB")).convert("RGBA")
+    fond = redresser(Image.open(RACINE / "photos" / SOURCE).convert("RGB")).convert("RGBA")
 
     texte = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(texte)
@@ -110,4 +116,6 @@ def story():
 
 
 if __name__ == "__main__":
-    story().save(RACINE / "stories" / "allee-phrase.jpg", quality=92)
+    # Qualité maximale, sans sous-échantillonnage des couleurs : Instagram
+    # recompresse de toute façon, autant lui donner le meilleur fichier.
+    story().save(RACINE / "stories" / "allee-phrase.jpg", quality=97, subsampling=0)
