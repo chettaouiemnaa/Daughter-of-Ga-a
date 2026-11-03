@@ -13,9 +13,9 @@ from story_video import ombre_douce
 
 RACINE = Path(__file__).resolve().parent
 W, H = 1080, 1350
-# Le milieu de l'espace entre les deux troncs, en haut et en bas (ils
-# s'écartent un peu vers le haut).
-CENTRE_HAUT, CENTRE_BAS = 560, 540
+# Le milieu de l'espace entre les deux troncs, mesuré sur l'image 4:5 :
+# en haut de 330 à 780, en bas de 278 à 730.
+CENTRE_HAUT, CENTRE_BAS = 555, 504
 
 
 def post():
@@ -24,10 +24,12 @@ def post():
     calque = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     f = ImageFont.truetype(str(POLICES / "CormorantGaramond-Italic[wght].ttf"), 82)
     f.set_variation_by_axes([500])
-    ImageDraw.Draw(calque).text((CENTRE_HAUT, 150), "Family lunch", font=f, fill=BLANC, anchor="mt")
+    # Centré sur l'encre réelle des lettres (l'italique décale la chasse).
+    x0, _, x1, _ = f.getbbox("Family lunch", anchor="lt")
+    ImageDraw.Draw(calque).text((CENTRE_HAUT - (x0 + x1) / 2, 150), "Family lunch", font=f, fill=BLANC, anchor="lt")
     sig = signature(BLANC, BLANC, g_nom=450, g_lieu=500)
     sig = sig.resize((340, round(sig.height * 340 / sig.width)), Image.LANCZOS)
-    calque.paste(sig, (CENTRE_BAS - sig.width // 2, 1180), sig)
+    calque.paste(sig, (round(CENTRE_BAS - sig.width / 2), 1180), sig)
     return Image.alpha_composite(fond, ombre_douce(calque, force=0.75)).convert("RGB")
 
 
