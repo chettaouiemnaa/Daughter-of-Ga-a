@@ -13,9 +13,10 @@ from story_video import ombre_douce
 
 RACINE = Path(__file__).resolve().parent
 W, H = 1080, 1350
-# Le milieu de l'espace entre les deux troncs, mesuré sur l'image 4:5 :
-# en haut de 330 à 780, en bas de 278 à 730.
-CENTRE_HAUT, CENTRE_BAS = 555, 504
+# Le milieu de l'espace entre les deux grands troncs (sans compter le fin
+# tronc du milieu), mesuré sur l'image 4:5 : en haut de 215 à 780, en bas
+# de 278 à 730.
+CENTRE_HAUT, CENTRE_BAS = 498, 504
 
 
 def post():
