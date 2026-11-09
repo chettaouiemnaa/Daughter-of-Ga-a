@@ -584,7 +584,10 @@ function Diaporama({ images, interval = 6500, overlay }) {
           style={{
             objectPosition: im.pos || "center",
             opacity: k === i ? 1 : 0,
-            transform: k === i ? "scale(1.14)" : "scale(1.02)",
+            /* La photo active revient a sa taille reelle : agrandie de 14 %,
+               elle rognait le bar sur les cotes. Le mouvement lent est garde,
+               mais il va desormais du plus large vers le cadre normal. */
+            transform: k === i ? "scale(1)" : "scale(1.08)",
             transition: "opacity 2.4s ease, transform 8s ease-out",
           }} />
       )))}
