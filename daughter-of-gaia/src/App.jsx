@@ -57,11 +57,12 @@ const DECOR_IMG = [
 /* Fonds de section, tous à la clarté du sable */
 const F_SABLE  = "#EDE4D3";
 const F_CREME  = "#F6F1E7";
-const F_VERT   = "#E7EBCE";   // olive de la charte, éclairci
-const F_ROSE   = "#F4E4DC";   // terracotta de la charte, éclairci
+const F_VERT   = "#DCECB2";   // olive de la charte, éclairci
+const F_ROSE   = "#FADFD6";   // terracotta de la charte, éclairci
 
 /* Aplat profond, pour les bandes pleines — crème dessus à 7,7:1 */
 const F_OLIVE_PROFOND = "#484E39";
+const F_TERRE_PROFOND = "#603627";   // crème dessus à 9,1:1
 
 /* Accents de texte. Le terracotta de marque (#B5654A) tombe à 3,38:1
    sur le sable : illisible aux tailles de 9 et 10 pixels où il servait.
@@ -1522,7 +1523,7 @@ export default function App() {
         <header className="max-w-3xl mx-auto px-8 pt-10 flex justify-between items-center">
           <span className="display text-xl tracking-wide">{t.admin.titre}</span>
           <button onClick={() => { setAdminOpen(false); setIsAdmin(false); setCodeInput(""); }}
-            className="mono text-[10px] uppercase tracking-[0.25em] flex items-center gap-2 link-u" style={{ color: "#B5654A" }}><LogOut size={13} /> {t.admin.quitter}</button>
+            className="mono text-[10px] uppercase tracking-[0.25em] flex items-center gap-2 link-u" style={{ color: A_TERRE }}><LogOut size={13} /> {t.admin.quitter}</button>
         </header>
         <div className="max-w-3xl mx-auto px-8 py-16 fu">
           {!isAdmin ? (
@@ -1568,7 +1569,7 @@ export default function App() {
                   <div className="flex flex-wrap gap-2">
                     {[...blocked].sort().map((k) => { const [y, m, d] = k.split("-");
                       return <button key={k} onClick={() => toggleBlocked(k)} className="mono text-[10px] px-3 py-1.5 transition-colors hover:opacity-70"
-                        style={{ border: "1px solid #B5654A", color: "#B5654A" }}>{d}/{m}/{y} ×</button>; })}
+                        style={{ border: "1px solid " + A_TERRE, color: A_TERRE }}>{d}/{m}/{y} ×</button>; })}
                   </div>
                 )}
               </div>
@@ -1636,7 +1637,7 @@ export default function App() {
               <a href="#maison" className="link-u">{t.tournages.nav.maison}</a>
               <a href="#pratique" className="link-u">{t.tournages.nav.pratique}</a>
               <button onClick={() => allerA("accueil")} className="link-u uppercase tracking-[0.2em]">{t.tournages.nav.domaine}</button>
-              <a href="#contact-t" className="link-u" style={{ color: "#B5654A" }}>{t.tournages.nav.contact}</a>
+              <a href="#contact-t" className="link-u" style={{ color: A_TERRE }}>{t.tournages.nav.contact}</a>
               {selecteurNav}
             </div>
           </div>
@@ -1690,7 +1691,7 @@ export default function App() {
                 </VoletsReveal>
                 <Reveal delay={120}>
                   <div className="max-w-2xl mx-auto px-8 mt-10 text-center">
-                    <span className="mono text-[10px]" style={{ color: "#B5654A" }}>{d.n}</span>
+                    <span className="mono text-[10px]" style={{ color: A_TERRE }}>{d.n}</span>
                     <h3 className="display text-2xl sm:text-4xl mt-3 mb-4" style={{ fontWeight: 300 }}>{d.t}</h3>
                     <p className="body-font leading-relaxed max-w-xl mx-auto" style={{ color: "#5a4f42" }}>{d.d}</p>
                   </div>
@@ -1863,7 +1864,7 @@ export default function App() {
             <a href="#refuge" className="link-u">{t.nav.refuge}</a>
             <button onClick={() => allerA("tournages")} className="link-u uppercase tracking-[0.2em]">{t.nav.tournages}</button>
             <a href="#disponibilites" className="link-u">{t.nav.dispo}</a>
-            <a href="#devis" onClick={versDevis} className="link-u" style={{ color: "#B5654A" }}>{t.nav.devis}</a>
+            <a href="#devis" onClick={versDevis} className="link-u" style={{ color: A_TERRE }}>{t.nav.devis}</a>
             {selecteurNav}
           </div>
         </div>
@@ -1905,18 +1906,22 @@ export default function App() {
         </div>
       </section>
 
-      {/* ── VALEURS ── */}
-      <section className="max-w-6xl mx-auto px-8 pt-20 sm:pt-28 pb-36">
+      {/* ── VALEURS ──
+          Second aplat profond de la page, en contrepoint de la bande olive
+          plus bas. Le crème ressort à 9,1:1 sur ce terracotta. */}
+      <section style={{ background: F_TERRE_PROFOND, color: "#F6F1E7" }}>
+        <div className="max-w-6xl mx-auto px-8 pt-24 sm:pt-32 pb-28 sm:pb-36">
         <div className="relative grid sm:grid-cols-2 lg:grid-cols-4 gap-y-16 gap-x-10">
           {t.valeurs.map((v, i) => (
             <Reveal key={i} delay={i * 130}>
               <div className="text-center px-2">
-                <span className="mono text-[10px]" style={{ color: A_TERRE }}>{String(i + 1).padStart(2, "0")}</span>
+                <span className="mono text-[10px]" style={{ color: "#E1C9C2" }}>{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="display text-2xl mt-4 mb-3" style={{ fontWeight: 400 }}>{v.t}</h3>
-                <p className="body-font text-sm leading-relaxed" style={{ color: "#5a4f42" }}>{v.d}</p>
+                <p className="body-font text-sm leading-relaxed" style={{ color: "rgba(246,241,231,.86)" }}>{v.d}</p>
               </div>
             </Reveal>
           ))}
+        </div>
         </div>
       </section>
 
