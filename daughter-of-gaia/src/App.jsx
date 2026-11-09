@@ -46,23 +46,10 @@ const DECOR_IMG = [
 ];
 
 /* ═══════════════════════════════════════════════════════════
-   PALETTE
-   Les six couleurs de la charte, déclinées. Aucune teinte
-   étrangère : le vert tendre et le rosé sont l'olive et le
-   terracotta éclaircis, et les trois fonds ont exactement la
-   même clarté que le sable — la couleur monte, les contrastes
-   restent ceux qui ont été mesurés.
+   ACCENTS DE TEXTE
+   Le sable reste le seul fond du site. Ces deux variantes des
+   couleurs de la charte existent pour le contraste, rien de plus.
    ═══════════════════════════════════════════════════════════ */
-
-/* Fonds de section, tous à la clarté du sable */
-const F_SABLE  = "#EDE4D3";
-const F_CREME  = "#F6F1E7";
-const F_VERT   = "#DCECB2";   // olive de la charte, éclairci
-const F_ROSE   = "#FADFD6";   // terracotta de la charte, éclairci
-
-/* Aplat profond, pour les bandes pleines — crème dessus à 7,7:1 */
-const F_OLIVE_PROFOND = "#484E39";
-const F_TERRE_PROFOND = "#603627";   // crème dessus à 9,1:1
 
 /* Accents de texte. Le terracotta de marque (#B5654A) tombe à 3,38:1
    sur le sable : illisible aux tailles de 9 et 10 pixels où il servait.
@@ -1448,13 +1435,9 @@ export default function App() {
       @keyframes washB{0%{transform:translate3d(16%,10%,0) scale(1.35);}50%{transform:translate3d(-10%,-8%,0) scale(1.1);}100%{transform:translate3d(16%,10%,0) scale(1.35);}}
       @keyframes washC{0%{transform:translate3d(2%,-14%,0) scale(1.2);}50%{transform:translate3d(-6%,12%,0) scale(1.5);}100%{transform:translate3d(2%,-14%,0) scale(1.2);}}
       .wash{position:absolute;border-radius:50%;filter:blur(90px);will-change:transform;}
-      /* Les trois voiles portaient les couleurs de la charte à 16-30 %,
-         trop pâles pour se voir. Ils passent à 48-62 %, mais dans des tons
-         de même clarté que le sable : la page se colore sans qu'aucun
-         contraste de texte ne bouge. */
-      .wash-a{width:70%;height:80%;left:-14%;top:-18%;background:radial-gradient(circle,rgba(221,235,185,.62),transparent 68%);animation:washA 58s ease-in-out infinite;}
-      .wash-b{width:66%;height:76%;right:-16%;bottom:-20%;background:radial-gradient(circle,rgba(246,225,217,.58),transparent 66%);animation:washB 74s ease-in-out infinite;}
-      .wash-c{width:58%;height:66%;left:30%;top:12%;background:radial-gradient(circle,rgba(241,228,205,.48),transparent 64%);animation:washC 66s ease-in-out infinite;}
+      .wash-a{width:70%;height:80%;left:-14%;top:-18%;background:radial-gradient(circle,rgba(107,115,85,.20),transparent 68%);animation:washA 58s ease-in-out infinite;}
+      .wash-b{width:66%;height:76%;right:-16%;bottom:-20%;background:radial-gradient(circle,rgba(181,101,74,.16),transparent 66%);animation:washB 74s ease-in-out infinite;}
+      .wash-c{width:58%;height:66%;left:30%;top:12%;background:radial-gradient(circle,rgba(199,183,154,.30),transparent 64%);animation:washC 66s ease-in-out infinite;}
       .grain-doux{position:absolute;inset:0;opacity:.05;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");}
       .day-cell{transition:color .3s,transform .25s;}
       .day-cell:hover:not(:disabled){transform:scale(1.25);color:#B5654A;}
@@ -1898,9 +1881,6 @@ export default function App() {
           { href: "#devis", texte: t.nav.devis, accent: true, onClick: versDevis },
         ]} />
 
-      {/* Les sections suivantes portent leur propre largeur : le fond se
-          pose donc sur une enveloppe, pour tenir toute la largeur. */}
-      <div style={{ background: F_CREME }}>
       {/* ── MISSION ── */}
       <section id="mission" className="relative max-w-4xl mx-auto px-8 pt-32 sm:pt-44 pb-24 sm:pb-32 text-center">
         <FondAbstrait intensite={0.9} />
@@ -1918,29 +1898,23 @@ export default function App() {
         </div>
       </section>
 
-      {/* ── VALEURS ──
-          Second aplat profond de la page, en contrepoint de la bande olive
-          plus bas. Le crème ressort à 9,1:1 sur ce terracotta. */}
-      <section style={{ background: F_TERRE_PROFOND, color: "#F6F1E7" }}>
-        <div className="max-w-6xl mx-auto px-8 pt-24 sm:pt-32 pb-28 sm:pb-36">
+      {/* ── VALEURS ── */}
+      <section className="max-w-6xl mx-auto px-8 pt-20 sm:pt-28 pb-36">
         <div className="relative grid sm:grid-cols-2 lg:grid-cols-4 gap-y-16 gap-x-10">
           {t.valeurs.map((v, i) => (
             <Reveal key={i} delay={i * 130}>
               <div className="text-center px-2">
-                <span className="mono text-[10px]" style={{ color: "#E1C9C2" }}>{String(i + 1).padStart(2, "0")}</span>
+                <span className="mono text-[10px]" style={{ color: A_TERRE }}>{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="display text-2xl mt-4 mb-3" style={{ fontWeight: 400 }}>{v.t}</h3>
-                <p className="body-font text-sm leading-relaxed" style={{ color: "rgba(246,241,231,.86)" }}>{v.d}</p>
+                <p className="body-font text-sm leading-relaxed" style={{ color: "#5a4f42" }}>{v.d}</p>
               </div>
             </Reveal>
           ))}
         </div>
-        </div>
       </section>
 
-      </div>
-
       {/* ── LE DOMAINE ── */}
-      <section id="domaine" className="relative py-24" style={{ background: F_VERT }}>
+      <section id="domaine" className="relative py-24">
         <FondAbstrait intensite={0.55} />
         <div className="relative max-w-3xl mx-auto px-8 text-center">
           <Reveal><Eyebrow ton={A_OLIVE}>{t.domaine.eyebrow}</Eyebrow></Reveal>
@@ -1990,7 +1964,7 @@ export default function App() {
       </section>
 
       {/* ── HISTOIRE ── */}
-      <section id="histoire" className="py-24" style={{ background: F_ROSE }}>
+      <section id="histoire" className="py-24">
         <div className="max-w-3xl mx-auto px-8 text-center">
           <Reveal><Eyebrow ton={A_TERRE}>{t.histoire.eyebrow}</Eyebrow></Reveal>
           <WordReveal className="display text-4xl sm:text-6xl mb-10" style={{ fontWeight: 300 }}>
@@ -2058,14 +2032,14 @@ export default function App() {
       </section>
 
       {/* ── BANDEAU ── */}
-      <div className="overflow-hidden py-12" style={{ background: F_OLIVE_PROFOND }}>
+      <div className="overflow-hidden py-10">
         <div className="marquee flex whitespace-nowrap">
           {[...Array(2)].map((_, k) => (
             <span key={k} className="flex items-center">
               {t.bandeau.map((mot, i) => (
-                <span key={i} className="display text-2xl sm:text-4xl flex items-center" style={{ color: "#F6F1E7", fontWeight: 300 }}>
+                <span key={i} className="display text-2xl sm:text-4xl flex items-center" style={{ color: "#857C6A", fontWeight: 300 }}>
                   <span className="px-10">{mot}</span>
-                  <span style={{ color: "#C7B79A", fontSize: ".4em" }}>✦</span>
+                  <span style={{ color: "#B5654A", fontSize: ".4em" }}>✦</span>
                 </span>
               ))}
             </span>
@@ -2099,7 +2073,7 @@ export default function App() {
       </section>
 
       {/* ── GALERIE ── */}
-      <section id="galerie" className="pt-24" style={{ background: F_CREME }}>
+      <section id="galerie" className="pt-24">
         <div className="max-w-4xl mx-auto px-8 text-center">
           <Reveal><Eyebrow ton={A_TERRE}>{t.galerie.eyebrow}</Eyebrow></Reveal>
           <WordReveal className="display text-4xl sm:text-6xl mb-6" style={{ fontWeight: 300 }}>
@@ -2154,7 +2128,6 @@ export default function App() {
         </div>
       </section>
 
-      <div style={{ background: F_VERT }}>
       {/* ── DISPONIBILITÉS ── */}
       <section id="disponibilites" className="relative max-w-3xl mx-auto px-8 py-28 text-center">
         <FondAbstrait intensite={0.6} />
@@ -2264,9 +2237,6 @@ export default function App() {
         </Reveal>
       </section>
 
-      </div>
-
-      <div style={{ background: F_ROSE }}>
       {/* ── FAQ ── */}
       <section id="faq" className="relative max-w-2xl mx-auto px-8 py-28 text-center">
         <FondAbstrait intensite={0.5} />
@@ -2280,7 +2250,6 @@ export default function App() {
         </div>
         </div>
       </section>
-      </div>
       </main>
 
       {/* ── CONTACT ── */}
