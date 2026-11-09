@@ -117,7 +117,7 @@ fr: {
   domaine: { eyebrow: "Le domaine", titre: "4 000 m² où la ville disparaît",
     texte: "Des espaces pensés pour s'adapter naturellement à votre événement. Une terrasse tournée vers le jardin, un espace intérieur en matériaux naturels, une cuisine prête à recevoir.",
     citation: "Et partout autour, une nature faite pour être vécue.",
-    alt: "La pelouse et les palmiers, les chevaux au fond" },
+    alt: "Trois chevaux au repos devant la maison, à l'ombre d'un arbre" },
   espaces: [
     { t: "Le domaine", v: "4 000 m²" }, { t: "Espace aménagé", v: "650 m²" },
     { t: "Espace couvert", v: "135 m²" }, { t: "Capacité d'accueil", v: "100 invités" },
@@ -246,7 +246,7 @@ en: {
   domaine: { eyebrow: "The estate", titre: "4,000 m² where the city disappears",
     texte: "Spaces designed to adapt naturally to your event. A terrace facing the garden, an interior in natural materials, a kitchen ready to receive.",
     citation: "And all around, a landscape made to be lived in.",
-    alt: "The lawn and the palm trees, horses in the background" },
+    alt: "Three horses at rest in front of the house, in the shade of a tree" },
   espaces: [
     { t: "The estate", v: "4 000 m²" }, { t: "Landscaped area", v: "650 m²" },
     { t: "Covered space", v: "135 m²" }, { t: "Guest capacity", v: "100 guests" },
@@ -1851,12 +1851,13 @@ export default function App() {
           </Reveal>
         </div>
 
-        <VoletsReveal className="relative w-full h-[52vh] sm:h-[72vh] mt-16 overflow-hidden">
+        {/* La photo est en portrait (1020x1360) dans un cadre pleine largeur :
+            en 72vh le cadre ne montrait qu'un tiers de sa hauteur et coupait
+            les chevaux. 92vh + un cadrage bas les font tenir entiers. */}
+        <VoletsReveal className="relative w-full h-[52vh] sm:h-[92vh] mt-16 overflow-hidden">
           <LumiereFiltree />
           <Parallax speed={-0.07} className="absolute inset-0 -top-16 -bottom-16">
-            {/* En attente d'une nouvelle photo : sans src, le composant
-                affiche son degrade de repli plutot qu'un trou. */}
-            <Photo className="w-full h-full" tone={1} />
+            <Photo src={P_TROIS_CHEVAUX} alt={t.domaine.alt} className="w-full h-full" tone={1} pos="center 74%" />
           </Parallax>
         </VoletsReveal>
 
