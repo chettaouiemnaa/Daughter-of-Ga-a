@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Lieu événementiel à Tunis — Daughter of Gaïa, La Soukra</title>
-    <meta name="description" content="Domaine privé de 4 000 m² à La Soukra, aux portes de Tunis. Privatisation complète jusqu'à 80 invités : séminaires, anniversaires, brunchs, tournages." />
+    <meta name="description" content="Domaine privé de 4 000 m² à La Soukra, aux portes de Tunis. Privatisation complète jusqu'à 100 invités : séminaires, anniversaires, brunchs, tournages." />
 
     <link rel="canonical" href="https://www.daughterofgaia.com/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
@@ -30,8 +30,12 @@
     <meta name="twitter:description" content="Un domaine privé de 4 000 m² à La Soukra où chaque expérience célèbre le vivant. Événements, tournages, chevaux recueillis." />
     <meta name="twitter:image" content="https://www.daughterofgaia.com/images/partage.jpg" />
 
+    <!-- Les polices sont demandees ici, et non depuis la feuille generee par
+         React : appelees en @import au coeur du JavaScript, elles attendaient
+         le telechargement et l'execution de tout le script avant de partir. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&amp;family=Jost:wght@200;300;400;500&amp;family=IBM+Plex+Mono:wght@300;400&amp;display=swap" />
 
     <!-- Fiche d'identité lisible par les moteurs de recherche : adresse,
          horaires, prestations. C'est ce qui alimente les résultats locaux. -->
@@ -40,8 +44,8 @@
       "@context": "https://schema.org",
       "@type": "EventVenue",
       "name": "Daughter of Gaïa",
-      "description": "Lieu événementiel privé à Tunis : domaine de 4 000 m² à La Soukra (Ariana), entièrement privatisé jusqu'à 80 invités. Séminaires, anniversaires, baby showers, brunchs, shootings et tournages. Des chevaux recueillis et réhabilités vivent sur place.",
-      "keywords": "lieu événementiel Tunis, lieu événement Tunis, domaine privé Tunis, privatisation domaine Ariana, lieu de tournage Tunis, séminaire entreprise Tunis, La Soukra",
+      "description": "Lieu événementiel privé à Tunis : domaine de 4 000 m² à La Soukra (Ariana), entièrement privatisé jusqu'à 100 invités. Séminaires, anniversaires, baby showers, brunchs, shootings et tournages. Des chevaux recueillis et réhabilités vivent sur place.",
+      "keywords": "lieu événementiel Tunis, lieu événement Tunis, domaine privé Tunis, privatisation domaine Ariana, lieu de tournage Tunis, séminaire entreprise Tunis, événement corporate Tunis, La Soukra",
       "url": "https://www.daughterofgaia.com/",
       "image": "https://www.daughterofgaia.com/images/partage.jpg",
       "email": "contact@daughterofgaia.com",
@@ -54,18 +58,19 @@
         "addressRegion": "Ariana",
         "addressCountry": "TN"
       },
-      "maximumAttendeeCapacity": 80,
+      "maximumAttendeeCapacity": 100,
       "isAccessibleForFree": false,
       "publicAccess": false,
       "smokingAllowed": false,
       "amenityFeature": [
         { "@type": "LocationFeatureSpecification", "name": "Parking privé (40 places)", "value": true },
-        { "@type": "LocationFeatureSpecification", "name": "Cuisine équipée", "value": true },
-        { "@type": "LocationFeatureSpecification", "name": "Espace couvert", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Cuisine équipée (20 m²)", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Espace intérieur fermé (45 m²)", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Terrasse couverte ouverte sur l'extérieur (69 m²)", "value": true },
         { "@type": "LocationFeatureSpecification", "name": "Jardin", "value": true }
       ],
       "makesOffer": [
-        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Événements d'entreprise et séminaires" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Événements corporate, événements d'entreprise et séminaires" } },
         { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Anniversaires et célébrations privées" } },
         { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Baby showers et brunchs privés" } },
         { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Lancements de produits et de marques" } },
@@ -89,7 +94,7 @@
           "name": "Le lieu est-il ouvert au public ?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Non. Daughter of Gaïa accueille uniquement des événements privés, sur réservation. Chaque réservation privatise entièrement le domaine, et vous êtes les seuls sur place."
+            "text": "Daughter of Gaïa accueille uniquement des événements privés, sur réservation. Chaque réservation privatise entièrement le domaine, et vous êtes les seuls sur place."
           }
         },
         {
@@ -97,7 +102,15 @@
           "name": "Combien de personnes le lieu peut-il accueillir ?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Jusqu'à 80 invités, avec un parking de 40 places à l'entrée. Le nombre idéal dépend du format de votre événement et des espaces mobilisés."
+            "text": "Jusqu'à 100 invités, avec un parking de 40 places à l'entrée. Ces 100 personnes se répartissent entre le jardin, la terrasse couverte de 69 m² et l'espace intérieur de 45 m² : le domaine est un lieu de plein air, conçu pour des réceptions qui se vivent dehors, à l'abri quand il le faut."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quelle est la surface des espaces couverts ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "L'espace intérieur fermé fait 45 m², la terrasse couverte ouverte sur l'extérieur 69, et la cuisine 20 — soit 134 m² bâtis en tout. Tout le reste des 4 000 m² est en plein air."
           }
         },
         {
@@ -113,7 +126,7 @@
           "name": "Quels types d'événements sont accueillis ?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Séminaires et journées d'entreprise, lancements de produits et de marques, anniversaires, baby showers, brunchs privés, tables d'hôtes, événements pour enfants, shootings photo et vidéo, tournages de films. Les mariages intimistes sont à venir."
+            "text": "Événements corporate, séminaires et journées d'entreprise, lancements de produits et de marques, anniversaires, baby showers, brunchs privés, tables d'hôtes, événements pour enfants, shootings photo et vidéo, tournages de films. Les mariages intimistes sont à venir."
           }
         },
         {
@@ -121,7 +134,7 @@
           "name": "Peut-on approcher les animaux ?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Les animaux vivent chez eux et ne sont pas une attraction. Ils sont observables à distance, dans le respect de leur tranquillité. Aucune interaction n'est organisée."
+            "text": "Les animaux vivent chez eux. On les observe à distance, dans le respect de leur tranquillité, et la rencontre reste à leur initiative."
           }
         },
         {
@@ -137,7 +150,7 @@
           "name": "La cuisine est-elle utilisable ?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Oui, l'ensemble couvert dispose d'une cuisine entièrement équipée. Vous pouvez recevoir votre traiteur ou cuisiner sur place."
+            "text": "Oui. Une cuisine de 20 m², entièrement équipée, fait partie de l'ensemble couvert. Vous pouvez y recevoir votre traiteur ou cuisiner sur place."
           }
         },
         {
@@ -153,7 +166,7 @@
           "name": "La maison fait-elle partie du lieu de réception ?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Non. La maison et ses décors sont réservés aux tournages et aux prises de vue, et ne sont pas proposés pour les événements privés. Ces derniers se tiennent dans les espaces du domaine — jardin, terrasse et espace couvert."
+            "text": "La maison et ses décors sont réservés aux tournages et aux prises de vue. Les événements privés se tiennent dans les espaces du domaine — jardin, terrasse et espace couvert."
           }
         },
         {
@@ -179,30 +192,35 @@
         <p>Daughter of Gaïa est un domaine privé de 4 000 m² situé à La Soukra, dans le gouvernorat de l'Ariana, aux portes de Tunis. Un lieu événementiel où les réceptions s'intègrent à la nature plutôt que l'inverse, et où vivent des chevaux recueillis et réhabilités.</p>
 
         <h2 style="font-weight:400;">Un domaine entièrement privatisé</h2>
-        <p>Contrairement aux salles des fêtes classiques, le domaine est réservé à un seul événement à la fois. Vous êtes les seuls sur place, jusqu'à 80 invités, avec 40 places de parking à l'entrée, une cuisine entièrement équipée, une terrasse tournée vers le jardin et un espace couvert en matériaux naturels.</p>
+        <p>Contrairement aux salles des fêtes classiques, le domaine est réservé à un seul événement à la fois. Vous êtes les seuls sur place, jusqu'à 100 invités, avec 40 places de parking à l'entrée, une cuisine de 20 m² entièrement équipée, une terrasse tournée vers le jardin et un espace couvert en matériaux naturels.</p>
+
+        <p><strong>Le détail des surfaces.</strong> L'espace intérieur fermé fait 45 m², la terrasse couverte ouverte sur l'extérieur 69, et la cuisine 20 — soit 134 m² bâtis en tout. Les 100 invités se répartissent entre ces espaces et le jardin : le domaine est un lieu de plein air, avec de quoi s'abriter et recevoir, et non une salle de réception fermée.</p>
 
         <h2 style="font-weight:400;">Les événements accueillis</h2>
-        <p>Séminaires et journées d'équipe, lancements de produits et de marques, anniversaires, baby showers, brunchs privés, tables d'hôtes, événements pour enfants, shootings photo et vidéo, tournages de films. Les formats en journée sont privilégiés, afin de préserver la tranquillité des animaux et du voisinage.</p>
+        <p>Événements corporate, séminaires et journées d'équipe, lancements de produits et de marques, anniversaires, baby showers, brunchs privés, tables d'hôtes, événements pour enfants, shootings photo et vidéo, tournages de films. Les formats en journée sont privilégiés, afin de préserver la tranquillité des animaux et du voisinage.</p>
 
         <h2 style="font-weight:400;">Un lieu de tournage près de Tunis</h2>
         <p>Le domaine accueille aussi des tournages, à travers une offre distincte : des décors extérieurs variés et une maison entièrement filmable, réservés aux productions et non proposés pour les événements privés. Lumière naturelle toute la journée, à vingt minutes du centre de Tunis, et des chevaux qui entrent naturellement dans le cadre sans transport ni prestataire extérieur.</p>
 
         <h2 style="font-weight:400;">Un refuge avant d'être un lieu de réception</h2>
-        <p>Sept chevaux ont été recueillis depuis l'ouverture ; quatre vivent ici aujourd'hui. Ils ne sont ni une attraction ni une animation : ils évoluent à leur rythme, observables à distance, et leur bien-être passe avant l'événement. Chaque réservation contribue directement à leur entretien.</p>
+        <p>Sept chevaux ont été recueillis depuis l'ouverture ; quatre vivent ici aujourd'hui. Ils sont ici chez eux : ils évoluent à leur rythme, observables à distance, et leur bien-être passe avant l'événement. Chaque réservation contribue directement à leur entretien.</p>
 
         <h2 style="font-weight:400;">Questions fréquentes</h2>
 
         <h3 style="font-weight:400;">Le lieu est-il ouvert au public ?</h3>
-        <p>Non. Daughter of Gaïa accueille uniquement des événements privés, sur réservation. Chaque réservation privatise entièrement le domaine, et vous êtes les seuls sur place.</p>
+        <p>Daughter of Gaïa accueille uniquement des événements privés, sur réservation. Chaque réservation privatise entièrement le domaine, et vous êtes les seuls sur place.</p>
 
         <h3 style="font-weight:400;">Combien de personnes le lieu peut-il accueillir ?</h3>
-        <p>Jusqu'à 80 invités, avec un parking de 40 places à l'entrée. Le nombre idéal dépend du format de votre événement et des espaces mobilisés.</p>
+        <p>Jusqu'à 100 invités, avec un parking de 40 places à l'entrée. Ces 100 personnes se répartissent entre le jardin, la terrasse couverte de 69 m² et l'espace intérieur de 45 m². Le nombre idéal dépend du format de votre événement.</p>
+
+        <h3 style="font-weight:400;">Quelle est la surface des espaces couverts ?</h3>
+        <p>L'espace intérieur fermé fait 45 m², la terrasse couverte ouverte sur l'extérieur 69, et la cuisine 20 — soit 134 m² bâtis en tout. Tout le reste des 4 000 m² est en plein air.</p>
 
         <h3 style="font-weight:400;">Où se trouve le domaine ?</h3>
         <p>Au 64 avenue Fattouma Bourguiba, à La Soukra, dans le gouvernorat de l'Ariana, à une vingtaine de minutes du centre de Tunis.</p>
 
         <h3 style="font-weight:400;">Peut-on approcher les animaux ?</h3>
-        <p>Les animaux vivent chez eux et ne sont pas une attraction. Ils sont observables à distance, dans le respect de leur tranquillité. Aucune interaction n'est organisée.</p>
+        <p>Les animaux vivent chez eux. On les observe à distance, dans le respect de leur tranquillité, et la rencontre reste à leur initiative.</p>
 
         <h3 style="font-weight:400;">Pourquoi privilégier les événements en journée ?</h3>
         <p>Pour préserver le calme des animaux et le repos du voisinage. Les formats en journée sont donc favorisés.</p>
@@ -211,7 +229,7 @@
         <p>Oui, l'ensemble couvert dispose d'une cuisine entièrement équipée. Vous pouvez recevoir votre traiteur ou cuisiner sur place.</p>
 
         <h3 style="font-weight:400;">La maison fait-elle partie du lieu de réception ?</h3>
-        <p>Non. La maison et ses décors sont réservés aux tournages et aux prises de vue, et ne sont pas proposés pour les événements privés. Ces derniers se tiennent dans les espaces du domaine — jardin, terrasse et espace couvert.</p>
+        <p>La maison et ses décors sont réservés aux tournages et aux prises de vue. Les événements privés se tiennent dans les espaces du domaine — jardin, terrasse et espace couvert.</p>
 
         <h3 style="font-weight:400;">Comment obtenir un devis ?</h3>
         <p>Choisissez une date dans le calendrier du site, décrivez votre projet, et nous revenons vers vous avec une proposition adaptée.</p>

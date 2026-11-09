@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useLayoutEffect, useRef } from "react";
 import {
   ChevronLeft, ChevronRight, ChevronDown, ArrowRight, ArrowLeft, Mail, Phone, MapPin,
-  Users, Lock, LogOut, Loader2, Plus, Minus, Eye, EyeOff,
+  Users, Lock, LogOut, Loader2, Plus, Minus, Eye, EyeOff, CalendarDays,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════
@@ -45,6 +45,32 @@ const DECOR_IMG = [
   { src: V_SALON,    pos: "center 45%" },
 ];
 
+/* ═══════════════════════════════════════════════════════════
+   PALETTE
+   Les six couleurs de la charte, déclinées. Aucune teinte
+   étrangère : le vert tendre et le rosé sont l'olive et le
+   terracotta éclaircis, et les trois fonds ont exactement la
+   même clarté que le sable — la couleur monte, les contrastes
+   restent ceux qui ont été mesurés.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Fonds de section, tous à la clarté du sable */
+const F_SABLE  = "#EDE4D3";
+const F_CREME  = "#F6F1E7";
+const F_VERT   = "#DCECB2";   // olive de la charte, éclairci
+const F_ROSE   = "#FADFD6";   // terracotta de la charte, éclairci
+
+/* Aplat profond, pour les bandes pleines — crème dessus à 7,7:1 */
+const F_OLIVE_PROFOND = "#484E39";
+const F_TERRE_PROFOND = "#603627";   // crème dessus à 9,1:1
+
+/* Accents de texte. Le terracotta de marque (#B5654A) tombe à 3,38:1
+   sur le sable : illisible aux tailles de 9 et 10 pixels où il servait.
+   Ces deux variantes passent la norme et alternent d'une section à
+   l'autre, ce qui donne au passage sa couleur à la page. */
+const A_TERRE = "#97543E";
+const A_OLIVE = "#626A4E";
+
 const MOIS = {
   fr: ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"],
   en: ["January","February","March","April","May","June","July","August","September","October","November","December"],
@@ -71,7 +97,7 @@ const META = {
   accueil: {
     titre: "Lieu événementiel à Tunis — Daughter of Gaïa, La Soukra",
     description:
-      "Domaine privé de 4 000 m² à La Soukra, aux portes de Tunis. Privatisation complète jusqu'à 80 invités : séminaires, anniversaires, brunchs, tournages.",
+      "Domaine privé de 4 000 m² à La Soukra, aux portes de Tunis. Privatisation complète jusqu'à 100 invités : séminaires, anniversaires, brunchs, tournages.",
   },
   tournages: {
     titre: "Lieu de tournage près de Tunis — Daughter of Gaïa, La Soukra",
@@ -88,7 +114,7 @@ const ADRESSE_DEVIS = "contact@daughterofgaia.com";
 const RELAIS_DEVIS = `https://formsubmit.co/ajax/${ADRESSE_DEVIS}`;
 
 /* Palette : sable #EDE4D3 · blanc cassé #F6F1E7 · encre #2B2118
-   olive #6B7355 · terracotta #B5654A · ligne #C7B79A */
+   olive #626A4E · terracotta #B5654A · ligne #C7B79A */
 
 const T = {
 fr: {
@@ -110,30 +136,31 @@ fr: {
   ],
   domaine: { eyebrow: "Le domaine", titre: "4 000 m² où la ville disparaît",
     texte: "Des espaces pensés pour s'adapter naturellement à votre événement. Une terrasse tournée vers le jardin, un espace intérieur en matériaux naturels, une cuisine prête à recevoir.",
-    citation: "Et partout autour, une nature qui n'a jamais été dessinée pour impressionner, mais pour être vécue.",
+    citation: "Et partout autour, une nature faite pour être vécue.",
     alt: "Le jardin au soleil couchant, les chevaux au fond" },
   espaces: [
-    { t: "Le domaine", v: "4 000 m²" }, { t: "Espace aménagé", v: "500 m²" },
-    { t: "Espace couvert", v: "120 m²" }, { t: "Capacité idéale", v: "80 invités" },
+    { t: "Le domaine", v: "4 000 m²" }, { t: "Espace intérieur", v: "45 m²" },
+    { t: "Terrasse couverte", v: "69 m²" }, { t: "Capacité d'accueil", v: "100 invités" },
     { t: "Parking privé", v: "40 voitures" }, { t: "Sauvés et réhabilités", v: "7 chevaux" },
   ],
+  espacesNote: "L'intérieur fermé fait 45 m², la terrasse couverte ouverte sur l'extérieur 69, la cuisine 20 — soit 134 m² bâtis en tout. Autour, 500 m² aménagés sur les 4 000 du domaine : l'événement se vit dehors, à l'abri quand il le faut.",
   histoire: { eyebrow: "L'histoire", titre: "Avant d'être un lieu, une conviction.",
-    p0: "L'idée n'a jamais été de créer un simple lieu événementiel.",
-    p1: "Daughter of Gaïa est née d'une envie différente — imaginer un domaine où les événements s'intègrent au lieu, plutôt que l'inverse. Un endroit où la nature et les animaux ne deviennent jamais un décor, mais restent au cœur de chaque expérience.",
+    p0: "Dès le premier jour, l'idée a été de créer bien plus qu'un lieu événementiel.",
+    p1: "Daughter of Gaïa est née d'une envie simple — imaginer un domaine où les événements épousent le lieu. Un endroit où la nature et les animaux restent au cœur de chaque expérience.",
     p2: "Le nom trouve son origine dans Gaïa, déesse de la Terre dans la mythologie grecque. Il rappelle une conviction simple. Le respect du vivant guide chacune de nos décisions.",
     p3: "C'est pourquoi nous privilégions des événements qui s'intègrent naturellement au domaine, dans le respect de son environnement et du bien-être des animaux qui y vivent.",
-    p4: "Ici, chaque détail a été imaginé avec une même intention — offrir des moments d'exception sans jamais compromettre l'essentiel.",
+    p4: "Ici, chaque détail a été imaginé avec une même intention — offrir des moments d'exception en préservant l'essentiel.",
     citation: "There are places you visit. And there are places you feel.",
     alt: "Deux chevaux pie qui broutent côte à côte" },
   experiences: { eyebrow: "Expériences", titre: "Ce que le domaine accueille", bientot: "bientôt",
     note: "Les événements en journée sont privilégiés, afin de préserver la tranquillité des animaux et du voisinage." },
   prestations: [
-    { t: "Lancements de produits & de marques", d: "Un écrin naturel qui met votre marque en valeur, loin des showrooms conventionnels." },
-    { t: "Événements d'entreprise", d: "Séminaires et journées d'équipe dans un cadre qui change le rythme des échanges." },
+    { t: "Lancements de produits & de marques", d: "Un écrin naturel qui met votre marque en valeur, avec le jardin pour scénographie." },
+    { t: "Événements corporate", d: "Séminaires, journées d'équipe et réceptions d'entreprise, dans un cadre qui change le rythme des échanges." },
     { t: "Anniversaires", d: "Une célébration privée, en petit comité, avec la nature pour décor." },
     { t: "Événements enfants", d: "Un grand terrain, de la verdure, et des animaux à observer respectueusement." },
     { t: "Baby showers", d: "Un moment doux et intimiste, au jardin ou sous la terrasse couverte." },
-    { t: "Brunchs privés", d: "Cuisine équipée et terrasse — tout est là pour recevoir sans contrainte." },
+    { t: "Brunchs privés", d: "Cuisine équipée et terrasse — tout est là pour recevoir en toute liberté." },
     { t: "Table d'hôte", d: "Une longue table dressée pour un repas partagé au rythme du domaine, entourée d'animaux en liberté et du chant des oiseaux." },
     { t: "Shootings photo & vidéo", d: "Lumière naturelle, décors variés, présence animale — un terrain de jeu pour les créatifs." },
     { t: "Tournages de films", d: "Décors multiples en extérieur, une maison entièrement filmable, et de la lumière naturelle toute la journée." },
@@ -146,28 +173,30 @@ fr: {
   galerie: { eyebrow: "Galerie", titre: "Le domaine en images", faire: "Faites défiler",
     legendes: ["Le jardin", "Ils sont chez eux", "La terrasse", "L'espace couvert", "À l'ombre, devant la maison"] },
   refuge: { eyebrow: "Le refuge", titre: "Sauvés, réhabilités, et chez eux.",
-    p1: "Chaque cheval, chien ou autre animal présent ici a été sauvé, recueilli ou réhabilité. Ils ne sont ni une attraction, ni une animation. Ils évoluent dans leur environnement, à leur rythme, et leur bien-être passe avant l'événement.",
+    p1: "Chaque cheval, chien ou autre animal présent ici a été sauvé, recueilli ou réhabilité. Le domaine est leur maison avant d'être un lieu de réception. Ils évoluent dans leur environnement, à leur rythme, et leur bien-être passe avant l'événement.",
     p2: "Sept chevaux ont été recueillis depuis l'ouverture. Quatre vivent ici aujourd'hui. Les trois autres sont repartis une fois remis sur pied, et c'était bien le but.",
-    liste: ["Aucune interaction imposée", "Observation à distance, dans le calme", "Niveaux sonores et horaires encadrés", "Zones de repos strictement préservées"],
+    liste: ["Rencontres laissées à leur initiative", "Observation à distance, dans le calme", "Niveaux sonores et horaires encadrés", "Zones de repos strictement préservées"],
     alt: "Un cheval noir et blanc qui s'avance sous les arbres" },
-  dispo: { eyebrow: "Disponibilités", titre: "Choisissez une date", note: "Les dates barrées ne sont plus disponibles" },
+  dispo: { eyebrow: "Disponibilités", titre: "Choisissez une date", note: "Les dates barrées sont déjà réservées" },
   devis: { eyebrow: "Demande de devis", titre: "Parlez-nous de votre projet",
     texte: "Chaque événement est étudié individuellement. Décrivez-nous ce que vous imaginez, nous revenons vers vous avec une proposition adaptée.",
-    date: "Date souhaitée", datePh: "Sélectionnez une date dans le calendrier", nom: "Nom", email: "Email",
+    date: "Date souhaitée", datePh: "Sélectionnez une date dans le calendrier",
+    dateModifier: "modifier la date", nom: "Nom", email: "Email",
     tel: "Téléphone", invites: "Invités", type: "Type d'expérience", autre: "Autre", projet: "Votre projet",
     projetPh: "Horaires envisagés, ambiance recherchée, besoins particuliers…", envoyer: "Envoyer ma demande",
     envoiEnCours: "Envoi en cours…",
-    erreur: "L'envoi n'a pas abouti. Réessayez, ou écrivez-nous directement à",
+    erreur: "L'envoi a rencontré un incident. Réessayez, ou écrivez-nous directement à",
     merci: "Merci.", confirm1: "Votre demande a bien été transmise", confirm2: "pour le",
     confirm3: "Nous revenons vers vous rapidement avec une proposition personnalisée." },
   faqT: { eyebrow: "Questions fréquentes", titre: "Bon à savoir" },
   faq: [
-    { q: "Le lieu est-il ouvert au public\u00a0?", r: "Non. Daughter of Gaïa accueille uniquement des événements privés, sur réservation. Chaque réservation privatise entièrement le domaine, et vous êtes les seuls sur place." },
-    { q: "Peut-on approcher les animaux\u00a0?", r: "Les animaux vivent chez eux et ne sont pas une attraction. Ils sont observables à distance, dans le respect de leur tranquillité. Aucune interaction n'est organisée." },
+    { q: "Le lieu est-il ouvert au public\u00a0?", r: "Daughter of Gaïa accueille uniquement des événements privés, sur réservation. Chaque réservation privatise entièrement le domaine, et vous êtes les seuls sur place." },
+    { q: "Peut-on approcher les animaux\u00a0?", r: "Les animaux vivent chez eux. On les observe à distance, dans le respect de leur tranquillité, et la rencontre reste à leur initiative." },
     { q: "Pourquoi privilégier les événements en journée\u00a0?", r: "Pour préserver le calme des animaux et le repos du voisinage. Les formats en journée sont donc favorisés." },
-    { q: "Combien de personnes le lieu peut-il accueillir\u00a0?", r: "Jusqu'à 80 invités, avec un parking de 40 places à l'entrée. Le nombre idéal dépend du format de votre événement et des espaces mobilisés — décrivez-nous votre projet, nous vous conseillerons." },
-    { q: "La cuisine est-elle utilisable\u00a0?", r: "Oui, l'ensemble couvert dispose d'une cuisine entièrement équipée. Vous pouvez recevoir votre traiteur ou cuisiner sur place." },
-    { q: "La maison fait-elle partie du lieu de réception ?", r: "Non. La maison et ses décors sont réservés aux tournages et aux prises de vue, et ne sont pas proposés pour les événements privés. Ces derniers se tiennent dans les espaces du domaine — jardin, terrasse et espace couvert." },
+    { q: "Combien de personnes le lieu peut-il accueillir\u00a0?", r: "Jusqu'à 100 invités, avec un parking de 40 places à l'entrée. Ces 100 personnes se répartissent entre le jardin, la terrasse couverte de 69 m² et l'espace intérieur de 45 m² : le domaine est un lieu de plein air, conçu pour des réceptions qui se vivent dehors, à l'abri quand il le faut. Décrivez-nous votre format, nous vous dirons ce qu'il permet." },
+    { q: "Quelle est la surface des espaces couverts\u00a0?", r: "L'espace intérieur fermé fait 45 m², la terrasse couverte ouverte sur l'extérieur 69, et la cuisine 20 — soit 134 m² bâtis en tout. Tout le reste des 4 000 m² est en plein air." },
+    { q: "La cuisine est-elle utilisable\u00a0?", r: "Oui. Une cuisine de 20 m², entièrement équipée, fait partie de l'ensemble couvert. Vous pouvez y recevoir votre traiteur ou cuisiner sur place." },
+    { q: "La maison fait-elle partie du lieu de réception ?", r: "La maison et ses décors sont réservés aux tournages et aux prises de vue. Les événements privés se tiennent dans les espaces du domaine — jardin, terrasse et espace couvert." },
     { q: "Comment obtenir un devis\u00a0?", r: "Choisissez une date dans le calendrier, décrivez votre projet, et nous revenons vers vous avec une proposition adaptée." },
   ],
   contact: { sur: "Private Experiences \u00a0•\u00a0 By Reservation",
@@ -178,12 +207,12 @@ fr: {
     accroche: "Villa coloniale, piscine, jardins, pergola et chevaux en liberté — plusieurs décors à quelques minutes de Tunis, distincts des espaces de réception.",
     btn: "Voir les décors",
     nav: { decors: "Les décors", maison: "La maison", pratique: "En pratique", domaine: "Le domaine", contact: "Contact" },
-    introT: "Plusieurs univers sur un seul site, sans un mètre de décor à monter.",
+    introT: "Plusieurs univers sur un seul site, décors déjà en place.",
     intro: "Une villa coloniale à voûtes de brique, une piscine bordée d'arcades en pierre, une pergola ouverte sur le jardin, des palmiers, des bougainvilliers — et des chevaux qui vivent là et entrent naturellement dans le cadre. Un vocabulaire assez large pour jouer l'Andalousie, le Maghreb ou le Levant.",
     decorsE: "Repérage", decorsT: "Du jardin au séjour",
     maisonE: "La maison", maisonT: "Un décor à part entière, et une base pour vos équipes",
-    maison1: "La maison est réservée aux productions : elle ne figure pas parmi les espaces proposés pour les événements privés. Elle se filme autant qu'elle s'utilise — séjour sous voûte de brique posée à chevrons, sol en marbre, lustre en cristal, portes cintrées ouvrant sur le jardin. Un intérieur colonial complet, disponible pour vos plans comme pour vos besoins techniques.",
-    maison2: "Elle accueille aussi vos loges, le maquillage, la régie, les repas d'équipe et le stockage du matériel, dans un espace couvert, climatisé et fermé, à quelques pas des décors extérieurs. Sans hébergement toutefois, les nuitées ne sont pas proposées sur le domaine.",
+    maison1: "La maison est réservée aux productions et aux prises de vue. Elle se filme autant qu'elle s'utilise — séjour sous voûte de brique posée à chevrons, sol en marbre, lustre en cristal, portes cintrées ouvrant sur le jardin. Un intérieur colonial complet, disponible pour vos plans comme pour vos besoins techniques.",
+    maison2: "Elle accueille aussi vos loges, le maquillage, la régie, les repas d'équipe et le stockage du matériel, dans un espace couvert, climatisé et fermé, à quelques pas des décors extérieurs. Les tournages se déroulent en journée ; les nuitées se passent hors du domaine.",
     pratiqueE: "En pratique", pratiqueT: "Ce que le domaine vous apporte",
     pratiqueN: "Les tournages se déroulent en journée, afin de préserver la tranquillité des animaux et du voisinage. Chaque projet fait l'objet d'une visite technique préalable.",
     contactE: "Contact production", contactT: "Parlons de votre tournage.",
@@ -191,30 +220,30 @@ fr: {
     retour: "Retour au domaine",
   },
   decors: [
-    { n: "01", t: "Le salon de jardin sous la pergola", d: "Canapés en teck, four à pain en pierre, bougainvilliers en fleur — et des chevaux qui broutent à quelques mètres, dans le même plan. Aucun figurant animalier à faire venir." },
+    { n: "01", t: "Le salon de jardin sous la pergola", d: "Canapés en teck, four à pain en pierre, bougainvilliers en fleur — et des chevaux qui broutent à quelques mètres, dans le même plan. Les figurants à quatre pattes sont déjà sur place." },
     { n: "02", t: "La piscine et le bar extérieur", d: "Arcades en pierre, bar en brique, bassin turquoise. Plein sud, lumière franche du matin jusqu'en fin d'après-midi." },
     { n: "03", t: "Le jardin sous les bougainvilliers", d: "Un olivier centenaire, un mur de fleurs, des banquettes à l'ombre. Un décor plus intime, pour les plans rapprochés." },
     { n: "04", t: "La pelouse et les palmiers", d: "Un grand espace dégagé, praticable pour les travellings et l'installation du matériel, avec des ombres portées toute la journée." },
-    { n: "05", t: "Le salon sous voûte de brique", d: "Plafond en brique posée à chevrons, lustre en cristal, sol en marbre, portes cintrées ouvrant sur la piscine. Un intérieur colonial que l'on ne reconstitue pas en studio." },
+    { n: "05", t: "Le salon sous voûte de brique", d: "Plafond en brique posée à chevrons, lustre en cristal, sol en marbre, portes cintrées ouvrant sur la piscine. Un intérieur colonial d'époque, prêt à filmer." },
   ],
   atouts: [
-    { t: "Lumière naturelle", d: "Orientation dégagée, sans vis-à-vis. Le soleil traverse le domaine du matin au soir." },
+    { t: "Lumière naturelle", d: "Orientation dégagée, horizon libre. Le soleil traverse le domaine du matin au soir." },
     { t: "Intérieur et extérieur", d: "Villa coloniale, jardin, piscine, pré et écuries — plusieurs univers sur un seul site." },
-    { t: "Chevaux sur place", d: "Des chevaux qui vivent sur le domaine, visibles à l'image sans transport ni prestataire extérieur." },
+    { t: "Chevaux sur place", d: "Des chevaux qui vivent sur le domaine, disponibles à l'image, déjà chez eux." },
     { t: "Accès", d: "À quelques minutes du centre de Tunis, à La Soukra." },
     { t: "Maison filmable", d: "Voûtes de brique, marbre et arcades — un décor intérieur complet, doublé d'une base technique." },
-    { t: "Privatisation totale", d: "Le domaine est réservé à une seule production à la fois. Aucun autre événement en parallèle." },
+    { t: "Privatisation totale", d: "Le domaine est réservé à une seule production à la fois. Le site entier est à vous." },
   ],
   admin: { titre: "Daughter of Gaïa · Administration", quitter: "Quitter", acces: "Accès réservé",
     code: "Entrez votre code", codePh: "Code d'accès", erreur: "Code incorrect.", ouvrir: "Ouvrir",
     dispo: "Disponibilités", bloquer: "Bloquer ou libérer une date",
     aide: "Cliquez sur une date pour la rendre indisponible. Cliquez à nouveau pour la libérer.",
-    enreg: "enregistrement…", bloquees: "Dates bloquées", aucune: "Aucune date bloquée.",
+    enreg: "enregistrement…", bloquees: "Dates bloquées", aucune: "Toutes les dates sont ouvertes.",
     afficher: "Afficher le code", masquer: "Masquer le code",
     verification: "Vérification…",
     erreurServeur: "Connexion au serveur impossible. Réessayez dans un instant.",
-    erreurEnreg: "La date n'a pas pu être enregistrée. Vérifiez votre connexion et réessayez.",
-    baseAbsente: "La base de données n'est pas encore configurée sur le serveur.",
+    erreurEnreg: "L'enregistrement a rencontré un incident. Vérifiez votre connexion et réessayez.",
+    baseAbsente: "La base de données reste à configurer sur le serveur.",
     tropDeTentatives: "Trop de tentatives. Par sécurité, l'accès est suspendu pendant {min} min." },
 },
 en: {
@@ -236,30 +265,31 @@ en: {
   ],
   domaine: { eyebrow: "The estate", titre: "4,000 m² where the city disappears",
     texte: "Spaces designed to adapt naturally to your event. A terrace facing the garden, an interior in natural materials, a kitchen ready to receive.",
-    citation: "And all around, a landscape that was never designed to impress, but to be lived in.",
+    citation: "And all around, a landscape made to be lived in.",
     alt: "The garden at sunset, horses in the background" },
   espaces: [
-    { t: "The estate", v: "4 000 m²" }, { t: "Landscaped area", v: "500 m²" },
-    { t: "Covered space", v: "120 m²" }, { t: "Ideal capacity", v: "80 guests" },
+    { t: "The estate", v: "4 000 m²" }, { t: "Indoor space", v: "45 m²" },
+    { t: "Covered terrace", v: "69 m²" }, { t: "Guest capacity", v: "100 guests" },
     { t: "Private parking", v: "40 cars" }, { t: "Rescued and rehabilitated", v: "7 horses" },
   ],
+  espacesNote: "The enclosed interior is 45 m², the covered terrace open to the outside 69, the kitchen 20 — 134 m² built in all. Around it, 500 m² laid out for events within the estate's 4,000: here the event happens outdoors, with shelter when it is needed.",
   histoire: { eyebrow: "The story", titre: "Before it was a place, it was a conviction.",
-    p0: "The idea was never to create just another event venue.",
-    p1: "Daughter of Gaïa was born of a different ambition — to imagine an estate where events fit into the place, rather than the other way round. Somewhere nature and animals never become scenery, but stay at the heart of every experience.",
+    p0: "From the very first day, the idea was to create far more than an event venue.",
+    p1: "Daughter of Gaïa was born of a simple ambition — to imagine an estate where events take the shape of the place. Somewhere nature and animals stay at the heart of every experience.",
     p2: "The name comes from Gaia, goddess of the Earth in Greek mythology. It stands for a simple conviction. Respect for the living guides every decision we make.",
     p3: "That is why we favour events that fit naturally into the estate, with respect for its environment and for the wellbeing of the animals who live here.",
-    p4: "Here, every detail was imagined with a single intention — to offer exceptional moments without ever compromising what matters.",
+    p4: "Here, every detail was imagined with a single intention — to offer exceptional moments while preserving what matters.",
     citation: "There are places you visit. And there are places you feel.",
     alt: "Two piebald horses grazing side by side" },
   experiences: { eyebrow: "Experiences", titre: "What the estate hosts", bientot: "soon",
     note: "Daytime events are favoured, to preserve the peace of the animals and of the neighbourhood." },
   prestations: [
-    { t: "Product & brand launches", d: "A natural setting that puts your brand forward, far from conventional showrooms." },
+    { t: "Product & brand launches", d: "A natural setting that puts your brand forward, with the garden as its stage." },
     { t: "Corporate events", d: "Seminars and team days in a setting that changes the rhythm of a conversation." },
     { t: "Birthdays", d: "A private celebration, in small numbers, with nature as the backdrop." },
     { t: "Children's events", d: "Open ground, greenery, and animals to observe respectfully." },
     { t: "Baby showers", d: "A gentle, intimate moment, in the garden or under the covered terrace." },
-    { t: "Private brunches", d: "Fitted kitchen and terrace — everything is here to receive without constraint." },
+    { t: "Private brunches", d: "Fitted kitchen and terrace — everything is here to host with ease." },
     { t: "Table d'hôte", d: "One long table set for a shared meal at the estate's own pace, surrounded by free-roaming animals and birdsong." },
     { t: "Photo & video shoots", d: "Natural light, varied settings, animals on site — a playground for creatives." },
     { t: "Film shoots", d: "Multiple outdoor locations, a house you can film throughout, and natural light all day long." },
@@ -272,28 +302,30 @@ en: {
   galerie: { eyebrow: "Gallery", titre: "The estate in pictures", faire: "Scroll across",
     legendes: ["The garden", "They live here", "The terrace", "The covered space", "In the shade, by the house"] },
   refuge: { eyebrow: "The sanctuary", titre: "Rescued, rehabilitated, and home.",
-    p1: "Every horse, dog or other animal here was rescued, taken in or rehabilitated. They are neither an attraction nor an act. They move through their own environment, at their own pace, and their wellbeing comes before the event.",
+    p1: "Every horse, dog or other animal here was rescued, taken in or rehabilitated. The estate is their home before it is a venue. They move through their own environment, at their own pace, and their wellbeing comes before the event.",
     p2: "Seven horses have been taken in since we opened. Four live here today. The other three left once they were back on their feet, which was the whole point.",
-    liste: ["No forced interaction", "Observation from a distance, in quiet", "Sound levels and hours kept in check", "Resting areas strictly preserved"],
+    liste: ["Encounters left to their initiative", "Observation from a distance, in quiet", "Sound levels and hours kept in check", "Resting areas strictly preserved"],
     alt: "A black-and-white horse walking out from under the trees" },
-  dispo: { eyebrow: "Availability", titre: "Choose a date", note: "Crossed-out dates are no longer available" },
+  dispo: { eyebrow: "Availability", titre: "Choose a date", note: "Crossed-out dates are already booked" },
   devis: { eyebrow: "Request a quote", titre: "Tell us about your project",
     texte: "Every event is considered individually. Describe what you have in mind and we will come back to you with a tailored proposal.",
-    date: "Preferred date", datePh: "Select a date in the calendar", nom: "Name", email: "Email",
+    date: "Preferred date", datePh: "Select a date in the calendar",
+    dateModifier: "change the date", nom: "Name", email: "Email",
     tel: "Phone", invites: "Guests", type: "Type of experience", autre: "Other", projet: "Your project",
     projetPh: "Timings, atmosphere, particular requirements…", envoyer: "Send my request",
     envoiEnCours: "Sending…",
-    erreur: "The message could not be sent. Please try again, or write to us directly at",
+    erreur: "Something interrupted the sending. Please try again, or write to us directly at",
     merci: "Thank you.", confirm1: "Your request has been sent", confirm2: "for",
     confirm3: "We will come back to you shortly with a personalised proposal." },
   faqT: { eyebrow: "Frequently asked", titre: "Good to know" },
   faq: [
-    { q: "Is the estate open to the public?", r: "No. Daughter of Gaïa hosts private events by reservation only. Each booking privatises the entire estate, and you are the only ones on site." },
-    { q: "Can we approach the animals?", r: "The animals are at home here and are not an attraction. They can be observed from a distance, with respect for their quiet. No interaction is arranged." },
+    { q: "Is the estate open to the public?", r: "Daughter of Gaïa hosts private events by reservation only. Each booking privatises the entire estate, and you are the only ones on site." },
+    { q: "Can we approach the animals?", r: "The animals are at home here. They are observed from a distance, with respect for their quiet, and any encounter is left to their initiative." },
     { q: "Why favour daytime events?", r: "To preserve the calm of the animals and the rest of the neighbourhood. Daytime formats are therefore preferred." },
-    { q: "How many people can the estate host?", r: "Up to 80 guests, with 40 parking spaces at the entrance. The ideal number depends on your format and the spaces used — describe your project and we will advise you." },
-    { q: "Can we use the kitchen?", r: "Yes, the covered space has a fully fitted kitchen. You are welcome to bring your caterer or cook on site." },
-    { q: "Is the house part of the event venue?", r: "No. The house and its locations are reserved for filming and photo shoots, and are not offered for private events. Those take place in the estate's own spaces — garden, terrace and covered area." },
+    { q: "How many people can the estate host?", r: "Up to 100 guests, with 40 parking spaces at the entrance. Those 100 people spread across the garden, the 69 m² covered terrace and the 45 m² indoor space: this is an open-air estate, built for receptions that happen outdoors, with shelter when it is needed. Tell us your format and we will tell you what it allows." },
+    { q: "How big are the covered spaces?", r: "The enclosed interior is 45 m², the covered terrace open to the outside 69, and the kitchen 20 — 134 m² built in all. All the rest of the 4,000 m² is open air." },
+    { q: "Can we use the kitchen?", r: "Yes. A fully fitted kitchen of 20 m² is part of the covered space. You are welcome to bring your caterer or cook on site." },
+    { q: "Is the house part of the event venue?", r: "The house and its locations are reserved for filming and photo shoots. Private events take place in the estate's own spaces — garden, terrace and covered area." },
     { q: "How do I get a quote?", r: "Choose a date in the calendar, describe your project, and we will come back to you with a tailored proposal." },
   ],
   contact: { sur: "Private Experiences \u00a0•\u00a0 By Reservation",
@@ -304,12 +336,12 @@ en: {
     accroche: "Colonial villa, pool, gardens, pergola and free-roaming horses — several locations minutes from Tunis, separate from the event spaces.",
     btn: "See the locations",
     nav: { decors: "Locations", maison: "The house", pratique: "Practical", domaine: "The estate", contact: "Contact" },
-    introT: "Several worlds on a single site, without a metre of set to build.",
+    introT: "Several worlds on a single site, every set already standing.",
     intro: "A colonial villa with brick vaulting, a pool framed by stone arcades, a pergola opening onto the garden, palms, bougainvillea — and horses that live here and walk naturally into frame. A vocabulary broad enough to play Andalusia, the Maghreb or the Levant.",
     decorsE: "Location scout", decorsT: "From the garden to the drawing room",
     maisonE: "The house", maisonT: "A location in its own right, and a base for your crew",
-    maison1: "The house is reserved for productions: it is not among the spaces offered for private events. It is as much to film as to use — a living room under herringbone brick vaulting, marble floors, a crystal chandelier, arched doors opening onto the garden. A complete colonial interior, available for your shots as much as for your technical needs.",
-    maison2: "It also takes your dressing rooms, make-up, production office, crew meals and equipment storage, in a covered, air-conditioned and secure space a few steps from the outdoor locations. No accommodation however, overnight stays are not offered on the estate.",
+    maison1: "The house is reserved for productions and photo shoots. It is as much to film as to use — a living room under herringbone brick vaulting, marble floors, a crystal chandelier, arched doors opening onto the garden. A complete colonial interior, available for your shots as much as for your technical needs.",
+    maison2: "It also takes your dressing rooms, make-up, production office, crew meals and equipment storage, in a covered, air-conditioned and secure space a few steps from the outdoor locations. Shoots run by day; nights are spent off the estate.",
     pratiqueE: "Practical", pratiqueT: "What the estate gives you",
     pratiqueN: "Shoots take place during the day, to preserve the peace of the animals and of the neighbourhood. Every project begins with a technical visit.",
     contactE: "Production contact", contactT: "Let's talk about your shoot.",
@@ -317,30 +349,30 @@ en: {
     retour: "Back to the estate",
   },
   decors: [
-    { n: "01", t: "The garden lounge under the pergola", d: "Teak sofas, a stone bread oven, bougainvillea in flower — and horses grazing a few metres away, in the same shot. No animal wrangler to bring in." },
+    { n: "01", t: "The garden lounge under the pergola", d: "Teak sofas, a stone bread oven, bougainvillea in flower — and horses grazing a few metres away, in the same shot. The four-legged extras already live here." },
     { n: "02", t: "The pool and outdoor bar", d: "Stone arcades, a brick bar, a turquoise basin. Due south, with clean light from morning until late afternoon." },
     { n: "03", t: "The garden under the bougainvillea", d: "A century-old olive tree, a wall of flowers, benches in the shade. A more intimate setting, for close shots." },
     { n: "04", t: "The lawn and the palms", d: "A large open area, workable for dolly shots and equipment set-up, with cast shadows throughout the day." },
-    { n: "05", t: "The drawing room under brick vaulting", d: "Herringbone brick ceiling, crystal chandelier, marble floor, arched doors opening onto the pool. A colonial interior you do not rebuild in a studio." },
+    { n: "05", t: "The drawing room under brick vaulting", d: "Herringbone brick ceiling, crystal chandelier, marble floor, arched doors opening onto the pool. A period colonial interior, ready to shoot." },
   ],
   atouts: [
-    { t: "Natural light", d: "Open orientation, nothing overlooking. The sun crosses the estate from morning to evening." },
+    { t: "Natural light", d: "Open orientation, clear horizon. The sun crosses the estate from morning to evening." },
     { t: "Indoors and out", d: "Colonial villa, garden, pool, paddock and stables — several worlds on a single site." },
-    { t: "Horses on site", d: "Horses that live on the estate, available on camera without transport or an outside supplier." },
+    { t: "Horses on site", d: "Horses that live on the estate, ready for camera, already at home." },
     { t: "Access", d: "Minutes from central Tunis, in La Soukra." },
     { t: "A house you can film", d: "Brick vaulting, marble and arcades — a complete interior location, doubling as a technical base." },
-    { t: "Full privatisation", d: "The estate is reserved for one production at a time. No other event running alongside." },
+    { t: "Full privatisation", d: "The estate is reserved for one production at a time. The whole site is yours." },
   ],
   admin: { titre: "Daughter of Gaïa · Administration", quitter: "Exit", acces: "Restricted access",
     code: "Enter your code", codePh: "Access code", erreur: "Incorrect code.", ouvrir: "Open",
     dispo: "Availability", bloquer: "Block or release a date",
     aide: "Click a date to make it unavailable. Click again to release it.",
-    enreg: "saving…", bloquees: "Blocked dates", aucune: "No blocked dates.",
+    enreg: "saving…", bloquees: "Blocked dates", aucune: "Every date is open.",
     afficher: "Show code", masquer: "Hide code",
     verification: "Checking…",
     erreurServeur: "Could not reach the server. Please try again shortly.",
-    erreurEnreg: "The date could not be saved. Check your connection and try again.",
-    baseAbsente: "The database is not configured on the server yet.",
+    erreurEnreg: "Something interrupted the save. Check your connection and try again.",
+    baseAbsente: "The database still needs to be configured on the server.",
     tropDeTentatives: "Too many attempts. For security, access is suspended for {min} min." },
 },
 };
@@ -470,7 +502,7 @@ function MenuMobile({ ouvert, fermer, t, lang, setLang, entrees = [], masqueDes 
               className="mono text-xs uppercase tracking-[0.2em] px-5 h-11 rounded-full transition-colors duration-500"
               style={{ border: "1px solid #C7B79A",
                        background: lang === l ? "#2B2118" : "transparent",
-                       color: lang === l ? "#F6F1E7" : "#6B7355" }}>
+                       color: lang === l ? "#F6F1E7" : "#626A4E" }}>
               {l}
             </button>
           ))}
@@ -490,7 +522,7 @@ function Rideau() {
   }, []);
   if (phase === 2) return null;
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none"
+    <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none" aria-hidden="true"
       style={{ background: "#1a130c", clipPath: phase >= 1 ? "inset(0 0 100% 0)" : "inset(0 0 0 0)",
                transition: "clip-path 1.4s cubic-bezier(.76,0,.24,1)" }}>
       <div style={{ opacity: phase >= 1 ? 0 : 1, transition: "opacity .7s ease" }} className="text-center">
@@ -537,21 +569,38 @@ function LumiereFiltree() {
 /* Photos qui se succèdent en fondu, avec zoom lent */
 function Diaporama({ images, interval = 6500, overlay }) {
   const [i, setI] = useState(0);
+
+  /* Les photos n'entrent dans la page qu'une fois leur tour approchant.
+     Toutes présentes dès le départ, elles se téléchargeaient ensemble —
+     trois pleines pages d'images pour une seule visible. loading="lazy"
+     n'y changeait rien : superposées en plein écran, elles sont toutes
+     « dans la fenêtre » aux yeux du navigateur. */
+  const [chargees, setChargees] = useState(() => new Set([0]));
   useEffect(() => {
     const t = setInterval(() => setI((v) => (v + 1) % images.length), interval);
     return () => clearInterval(t);
   }, [images.length, interval]);
+
+  /* La suivante est demandée une seconde et demie après l'arrivée de la
+     courante : le premier écran reste léger, et la photo est prête bien
+     avant le fondu. */
+  useEffect(() => {
+    const suivante = (i + 1) % images.length;
+    const t = setTimeout(() => setChargees((vues) => (vues.has(suivante) ? vues : new Set([...vues, suivante]))), 1500);
+    return () => clearTimeout(t);
+  }, [i, images.length]);
+
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {images.map((im, k) => (
-        <img key={k} src={im.src} alt={im.alt} className="absolute inset-0 w-full h-full object-cover"
+      {images.map((im, k) => (!chargees.has(k) ? null : (
+        <img key={k} src={im.src} alt={im.alt} decoding="async" className="absolute inset-0 w-full h-full object-cover"
           style={{
             objectPosition: im.pos || "center",
             opacity: k === i ? 1 : 0,
             transform: k === i ? "scale(1.14)" : "scale(1.02)",
             transition: "opacity 2.4s ease, transform 8s ease-out",
           }} />
-      ))}
+      )))}
       {overlay}
     </div>
   );
@@ -679,7 +728,7 @@ function LetterReveal({ children, className = "", style = {}, delay = 0 }) {
 }
 
 /* Galerie qui défile horizontalement au scroll */
-function GalerieHorizontale({ items }) {
+function GalerieHorizontale({ items, label }) {
   const outer = useRef(null);
   const track = useRef(null);
   const [dist, setDist] = useState(0);
@@ -712,12 +761,16 @@ function GalerieHorizontale({ items }) {
 
   return (
     <>
-      {/* Mobile : défilement tactile classique */}
-      <div className="lg:hidden overflow-x-auto pb-6" style={{ scrollSnapType: "x mandatory" }}>
+      {/* Mobile : défilement tactile classique.
+          tabIndex rend la bande atteignable au clavier — sans lui, les
+          flèches ne peuvent pas la faire défiler, et les photos qui
+          dépassent de l'écran restent hors de portée. */}
+      <div className="lg:hidden overflow-x-auto pb-6" tabIndex={0} role="region" aria-label={label}
+        style={{ scrollSnapType: "x mandatory" }}>
         <div className="flex gap-4 px-8" style={{ width: "max-content" }}>
           {items.map((g, i) => (
             <figure key={i} className="shrink-0 relative overflow-hidden gal-fig" style={{ width: "76vw", height: "58vh", scrollSnapAlign: "center" }}>
-              <img src={g.src} alt={g.l} className="w-full h-full object-cover gal-img" style={{ objectPosition: g.pos || "center" }} />
+              <img src={g.src} alt={g.l} loading="lazy" decoding="async" className="w-full h-full object-cover gal-img" style={{ objectPosition: g.pos || "center" }} />
               <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(20,14,8,.55), transparent 50%)" }} />
               <figcaption className="absolute bottom-5 inset-x-0 text-center mono text-[9px] uppercase tracking-[0.24em]" style={{ color: "rgba(246,241,231,.95)" }}>
                 {g.l}
@@ -735,7 +788,7 @@ function GalerieHorizontale({ items }) {
           {items.map((g, i) => (
             <figure key={i} className="shrink-0 relative overflow-hidden gal-fig group"
               style={{ width: g.w, height: g.h }}>
-              <img src={g.src} alt={g.l} className="w-full h-full object-cover gal-img"
+              <img src={g.src} alt={g.l} loading="lazy" decoding="async" className="w-full h-full object-cover gal-img"
                 style={{ objectPosition: g.pos || "center" }} />
               <div className="absolute inset-0 transition-opacity duration-700 opacity-0 group-hover:opacity-100"
                 style={{ background: "linear-gradient(to top, rgba(20,14,8,.55), transparent 55%)" }} />
@@ -791,7 +844,7 @@ function Progression() {
   }, []);
   return (
     <div className="fixed top-0 left-0 right-0 z-[70] h-[2px] pointer-events-none" aria-hidden="true">
-      <div style={{ width: `${p}%`, height: "100%", background: "linear-gradient(90deg,#6B7355,#B5654A)", transition: "width .1s linear" }} />
+      <div style={{ width: `${p}%`, height: "100%", background: "linear-gradient(90deg,#626A4E,#B5654A)", transition: "width .1s linear" }} />
     </div>
   );
 }
@@ -1035,10 +1088,10 @@ function Rule({ delay = 0 }) {
   );
 }
 
-function Eyebrow({ children, light = false }) {
+function Eyebrow({ children, light = false, ton = A_TERRE }) {
   return (
     <p className="uppercase tracking-[0.32em] text-[10px] mb-5 mono"
-      style={{ color: light ? "rgba(246,241,231,.75)" : "#B5654A" }}>
+      style={{ color: light ? "rgba(246,241,231,.75)" : ton }}>
       {children}
     </p>
   );
@@ -1069,7 +1122,7 @@ function Calendrier({ blocked, onDayClick, admin = false, lang = "fr" }) {
           className="flex items-center justify-center w-11 h-11 -mr-2 disabled:opacity-25 transition-transform hover:translate-x-1" aria-label="Mois suivant"><ChevronRight size={18} /></button>
       </div>
       <div className="grid grid-cols-7 mb-3">
-        {JOURS_L.map((d, i) => <span key={i} className="mono text-[9px] text-center tracking-widest" style={{ color: "#9a8f76" }}>{d}</span>)}
+        {JOURS_L.map((d, i) => <span key={i} className="mono text-[9px] text-center tracking-widest" style={{ color: "#6D6654" }}>{d}</span>)}
       </div>
       <div className="grid grid-cols-7 gap-y-1 pb-6 transition-opacity duration-200" style={{ opacity: fade ? 0 : 1 }}>
         {cells.map((d, i) => {
@@ -1340,7 +1393,6 @@ export default function App() {
 
   const styleTag = (
     <style>{`
-      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400;500&family=IBM+Plex+Mono:wght@300;400&display=swap');
       .display{font-family:'Cormorant Garamond',serif;}
       .body-font{font-family:'Jost',sans-serif;font-weight:300;}
       .mono{font-family:'IBM Plex Mono',monospace;}
@@ -1396,12 +1448,19 @@ export default function App() {
       @keyframes washB{0%{transform:translate3d(16%,10%,0) scale(1.35);}50%{transform:translate3d(-10%,-8%,0) scale(1.1);}100%{transform:translate3d(16%,10%,0) scale(1.35);}}
       @keyframes washC{0%{transform:translate3d(2%,-14%,0) scale(1.2);}50%{transform:translate3d(-6%,12%,0) scale(1.5);}100%{transform:translate3d(2%,-14%,0) scale(1.2);}}
       .wash{position:absolute;border-radius:50%;filter:blur(90px);will-change:transform;}
-      .wash-a{width:70%;height:80%;left:-14%;top:-18%;background:radial-gradient(circle,rgba(107,115,85,.20),transparent 68%);animation:washA 58s ease-in-out infinite;}
-      .wash-b{width:66%;height:76%;right:-16%;bottom:-20%;background:radial-gradient(circle,rgba(181,101,74,.16),transparent 66%);animation:washB 74s ease-in-out infinite;}
-      .wash-c{width:58%;height:66%;left:30%;top:12%;background:radial-gradient(circle,rgba(199,183,154,.30),transparent 64%);animation:washC 66s ease-in-out infinite;}
+      /* Les trois voiles portaient les couleurs de la charte à 16-30 %,
+         trop pâles pour se voir. Ils passent à 48-62 %, mais dans des tons
+         de même clarté que le sable : la page se colore sans qu'aucun
+         contraste de texte ne bouge. */
+      .wash-a{width:70%;height:80%;left:-14%;top:-18%;background:radial-gradient(circle,rgba(221,235,185,.62),transparent 68%);animation:washA 58s ease-in-out infinite;}
+      .wash-b{width:66%;height:76%;right:-16%;bottom:-20%;background:radial-gradient(circle,rgba(246,225,217,.58),transparent 66%);animation:washB 74s ease-in-out infinite;}
+      .wash-c{width:58%;height:66%;left:30%;top:12%;background:radial-gradient(circle,rgba(241,228,205,.48),transparent 64%);animation:washC 66s ease-in-out infinite;}
       .grain-doux{position:absolute;inset:0;opacity:.05;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");}
       .day-cell{transition:color .3s,transform .25s;}
       .day-cell:hover:not(:disabled){transform:scale(1.25);color:#B5654A;}
+      .champ-date{color:#2B2118;border-bottom:1px solid #8C816D;transition:color .35s,border-color .35s;}
+      .champ-date-vide{color:#6D6654;}
+      .champ-date:hover,.champ-date:focus-visible{color:#B5654A;border-color:#B5654A;}
       .link-u{position:relative;}
       .link-u::after{content:'';position:absolute;left:0;bottom:-4px;height:1px;width:100%;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .6s cubic-bezier(.22,1,.36,1);}
       .link-u:hover::after{transform:scaleX(1);transform-origin:left;}
@@ -1433,7 +1492,7 @@ export default function App() {
         .text-\\[9px\\]{font-size:11px;}
         .text-\\[10px\\]{font-size:11px;}
       }
-      input:focus,select:focus,textarea:focus{outline:none;border-color:#6B7355 !important;}
+      input:focus,select:focus,textarea:focus{outline:none;border-color:#626A4E !important;}
       ::selection{background:#B5654A;color:#F6F1E7;}
       @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none !important;transition-duration:.01ms !important;}}
       .video-fond::-webkit-media-controls,.video-fond::-webkit-media-controls-panel,.video-fond::-webkit-media-controls-play-button,.video-fond::-webkit-media-controls-start-playback-button,.video-fond::-webkit-media-controls-overlay-play-button{display:none !important;-webkit-appearance:none !important;opacity:0 !important;}
@@ -1461,7 +1520,7 @@ export default function App() {
         <button key={l} onClick={() => setLang(l)}
           className="mono text-[9px] uppercase tracking-[0.18em] px-2.5 py-1 transition-colors duration-500"
           style={{ background: lang === l ? "#2B2118" : "transparent",
-                   color: lang === l ? "#F6F1E7" : "#6B7355" }}>
+                   color: lang === l ? "#F6F1E7" : "#626A4E" }}>
           {l}
         </button>
       ))}
@@ -1476,7 +1535,7 @@ export default function App() {
         <header className="max-w-3xl mx-auto px-8 pt-10 flex justify-between items-center">
           <span className="display text-xl tracking-wide">{t.admin.titre}</span>
           <button onClick={() => { setAdminOpen(false); setIsAdmin(false); setCodeInput(""); }}
-            className="mono text-[10px] uppercase tracking-[0.25em] flex items-center gap-2 link-u" style={{ color: "#B5654A" }}><LogOut size={13} /> {t.admin.quitter}</button>
+            className="mono text-[10px] uppercase tracking-[0.25em] flex items-center gap-2 link-u" style={{ color: A_TERRE }}><LogOut size={13} /> {t.admin.quitter}</button>
         </header>
         <div className="max-w-3xl mx-auto px-8 py-16 fu">
           {!isAdmin ? (
@@ -1484,19 +1543,19 @@ export default function App() {
               <Eyebrow>{t.admin.acces}</Eyebrow>
               <h1 className="display text-4xl mb-8" style={{ fontWeight: 300 }}>{t.admin.code}</h1>
               <div className="relative">
-                <input type={codeVisible ? "text" : "password"} value={codeInput}
+                <input type={codeVisible ? "text" : "password"} value={codeInput} aria-label={t.admin.codePh}
                   onChange={(e) => setCodeInput(e.target.value)} autoComplete="current-password"
                   className="body-font w-full pl-0 pr-12 py-3 bg-transparent"
-                  style={{ borderBottom: "1px solid #C7B79A" }} placeholder={t.admin.codePh} />
+                  style={{ borderBottom: "1px solid #8C816D" }} placeholder={t.admin.codePh} />
                 <button type="button" onClick={() => setCodeVisible(!codeVisible)}
                   aria-label={codeVisible ? t.admin.masquer : t.admin.afficher}
                   aria-pressed={codeVisible}
                   className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-11 h-11 transition-opacity hover:opacity-100 opacity-55"
-                  style={{ color: "#6B7355" }}>
+                  style={{ color: "#626A4E" }}>
                   {codeVisible ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
               </div>
-              {codeError && <p className="body-font text-sm mt-3" style={{ color: "#B5654A" }} role="alert">{codeError}</p>}
+              {codeError && <p className="body-font text-sm mt-3" style={{ color: "#97543E" }} role="alert">{codeError}</p>}
               <button type="submit" disabled={verif || !codeInput}
                 className="btn btn-solid body-font mt-8 px-10 py-3.5 text-sm uppercase tracking-[0.2em] disabled:opacity-60"
                 style={{ background: "#666E51", color: "#F6F1E7" }}>
@@ -1514,15 +1573,15 @@ export default function App() {
                 {t.admin.aide}
               </p>
               {loading ? <Loader2 className="animate-spin" color="#B5654A" /> : <Calendrier blocked={blocked} admin lang={lang} onDayClick={toggleBlocked} />}
-              {saving && <p className="mono text-[10px] flex items-center gap-2 mt-2" style={{ color: "#6B7355" }}><Loader2 size={11} className="animate-spin" /> {t.admin.enreg}</p>}
-              {adminErreur && <p className="body-font text-sm mt-3" style={{ color: "#B5654A" }} role="alert">{adminErreur}</p>}
+              {saving && <p className="mono text-[10px] flex items-center gap-2 mt-2" style={{ color: "#626A4E" }}><Loader2 size={11} className="animate-spin" /> {t.admin.enreg}</p>}
+              {adminErreur && <p className="body-font text-sm mt-3" style={{ color: "#97543E" }} role="alert">{adminErreur}</p>}
               <div className="mt-12 max-w-xl">
-                <p className="mono text-[10px] uppercase tracking-[0.25em] mb-4" style={{ color: "#6B7355" }}>{t.admin.bloquees} — {blocked.size}</p>
+                <p className="mono text-[10px] uppercase tracking-[0.25em] mb-4" style={{ color: "#626A4E" }}>{t.admin.bloquees} — {blocked.size}</p>
                 {blocked.size === 0 ? <p className="body-font text-sm" style={{ color: "#5a4f42" }}>{t.admin.aucune}</p> : (
                   <div className="flex flex-wrap gap-2">
                     {[...blocked].sort().map((k) => { const [y, m, d] = k.split("-");
                       return <button key={k} onClick={() => toggleBlocked(k)} className="mono text-[10px] px-3 py-1.5 transition-colors hover:opacity-70"
-                        style={{ border: "1px solid #B5654A", color: "#B5654A" }}>{d}/{m}/{y} ×</button>; })}
+                        style={{ border: "1px solid " + A_TERRE, color: A_TERRE }}>{d}/{m}/{y} ×</button>; })}
                   </div>
                 )}
               </div>
@@ -1541,6 +1600,7 @@ export default function App() {
         <Grain />
         <Progression />
 
+        <main>
         {/* HERO */}
         <section className="relative h-[100svh] w-full overflow-hidden">
           <div className="absolute inset-0" style={{ transform: `translate3d(0,${scrollY * 0.3}px,0)` }}>
@@ -1584,12 +1644,12 @@ export default function App() {
           <div className="max-w-6xl mx-auto px-8 py-5 flex flex-col items-center gap-3 transition-opacity duration-500"
             style={{ opacity: navSolid ? 1 : 0, pointerEvents: navSolid ? "auto" : "none" }}>
             <button onClick={() => allerA("accueil")} className="display text-base tracking-[0.08em] flex items-center min-h-[44px]">Daughter of Gaïa</button>
-            <div className="hidden sm:flex items-center gap-8 mono text-[10px] uppercase tracking-[0.2em] leading-none" style={{ color: "#6B7355" }}>
+            <div className="hidden sm:flex items-center gap-8 mono text-[10px] uppercase tracking-[0.2em] leading-none" style={{ color: "#626A4E" }}>
               <a href="#decors" className="link-u">{t.tournages.nav.decors}</a>
               <a href="#maison" className="link-u">{t.tournages.nav.maison}</a>
               <a href="#pratique" className="link-u">{t.tournages.nav.pratique}</a>
               <button onClick={() => allerA("accueil")} className="link-u uppercase tracking-[0.2em]">{t.tournages.nav.domaine}</button>
-              <a href="#contact-t" className="link-u" style={{ color: "#B5654A" }}>{t.tournages.nav.contact}</a>
+              <a href="#contact-t" className="link-u" style={{ color: A_TERRE }}>{t.tournages.nav.contact}</a>
               {selecteurNav}
             </div>
           </div>
@@ -1628,7 +1688,7 @@ export default function App() {
         {/* LES DÉCORS */}
         <section id="decors" className="py-16">
           <div className="max-w-4xl mx-auto px-8 text-center mb-16">
-            <Reveal><Eyebrow>{t.tournages.decorsE}</Eyebrow></Reveal>
+            <Reveal><Eyebrow ton={A_OLIVE}>{t.tournages.decorsE}</Eyebrow></Reveal>
             <WordReveal className="display text-4xl sm:text-6xl" style={{ fontWeight: 300 }}>
               {t.tournages.decorsT}
             </WordReveal>
@@ -1638,12 +1698,12 @@ export default function App() {
               <div key={i}>
                 <VoletsReveal className="relative w-full h-[50vh] sm:h-[74vh] zoom-wrap">
                   <Parallax speed={-0.06} className="absolute inset-0 -top-14 -bottom-14">
-                    <img src={DECOR_IMG[i].src} alt={d.t} className="w-full h-full object-cover" style={{ objectPosition: DECOR_IMG[i].pos }} />
+                    <img src={DECOR_IMG[i].src} alt={d.t} loading="lazy" decoding="async" className="w-full h-full object-cover" style={{ objectPosition: DECOR_IMG[i].pos }} />
                   </Parallax>
                 </VoletsReveal>
                 <Reveal delay={120}>
                   <div className="max-w-2xl mx-auto px-8 mt-10 text-center">
-                    <span className="mono text-[10px]" style={{ color: "#B5654A" }}>{d.n}</span>
+                    <span className="mono text-[10px]" style={{ color: A_TERRE }}>{d.n}</span>
                     <h3 className="display text-2xl sm:text-4xl mt-3 mb-4" style={{ fontWeight: 300 }}>{d.t}</h3>
                     <p className="body-font leading-relaxed max-w-xl mx-auto" style={{ color: "#5a4f42" }}>{d.d}</p>
                   </div>
@@ -1657,7 +1717,7 @@ export default function App() {
         <section id="maison" className="relative max-w-3xl mx-auto px-8 py-32 text-center">
           <FondAbstrait intensite={0.6} />
           <div className="relative">
-            <Reveal><Eyebrow>{t.tournages.maisonE}</Eyebrow></Reveal>
+            <Reveal><Eyebrow ton={A_TERRE}>{t.tournages.maisonE}</Eyebrow></Reveal>
             <WordReveal className="display text-4xl sm:text-6xl mb-8" style={{ fontWeight: 300 }}>
               {t.tournages.maisonT}
             </WordReveal>
@@ -1676,7 +1736,7 @@ export default function App() {
         <section id="pratique" className="relative max-w-5xl mx-auto px-8 py-24 text-center">
           <FondAbstrait intensite={0.5} />
           <div className="relative">
-            <Reveal><Eyebrow>{t.tournages.pratiqueE}</Eyebrow></Reveal>
+            <Reveal><Eyebrow ton={A_OLIVE}>{t.tournages.pratiqueE}</Eyebrow></Reveal>
             <WordReveal className="display text-4xl sm:text-6xl mb-16" style={{ fontWeight: 300 }}>
               {t.tournages.pratiqueT}
             </WordReveal>
@@ -1684,7 +1744,7 @@ export default function App() {
               {t.atouts.map((a, i) => (
                 <Reveal key={i} delay={i * 110}>
                   <div className="text-center">
-                    <span className="mono text-[10px]" style={{ color: "#B5654A" }}>{String(i + 1).padStart(2, "0")}</span>
+                    <span className="mono text-[10px]" style={{ color: A_TERRE }}>{String(i + 1).padStart(2, "0")}</span>
                     <h3 className="display text-2xl mt-4 mb-3" style={{ fontWeight: 400 }}>{a.t}</h3>
                     <p className="body-font text-sm leading-relaxed" style={{ color: "#5a4f42" }}>{a.d}</p>
                   </div>
@@ -1698,6 +1758,7 @@ export default function App() {
             </Reveal>
           </div>
         </section>
+        </main>
 
         {/* CONTACT */}
         <footer id="contact-t" style={{ background: "#2B2118", color: "#EDE4D3" }}>
@@ -1745,6 +1806,7 @@ export default function App() {
       <Grain />
       <Progression />
 
+      <main>
       {/* ── HERO ── */}
       <section className="relative h-[100svh] w-full overflow-hidden">
         <div className="absolute inset-0" style={{ transform: `translate3d(0,${scrollY * 0.32}px,0)` }}>
@@ -1806,7 +1868,7 @@ export default function App() {
 
           <a href="#" className="display text-base tracking-[0.08em] flex items-center min-h-[44px]">Daughter of Gaïa</a>
 
-          <div className="hidden lg:flex items-center gap-8 mono text-[10px] uppercase tracking-[0.2em] leading-none" style={{ color: "#6B7355" }}>
+          <div className="hidden lg:flex items-center gap-8 mono text-[10px] uppercase tracking-[0.2em] leading-none" style={{ color: "#626A4E" }}>
             <a href="#domaine" className="link-u">{t.nav.domaine}</a>
             <a href="#histoire" className="link-u">{t.nav.histoire}</a>
             <a href="#experiences" className="link-u">{t.nav.experiences}</a>
@@ -1814,7 +1876,7 @@ export default function App() {
             <a href="#refuge" className="link-u">{t.nav.refuge}</a>
             <button onClick={() => allerA("tournages")} className="link-u uppercase tracking-[0.2em]">{t.nav.tournages}</button>
             <a href="#disponibilites" className="link-u">{t.nav.dispo}</a>
-            <a href="#devis" onClick={versDevis} className="link-u" style={{ color: "#B5654A" }}>{t.nav.devis}</a>
+            <a href="#devis" onClick={versDevis} className="link-u" style={{ color: A_TERRE }}>{t.nav.devis}</a>
             {selecteurNav}
           </div>
         </div>
@@ -1836,6 +1898,9 @@ export default function App() {
           { href: "#devis", texte: t.nav.devis, accent: true, onClick: versDevis },
         ]} />
 
+      {/* Les sections suivantes portent leur propre largeur : le fond se
+          pose donc sur une enveloppe, pour tenir toute la largeur. */}
+      <div style={{ background: F_CREME }}>
       {/* ── MISSION ── */}
       <section id="mission" className="relative max-w-4xl mx-auto px-8 pt-32 sm:pt-44 pb-24 sm:pb-32 text-center">
         <FondAbstrait intensite={0.9} />
@@ -1853,26 +1918,32 @@ export default function App() {
         </div>
       </section>
 
-      {/* ── VALEURS ── */}
-      <section className="max-w-6xl mx-auto px-8 pt-20 sm:pt-28 pb-36">
+      {/* ── VALEURS ──
+          Second aplat profond de la page, en contrepoint de la bande olive
+          plus bas. Le crème ressort à 9,1:1 sur ce terracotta. */}
+      <section style={{ background: F_TERRE_PROFOND, color: "#F6F1E7" }}>
+        <div className="max-w-6xl mx-auto px-8 pt-24 sm:pt-32 pb-28 sm:pb-36">
         <div className="relative grid sm:grid-cols-2 lg:grid-cols-4 gap-y-16 gap-x-10">
           {t.valeurs.map((v, i) => (
             <Reveal key={i} delay={i * 130}>
               <div className="text-center px-2">
-                <span className="mono text-[10px]" style={{ color: "#B5654A" }}>{String(i + 1).padStart(2, "0")}</span>
+                <span className="mono text-[10px]" style={{ color: "#E1C9C2" }}>{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="display text-2xl mt-4 mb-3" style={{ fontWeight: 400 }}>{v.t}</h3>
-                <p className="body-font text-sm leading-relaxed" style={{ color: "#5a4f42" }}>{v.d}</p>
+                <p className="body-font text-sm leading-relaxed" style={{ color: "rgba(246,241,231,.86)" }}>{v.d}</p>
               </div>
             </Reveal>
           ))}
         </div>
+        </div>
       </section>
 
+      </div>
+
       {/* ── LE DOMAINE ── */}
-      <section id="domaine" className="relative py-24">
+      <section id="domaine" className="relative py-24" style={{ background: F_VERT }}>
         <FondAbstrait intensite={0.55} />
         <div className="relative max-w-3xl mx-auto px-8 text-center">
-          <Reveal><Eyebrow>{t.domaine.eyebrow}</Eyebrow></Reveal>
+          <Reveal><Eyebrow ton={A_OLIVE}>{t.domaine.eyebrow}</Eyebrow></Reveal>
           <WordReveal className="display text-4xl sm:text-6xl mb-8" style={{ fontWeight: 300 }}>
             {t.domaine.titre}
           </WordReveal>
@@ -1880,7 +1951,7 @@ export default function App() {
             {t.domaine.texte}
           </MaskText>
           <Reveal delay={320}>
-            <p className="display italic text-xl sm:text-2xl mt-9 max-w-2xl mx-auto leading-snug" style={{ color: "#6B7355", fontWeight: 300 }}>
+            <p className="display italic text-xl sm:text-2xl mt-9 max-w-2xl mx-auto leading-snug" style={{ color: "#626A4E", fontWeight: 300 }}>
               {t.domaine.citation}
             </p>
           </Reveal>
@@ -1901,18 +1972,27 @@ export default function App() {
                   <p className="display text-3xl sm:text-4xl" style={{ fontWeight: 300 }}>
                     {/^\d/.test(e.v) ? <CountUp value={e.v} delay={i * 160} /> : e.v}
                   </p>
-                  <p className="mono text-[9px] uppercase tracking-[0.2em] mt-2.5" style={{ color: "#6B7355" }}>{e.t}</p>
+                  <p className="mono text-[9px] uppercase tracking-[0.2em] mt-2.5" style={{ color: "#626A4E" }}>{e.t}</p>
                 </div>
               </Reveal>
             ))}
           </div>
+
+          {/* Le decoupage des surfaces, en toutes lettres : « espace couvert
+              120 m² » laissait imaginer une salle de reception fermee, alors
+              que l'interieur en fait 45 et que tout le reste est dehors. */}
+          <Reveal delay={700}>
+            <p className="body-font text-sm mt-16 max-w-2xl mx-auto leading-relaxed text-center" style={{ color: "#5a4f42" }}>
+              {t.espacesNote}
+            </p>
+          </Reveal>
         </div>
       </section>
 
       {/* ── HISTOIRE ── */}
-      <section id="histoire" className="py-24">
+      <section id="histoire" className="py-24" style={{ background: F_ROSE }}>
         <div className="max-w-3xl mx-auto px-8 text-center">
-          <Reveal><Eyebrow>{t.histoire.eyebrow}</Eyebrow></Reveal>
+          <Reveal><Eyebrow ton={A_TERRE}>{t.histoire.eyebrow}</Eyebrow></Reveal>
           <WordReveal className="display text-4xl sm:text-6xl mb-10" style={{ fontWeight: 300 }}>
             {t.histoire.titre}
           </WordReveal>
@@ -1951,7 +2031,7 @@ export default function App() {
       <section id="experiences" className="relative max-w-4xl mx-auto px-8 py-28 text-center">
         <FondAbstrait intensite={0.7} />
         <div className="relative">
-        <Reveal><Eyebrow>{t.experiences.eyebrow}</Eyebrow></Reveal>
+        <Reveal><Eyebrow ton={A_OLIVE}>{t.experiences.eyebrow}</Eyebrow></Reveal>
         <WordReveal className="display text-4xl sm:text-6xl mb-16" style={{ fontWeight: 300 }}>
           {t.experiences.titre}
         </WordReveal>
@@ -1959,10 +2039,10 @@ export default function App() {
           {t.prestations.map((p, i) => (
             <Reveal key={i} delay={i * 70}>
               <div>
-                <span className="mono text-[10px] block mb-3" style={{ color: "#B5654A" }}>{String(i + 1).padStart(2, "0")}</span>
+                <span className="mono text-[10px] block mb-3" style={{ color: A_OLIVE }}>{String(i + 1).padStart(2, "0")}</span>
                 <div className="flex items-center justify-center gap-3 flex-wrap">
                   <h3 className="display text-2xl sm:text-3xl" style={{ fontWeight: 400 }}>{p.t}</h3>
-                  {p.soon && <span className="mono text-[8px] uppercase tracking-[0.2em] px-2 py-1" style={{ color: "#6B7355", background: "#e5dcc8" }}>{t.experiences.bientot}</span>}
+                  {p.soon && <span className="mono text-[8px] uppercase tracking-[0.2em] px-2 py-1" style={{ color: "#626A4E", background: "#e5dcc8" }}>{t.experiences.bientot}</span>}
                 </div>
                 <p className="body-font text-sm mt-3 leading-relaxed max-w-lg mx-auto" style={{ color: "#5a4f42" }}>{p.d}</p>
               </div>
@@ -1978,14 +2058,14 @@ export default function App() {
       </section>
 
       {/* ── BANDEAU ── */}
-      <div className="overflow-hidden py-10">
+      <div className="overflow-hidden py-12" style={{ background: F_OLIVE_PROFOND }}>
         <div className="marquee flex whitespace-nowrap">
           {[...Array(2)].map((_, k) => (
             <span key={k} className="flex items-center">
               {t.bandeau.map((mot, i) => (
-                <span key={i} className="display text-2xl sm:text-4xl flex items-center" style={{ color: "#c0b298", fontWeight: 300 }}>
+                <span key={i} className="display text-2xl sm:text-4xl flex items-center" style={{ color: "#F6F1E7", fontWeight: 300 }}>
                   <span className="px-10">{mot}</span>
-                  <span style={{ color: "#B5654A", fontSize: ".4em" }}>✦</span>
+                  <span style={{ color: "#C7B79A", fontSize: ".4em" }}>✦</span>
                 </span>
               ))}
             </span>
@@ -1997,7 +2077,7 @@ export default function App() {
       <section className="relative w-full overflow-hidden my-16">
         <button onClick={() => allerA("tournages")} className="block w-full text-left group">
           <VoletsReveal className="relative w-full h-[56vh] sm:h-[70vh]">
-            <img src={V_PERGOLA} alt={t.decors[0].t}
+            <img src={V_PERGOLA} alt={t.decors[0].t} loading="lazy" decoding="async"
               className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105"
               style={{ objectPosition: "center 55%" }} />
             <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(20,14,8,.30), rgba(20,14,8,.70))" }} />
@@ -2019,19 +2099,19 @@ export default function App() {
       </section>
 
       {/* ── GALERIE ── */}
-      <section id="galerie" className="pt-24">
+      <section id="galerie" className="pt-24" style={{ background: F_CREME }}>
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <Reveal><Eyebrow>{t.galerie.eyebrow}</Eyebrow></Reveal>
+          <Reveal><Eyebrow ton={A_TERRE}>{t.galerie.eyebrow}</Eyebrow></Reveal>
           <WordReveal className="display text-4xl sm:text-6xl mb-6" style={{ fontWeight: 300 }}>
             {t.galerie.titre}
           </WordReveal>
           <Reveal delay={200}>
-            <p className="mono text-[10px] uppercase tracking-[0.24em] mb-4 tick flex items-center justify-center gap-3" style={{ color: "#9a8f76" }}>
+            <p className="mono text-[10px] uppercase tracking-[0.24em] mb-4 tick flex items-center justify-center gap-3" style={{ color: "#6D6654" }}>
               {t.galerie.faire} <ArrowRight size={12} />
             </p>
           </Reveal>
         </div>
-        <GalerieHorizontale items={[
+        <GalerieHorizontale label={t.galerie.titre} items={[
           { src: IMAGES.lieu, l: t.galerie.legendes[0], pos: "center 30%", w: "min(78vw,420px)", h: "min(64vh,560px)" },
           { src: P_CHEVAL_BAR, l: t.galerie.legendes[1], pos: "45% center", w: "min(80vw,460px)", h: "min(58vh,510px)" },
           { src: P_TERRASSE_VASQUE, l: t.galerie.legendes[2], pos: "center 60%", w: "min(86vw,600px)", h: "min(50vh,430px)" },
@@ -2074,11 +2154,12 @@ export default function App() {
         </div>
       </section>
 
+      <div style={{ background: F_VERT }}>
       {/* ── DISPONIBILITÉS ── */}
       <section id="disponibilites" className="relative max-w-3xl mx-auto px-8 py-28 text-center">
         <FondAbstrait intensite={0.6} />
         <div className="relative">
-        <Reveal><Eyebrow>{t.dispo.eyebrow}</Eyebrow></Reveal>
+        <Reveal><Eyebrow ton={A_OLIVE}>{t.dispo.eyebrow}</Eyebrow></Reveal>
         <WordReveal className="display text-4xl sm:text-6xl mb-12" style={{ fontWeight: 300 }}>
           {t.dispo.titre}
         </WordReveal>
@@ -2090,7 +2171,7 @@ export default function App() {
                   if (isB) return; setSelectedDate(label); versDevis();
                 }} />
               </div>
-              <p className="mono text-[10px] uppercase tracking-[0.2em] mt-6" style={{ color: "#9a8f76" }}>
+              <p className="mono text-[10px] uppercase tracking-[0.2em] mt-6" style={{ color: "#6D6654" }}>
                 {t.dispo.note}
               </p>
             </>
@@ -2101,7 +2182,7 @@ export default function App() {
 
       {/* ── DEVIS ── */}
       <section id="devis" className="max-w-2xl mx-auto px-8 py-28 text-center">
-        <Reveal><Eyebrow>{t.devis.eyebrow}</Eyebrow></Reveal>
+        <Reveal><Eyebrow ton={A_TERRE}>{t.devis.eyebrow}</Eyebrow></Reveal>
         <WordReveal className="display text-4xl sm:text-6xl mb-6" style={{ fontWeight: 300 }}>
           {t.devis.titre}
         </WordReveal>
@@ -2123,40 +2204,43 @@ export default function App() {
                 aria-hidden="true" value={piege} onChange={(e) => setPiege(e.target.value)}
                 style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0 }} />
               <div>
-                <label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.date}</label>
+                {/* Un <span> et non un <label> : une etiquette ne peut pas
+                    designer un bouton. Le nom complet est porte par le bouton. */}
+                <span className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.date}</span>
                 {/* Bouton et non champ de saisie : la date se choisit dans le
                     calendrier, plus haut. Un clic y renvoie. */}
                 <button type="button" onClick={versCalendrier}
-                  className="body-font w-full mt-3 px-0 py-3 min-h-[44px] bg-transparent text-sm text-center transition-colors duration-300 hover:opacity-70"
-                  style={{ borderBottom: "1px solid #C7B79A", color: selectedDate ? "#2B2118" : "#9a8f76" }}>
-                  {selectedDate || t.devis.datePh}
+                  aria-label={selectedDate ? `${t.devis.date} : ${selectedDate} — ${t.devis.dateModifier}` : `${t.devis.date} : ${t.devis.datePh}`}
+                  className={`champ-date body-font w-full mt-3 px-0 py-3 min-h-[44px] bg-transparent text-sm text-center flex items-center justify-center gap-2${selectedDate ? "" : " champ-date-vide"}`}>
+                  <CalendarDays size={13} aria-hidden="true" />
+                  <span>{selectedDate || t.devis.datePh}</span>
                 </button>
               </div>
               <div className="grid sm:grid-cols-2 gap-8">
-                <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.nom}</label>
+                <div><label htmlFor="champ-nom" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.nom}</label>
                   <input id="champ-nom" type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
-                <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.email}</label>
-                  <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
+                <div><label htmlFor="champ-email" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.email}</label>
+                  <input id="champ-email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
               </div>
               <div className="grid sm:grid-cols-2 gap-8">
-                <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.tel}</label>
-                  <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
-                <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.invites}</label>
-                  <input type="number" min="1" value={form.guests} onChange={(e) => setForm({ ...form, guests: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
+                <div><label htmlFor="champ-tel" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.tel}</label>
+                  <input id="champ-tel" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
+                <div><label htmlFor="champ-invites" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.invites}</label>
+                  <input id="champ-invites" type="number" min="1" value={form.guests} onChange={(e) => setForm({ ...form, guests: e.target.value })}
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
               </div>
-              <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.type}</label>
-                <select value={form.type || t.prestations[0].t} onChange={(e) => setForm({ ...form, type: e.target.value })}
-                  className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }}>
+              <div><label htmlFor="champ-type" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.type}</label>
+                <select id="champ-type" value={form.type || t.prestations[0].t} onChange={(e) => setForm({ ...form, type: e.target.value })}
+                  className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }}>
                   {t.prestations.map((p) => <option key={p.t}>{p.t}</option>)}<option>{t.devis.autre}</option>
                 </select></div>
-              <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.projet}</label>
-                <textarea rows={3} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
+              <div><label htmlFor="champ-projet" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.projet}</label>
+                <textarea id="champ-projet" rows={3} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
                   placeholder={t.devis.projetPh}
-                  className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm resize-none text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
+                  className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm resize-none text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
               <div className="text-center pt-4">
                 <button type="submit" disabled={envoi === "envoi"}
                   className="btn btn-solid body-font px-12 py-4 text-[11px] uppercase tracking-[0.28em] disabled:opacity-60"
@@ -2167,9 +2251,9 @@ export default function App() {
                   </span>
                 </button>
                 {envoi === "erreur" && (
-                  <p className="body-font text-sm mt-6 max-w-sm mx-auto" style={{ color: "#B5654A" }} role="alert">
+                  <p className="body-font text-sm mt-6 max-w-sm mx-auto" style={{ color: "#97543E" }} role="alert">
                     {t.devis.erreur}{" "}
-                    <a href={`mailto:${ADRESSE_DEVIS}`} className="link-u" style={{ color: "#B5654A" }}>
+                    <a href={`mailto:${ADRESSE_DEVIS}`} className="link-u" style={{ color: "#97543E" }}>
                       {ADRESSE_DEVIS}
                     </a>
                   </p>
@@ -2180,11 +2264,14 @@ export default function App() {
         </Reveal>
       </section>
 
+      </div>
+
+      <div style={{ background: F_ROSE }}>
       {/* ── FAQ ── */}
       <section id="faq" className="relative max-w-2xl mx-auto px-8 py-28 text-center">
         <FondAbstrait intensite={0.5} />
         <div className="relative">
-        <Reveal><Eyebrow>{t.faqT.eyebrow}</Eyebrow></Reveal>
+        <Reveal><Eyebrow ton={A_OLIVE}>{t.faqT.eyebrow}</Eyebrow></Reveal>
         <WordReveal className="display text-4xl sm:text-6xl mb-14" style={{ fontWeight: 300 }}>
           {t.faqT.titre}
         </WordReveal>
@@ -2193,6 +2280,8 @@ export default function App() {
         </div>
         </div>
       </section>
+      </div>
+      </main>
 
       {/* ── CONTACT ── */}
       <footer id="contact" style={{ background: "#2B2118", color: "#EDE4D3" }}>
