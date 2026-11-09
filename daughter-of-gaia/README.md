@@ -28,8 +28,8 @@ Le site tient volontairement dans un seul fichier. C'est la première chose
 
 En haut du fichier, dans l'ordre :
 
-1. **Constantes d'images** — `P_BAR_NUIT`, `P_CHEVAL_BAR`, `P_JARDIN`,
-   `P_LANTERNES` (le domaine) et `V_PERGOLA`, `V_PISCINE`, `V_JARDIN_V`,
+1. **Constantes d'images** — `P_CHEVAL_BAR`, `P_JARDIN`,
+   `P_CHEVAUX_PIE` (le domaine) et `V_PERGOLA`, `V_PISCINE`, `V_JARDIN_V`,
    `V_PALMIERS`, `V_SALON` (la villa de tournage). Ce sont des chemins vers
    `public/images`, servis tels quels. Les fichiers sont encore en JPEG pleine
    taille : voir « Points à traiter ».
