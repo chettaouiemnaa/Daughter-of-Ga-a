@@ -63,7 +63,7 @@ const META = {
   accueil: {
     titre: "Lieu événementiel à Tunis — Daughter of Gaïa, La Soukra",
     description:
-      "Domaine privé de 4 000 m² à La Soukra, aux portes de Tunis. Privatisation complète jusqu'à 80 invités : séminaires, anniversaires, brunchs, tournages.",
+      "Domaine privé de 4 000 m² à La Soukra, aux portes de Tunis. Privatisation complète jusqu'à 100 invités : séminaires, anniversaires, brunchs, tournages.",
   },
   tournages: {
     titre: "Lieu de tournage près de Tunis — Daughter of Gaïa, La Soukra",
@@ -105,7 +105,7 @@ fr: {
     alt: "Le jardin et l'espace couvert" },
   espaces: [
     { t: "Le domaine", v: "4 000 m²" }, { t: "Espace intérieur", v: "45 m²" },
-    { t: "Terrasse couverte", v: "69 m²" }, { t: "Capacité idéale", v: "80 invités" },
+    { t: "Terrasse couverte", v: "69 m²" }, { t: "Capacité d'accueil", v: "100 invités" },
     { t: "Parking privé", v: "40 voitures" }, { t: "Sauvés et réhabilités", v: "7 chevaux" },
   ],
   espacesNote: "L'intérieur fermé fait 45 m², la terrasse couverte ouverte sur l'extérieur 69, la cuisine 20 — soit 134 m² bâtis en tout. Autour, 500 m² aménagés sur les 4 000 du domaine : l'événement se vit dehors, à l'abri quand il le faut.",
@@ -158,7 +158,7 @@ fr: {
     { q: "Le lieu est-il ouvert au public\u00a0?", r: "Non. Daughter of Gaïa accueille uniquement des événements privés, sur réservation. Chaque réservation privatise entièrement le domaine, et vous êtes les seuls sur place." },
     { q: "Peut-on approcher les animaux\u00a0?", r: "Les animaux vivent chez eux et ne sont pas une attraction. Ils sont observables à distance, dans le respect de leur tranquillité. Aucune interaction n'est organisée." },
     { q: "Pourquoi privilégier les événements en journée\u00a0?", r: "Pour préserver le calme des animaux et le repos du voisinage. Les formats en journée sont donc favorisés." },
-    { q: "Combien de personnes le lieu peut-il accueillir\u00a0?", r: "Jusqu'à 80 invités, avec un parking de 40 places à l'entrée. Ces 80 personnes se répartissent entre le jardin, la terrasse couverte de 69 m² et l'espace intérieur de 45 m² : le domaine est un lieu de plein air, pas une salle de réception fermée. Décrivez-nous votre format, nous vous dirons ce qu'il permet." },
+    { q: "Combien de personnes le lieu peut-il accueillir\u00a0?", r: "Jusqu'à 100 invités, avec un parking de 40 places à l'entrée. Ces 100 personnes se répartissent entre le jardin, la terrasse couverte de 69 m² et l'espace intérieur de 45 m² : le domaine est un lieu de plein air, pas une salle de réception fermée. Décrivez-nous votre format, nous vous dirons ce qu'il permet." },
     { q: "Quelle est la surface des espaces couverts\u00a0?", r: "L'espace intérieur fermé fait 45 m², la terrasse couverte ouverte sur l'extérieur 69, et la cuisine 20 — soit 134 m² bâtis en tout. Tout le reste des 4 000 m² est en plein air." },
     { q: "La cuisine est-elle utilisable\u00a0?", r: "Oui. Une cuisine de 20 m², entièrement équipée, fait partie de l'ensemble couvert. Vous pouvez y recevoir votre traiteur ou cuisiner sur place." },
     { q: "La maison fait-elle partie du lieu de réception ?", r: "Non. La maison et ses décors sont réservés aux tournages et aux prises de vue, et ne sont pas proposés pour les événements privés. Ces derniers se tiennent dans les espaces du domaine — jardin, terrasse et espace couvert." },
@@ -233,7 +233,7 @@ en: {
     alt: "The garden and the covered space" },
   espaces: [
     { t: "The estate", v: "4 000 m²" }, { t: "Indoor space", v: "45 m²" },
-    { t: "Covered terrace", v: "69 m²" }, { t: "Ideal capacity", v: "80 guests" },
+    { t: "Covered terrace", v: "69 m²" }, { t: "Guest capacity", v: "100 guests" },
     { t: "Private parking", v: "40 cars" }, { t: "Rescued and rehabilitated", v: "7 horses" },
   ],
   espacesNote: "The enclosed interior is 45 m², the covered terrace open to the outside 69, the kitchen 20 — 134 m² built in all. Around it, 500 m² laid out for events within the estate's 4,000: here the event happens outdoors, with shelter when it is needed.",
@@ -286,7 +286,7 @@ en: {
     { q: "Is the estate open to the public?", r: "No. Daughter of Gaïa hosts private events by reservation only. Each booking privatises the entire estate, and you are the only ones on site." },
     { q: "Can we approach the animals?", r: "The animals are at home here and are not an attraction. They can be observed from a distance, with respect for their quiet. No interaction is arranged." },
     { q: "Why favour daytime events?", r: "To preserve the calm of the animals and the rest of the neighbourhood. Daytime formats are therefore preferred." },
-    { q: "How many people can the estate host?", r: "Up to 80 guests, with 40 parking spaces at the entrance. Those 80 people spread across the garden, the 69 m² covered terrace and the 45 m² indoor space: this is an open-air estate, not an enclosed function room. Tell us your format and we will tell you what it allows." },
+    { q: "How many people can the estate host?", r: "Up to 100 guests, with 40 parking spaces at the entrance. Those 100 people spread across the garden, the 69 m² covered terrace and the 45 m² indoor space: this is an open-air estate, not an enclosed function room. Tell us your format and we will tell you what it allows." },
     { q: "How big are the covered spaces?", r: "The enclosed interior is 45 m², the covered terrace open to the outside 69, and the kitchen 20 — 134 m² built in all. All the rest of the 4,000 m² is open air." },
     { q: "Can we use the kitchen?", r: "Yes. A fully fitted kitchen of 20 m² is part of the covered space. You are welcome to bring your caterer or cook on site." },
     { q: "Is the house part of the event venue?", r: "No. The house and its locations are reserved for filming and photo shoots, and are not offered for private events. Those take place in the estate's own spaces — garden, terrace and covered area." },
