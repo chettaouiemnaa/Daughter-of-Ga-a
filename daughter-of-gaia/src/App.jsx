@@ -2087,7 +2087,7 @@ export default function App() {
         </div>
         <GalerieHorizontale label={t.galerie.titre} items={[
           { src: IMAGES.lieu, l: t.galerie.legendes[0], pos: "center 30%", w: "min(78vw,420px)", h: "min(64vh,560px)" },
-          { src: P_CHEVAL_BAR, l: t.galerie.legendes[1], pos: "45% center", w: "min(80vw,460px)", h: "min(58vh,510px)" },
+          { src: P_CHEVAL_NB, l: t.galerie.legendes[1], pos: "center 40%", w: "min(80vw,460px)", h: "min(58vh,510px)" },
           { src: P_TERRASSE_VASQUE, l: t.galerie.legendes[2], pos: "center 60%", w: "min(86vw,600px)", h: "min(50vh,430px)" },
           { src: P_SALLE, l: t.galerie.legendes[3], pos: "center 40%", w: "min(74vw,400px)", h: "min(66vh,575px)" },
           { src: P_TROIS_CHEVAUX, l: t.galerie.legendes[4], pos: "center 62%", w: "min(82vw,520px)", h: "min(56vh,490px)" },
