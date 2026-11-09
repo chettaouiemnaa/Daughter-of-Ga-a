@@ -205,7 +205,8 @@ fr: {
     verification: "Vérification…",
     erreurServeur: "Connexion au serveur impossible. Réessayez dans un instant.",
     erreurEnreg: "La date n'a pas pu être enregistrée. Vérifiez votre connexion et réessayez.",
-    baseAbsente: "La base de données n'est pas encore configurée sur le serveur." },
+    baseAbsente: "La base de données n'est pas encore configurée sur le serveur.",
+    tropDeTentatives: "Trop de tentatives. Par sécurité, l'accès est suspendu pendant {min} min." },
 },
 en: {
   hero: { sur: "Private Experiences \u00a0•\u00a0 By Reservation",
@@ -329,7 +330,8 @@ en: {
     verification: "Checking…",
     erreurServeur: "Could not reach the server. Please try again shortly.",
     erreurEnreg: "The date could not be saved. Check your connection and try again.",
-    baseAbsente: "The database is not configured on the server yet." },
+    baseAbsente: "The database is not configured on the server yet.",
+    tropDeTentatives: "Too many attempts. For security, access is suspended for {min} min." },
 },
 };
 
@@ -1043,6 +1045,7 @@ export default function App() {
   const [submitted, setSubmitted] = useState(false);
   const [envoi, setEnvoi] = useState("repos");   // repos | envoi | erreur
   const [piege, setPiege] = useState("");         // champ leurre anti-robot
+  const ouvertureRef = useRef(Date.now());        // pour mesurer le temps de remplissage
   const [scrollY, setScrollY] = useState(0);
   const [navSolid, setNavSolid] = useState(false);
   /* La page courante découle de l'adresse : /tournages est une vraie page,
@@ -1093,7 +1096,14 @@ export default function App() {
   async function envoyerDevis(e) {
     e.preventDefault();
     if (envoi === "envoi") return;          // évite le double clic
-    if (piege) { setSubmitted(true); return; } // robot : on fait semblant
+
+    /* Deux filtres anti-robot. On feint la réussite dans les deux cas :
+       signaler le rejet apprendrait au robot comment passer.
+       - le champ leurre, invisible, qu'un humain ne peut pas remplir
+       - le délai : remplir nom, e-mail et projet prend forcément quelques
+         secondes, alors qu'un robot soumet dans la seconde. */
+    if (piege) { setSubmitted(true); return; }
+    if (Date.now() - ouvertureRef.current < 5000) { setSubmitted(true); return; }
     setEnvoi("envoi");
     try {
       const r = await fetch(RELAIS_DEVIS, {
@@ -1144,6 +1154,11 @@ export default function App() {
       });
       const data = await r.json().catch(() => null);
       if (r.status === 401) { setCodeError(t.admin.erreur); return; }
+      if (r.status === 429) {
+        const minutes = Math.max(1, Math.ceil(((data && data.reessayerDans) || 900) / 60));
+        setCodeError(t.admin.tropDeTentatives.replace("{min}", String(minutes)));
+        return;
+      }
       if (r.status === 503 || (data && data.erreur === "base_non_configuree")) {
         setCodeError(t.admin.baseAbsente); return;
       }
