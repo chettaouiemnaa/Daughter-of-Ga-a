@@ -30,18 +30,18 @@ const CONTENU = `
       <div style="max-width:40rem;margin:4rem auto;padding:0 1.5rem;font-family:system-ui,sans-serif;line-height:1.7;color:#2B2118;">
         <h1 style="font-weight:400;">Lieu de tournage près de Tunis — Daughter of Gaïa</h1>
 
-        <p>Daughter of Gaïa met une partie de son domaine à disposition des productions, à vingt minutes du centre de Tunis, à La Soukra (Ariana). Un décor qui n'a pas besoin d'être construit : des décors extérieurs variés, une maison entièrement filmable et de la lumière naturelle toute la journée.</p>
+        <p>Daughter of Gaïa met une partie de son domaine à disposition des productions, à vingt minutes du centre de Tunis, à La Soukra (Ariana). Un décor déjà en place : des décors extérieurs variés, une maison entièrement filmable et de la lumière naturelle toute la journée.</p>
 
-        <p><strong>Ces espaces sont réservés aux productions</strong> et ne sont pas proposés pour les événements privés, qui se tiennent dans les autres espaces du domaine.</p>
+        <p><strong>Ces espaces sont réservés aux productions.</strong> Les événements privés se tiennent dans les autres espaces du domaine.</p>
 
         <h2 style="font-weight:400;">Les décors extérieurs</h2>
-        <p>Parmi eux : le salon de jardin sous la pergola, avec canapés en teck, four à pain en pierre et bougainvilliers en fleur. La piscine et le bar extérieur, arcades en pierre et bassin turquoise, plein sud. Le jardin sous les bougainvilliers, autour d'un olivier centenaire. La pelouse et les palmiers, dégagée et praticable pour les travellings. Le salon sous voûte de brique, plafond à chevrons, marbre et portes cintrées — un intérieur colonial que l'on ne reconstitue pas en studio.</p>
+        <p>Parmi eux : le salon de jardin sous la pergola, avec canapés en teck, four à pain en pierre et bougainvilliers en fleur. La piscine et le bar extérieur, arcades en pierre et bassin turquoise, plein sud. Le jardin sous les bougainvilliers, autour d'un olivier centenaire. La pelouse et les palmiers, dégagée et praticable pour les travellings. Le salon sous voûte de brique, plafond à chevrons, marbre et portes cintrées — un intérieur colonial d'époque, prêt à filmer.</p>
 
-        <h2 style="font-weight:400;">Des chevaux dans le cadre, sans logistique</h2>
-        <p>Des chevaux recueillis vivent sur le domaine et entrent naturellement à l'image, sans transport ni prestataire animalier extérieur.</p>
+        <h2 style="font-weight:400;">Des chevaux dans le cadre, déjà sur place</h2>
+        <p>Des chevaux recueillis vivent sur le domaine et entrent naturellement à l'image : ils sont déjà chez eux.</p>
 
         <h2 style="font-weight:400;">Une base technique sur place</h2>
-        <p>La maison accueille loges, maquillage, régie, repas d'équipe et stockage du matériel, dans un espace couvert, climatisé et fermé, à quelques pas des décors extérieurs. Le domaine est réservé à une seule production à la fois, sans aucun événement en parallèle. L'hébergement n'est pas proposé sur place.</p>
+        <p>La maison accueille loges, maquillage, régie, repas d'équipe et stockage du matériel, dans un espace couvert, climatisé et fermé, à quelques pas des décors extérieurs. Le domaine est réservé à une seule production à la fois : le site entier est à vous. Les tournages se déroulent en journée, les nuitées se passent hors du domaine.</p>
 
         <h2 style="font-weight:400;">Organiser un repérage</h2>
         <p>Les tournages se déroulent en journée, afin de préserver la tranquillité des animaux et du voisinage. Chaque projet fait l'objet d'une visite technique préalable.</p>
@@ -65,7 +65,7 @@ const FAQ_TOURNAGE = {
       name: "La maison est-elle aussi louée pour des événements privés ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Non. La maison et ses décors sont réservés aux tournages et aux prises de vue. Les événements privés se tiennent dans les autres espaces du domaine.",
+        text: "La maison et ses décors sont réservés aux tournages et aux prises de vue. Les événements privés se tiennent dans les autres espaces du domaine.",
       },
     },
     {
@@ -89,7 +89,7 @@ const FAQ_TOURNAGE = {
       name: "Des animaux peuvent-ils apparaître à l'image ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Oui. Des chevaux recueillis vivent sur le domaine et entrent naturellement dans le cadre, sans transport ni prestataire animalier extérieur.",
+        text: "Oui. Des chevaux recueillis vivent sur le domaine et entrent naturellement dans le cadre : ils sont déjà chez eux.",
       },
     },
     {
@@ -97,7 +97,7 @@ const FAQ_TOURNAGE = {
       name: "Quelles installations techniques sont prévues ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "La maison accueille loges, maquillage, régie, repas d'équipe et stockage du matériel, dans un espace couvert, climatisé et fermé, à quelques pas des décors extérieurs. L'hébergement n'est pas proposé sur place.",
+        text: "La maison accueille loges, maquillage, régie, repas d'équipe et stockage du matériel, dans un espace couvert, climatisé et fermé, à quelques pas des décors extérieurs. Les tournages se déroulent en journée, les nuitées se passent hors du domaine.",
       },
     },
     {
@@ -105,7 +105,7 @@ const FAQ_TOURNAGE = {
       name: "Plusieurs tournages peuvent-ils avoir lieu en même temps ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Non. Le domaine est réservé à une seule production à la fois, sans aucun événement en parallèle.",
+        text: "Le domaine est réservé à une seule production à la fois : vous êtes les seuls sur place.",
       },
     },
     {
