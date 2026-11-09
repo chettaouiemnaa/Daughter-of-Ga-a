@@ -242,9 +242,9 @@ fr: {
     afficher: "Afficher le code", masquer: "Masquer le code",
     verification: "Vérification…",
     erreurServeur: "Connexion au serveur impossible. Réessayez dans un instant.",
-    tropDEssais: "Trop de tentatives. Réessayez dans un quart d'heure.",
     erreurEnreg: "L'enregistrement a rencontré un incident. Vérifiez votre connexion et réessayez.",
-    baseAbsente: "La base de données reste à configurer sur le serveur." },
+    baseAbsente: "La base de données reste à configurer sur le serveur.",
+    tropDeTentatives: "Trop de tentatives. Par sécurité, l'accès est suspendu pendant {min} min." },
 },
 en: {
   hero: { sur: "Private Experiences \u00a0•\u00a0 By Reservation",
@@ -371,9 +371,9 @@ en: {
     afficher: "Show code", masquer: "Hide code",
     verification: "Checking…",
     erreurServeur: "Could not reach the server. Please try again shortly.",
-    tropDEssais: "Too many attempts. Please try again in fifteen minutes.",
     erreurEnreg: "Something interrupted the save. Check your connection and try again.",
-    baseAbsente: "The database still needs to be configured on the server." },
+    baseAbsente: "The database still needs to be configured on the server.",
+    tropDeTentatives: "Too many attempts. For security, access is suspended for {min} min." },
 },
 };
 
@@ -1182,6 +1182,7 @@ export default function App() {
   const [submitted, setSubmitted] = useState(false);
   const [envoi, setEnvoi] = useState("repos");   // repos | envoi | erreur
   const [piege, setPiege] = useState("");         // champ leurre anti-robot
+  const ouvertureRef = useRef(Date.now());        // pour mesurer le temps de remplissage
   const [scrollY, setScrollY] = useState(0);
   const [navSolid, setNavSolid] = useState(false);
   /* La page courante découle de l'adresse : /tournages est une vraie page,
@@ -1232,7 +1233,14 @@ export default function App() {
   async function envoyerDevis(e) {
     e.preventDefault();
     if (envoi === "envoi") return;          // évite le double clic
-    if (piege) { setSubmitted(true); return; } // robot : on fait semblant
+
+    /* Deux filtres anti-robot. On feint la réussite dans les deux cas :
+       signaler le rejet apprendrait au robot comment passer.
+       - le champ leurre, invisible, qu'un humain ne peut pas remplir
+       - le délai : remplir nom, e-mail et projet prend forcément quelques
+         secondes, alors qu'un robot soumet dans la seconde. */
+    if (piege) { setSubmitted(true); return; }
+    if (Date.now() - ouvertureRef.current < 5000) { setSubmitted(true); return; }
     setEnvoi("envoi");
     try {
       const r = await fetch(RELAIS_DEVIS, {
@@ -1282,8 +1290,12 @@ export default function App() {
         body: JSON.stringify({ code: codeInput, action: "verifier" }),
       });
       const data = await r.json().catch(() => null);
-      if (r.status === 429) { setCodeError(t.admin.tropDEssais); return; }
       if (r.status === 401) { setCodeError(t.admin.erreur); return; }
+      if (r.status === 429) {
+        const minutes = Math.max(1, Math.ceil(((data && data.reessayerDans) || 900) / 60));
+        setCodeError(t.admin.tropDeTentatives.replace("{min}", String(minutes)));
+        return;
+      }
       if (r.status === 503 || (data && data.erreur === "base_non_configuree")) {
         setCodeError(t.admin.baseAbsente); return;
       }
