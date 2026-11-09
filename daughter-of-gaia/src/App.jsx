@@ -1851,14 +1851,15 @@ export default function App() {
           </Reveal>
         </div>
 
-        {/* La photo est en portrait (1020x1360) dans un cadre pleine largeur :
-            en 72vh le cadre ne montrait qu'un tiers de sa hauteur et coupait
-            les chevaux. 92vh + un cadrage bas les font tenir entiers. */}
-        <VoletsReveal className="relative w-full h-[52vh] sm:h-[92vh] mt-16 overflow-hidden">
+        {/* La photo est en portrait (1020 x 1360). Etiree sur toute la
+            largeur, elle etait agrandie jusqu'a 2,5x sa taille reelle sur un
+            grand ecran et n'en montrait que 43 % : floue et coupee. Elle
+            garde donc son format. Le cadre suit son ratio 3/4 et ne depasse
+            jamais 780 px, donc la source n'est plus jamais agrandie. Sur
+            telephone il occupe toute la largeur, comme avant. */}
+        <VoletsReveal className="relative mx-auto mt-16 w-full max-w-[780px] aspect-[3/4] overflow-hidden">
           <LumiereFiltree />
-          <Parallax speed={-0.07} className="absolute inset-0 -top-16 -bottom-16">
-            <Photo src={P_TROIS_CHEVAUX} alt={t.domaine.alt} className="w-full h-full" tone={1} pos="center 74%" />
-          </Parallax>
+          <Photo src={P_TROIS_CHEVAUX} alt={t.domaine.alt} className="w-full h-full" tone={1} />
         </VoletsReveal>
 
         <div className="relative max-w-5xl mx-auto px-8 mt-16">
