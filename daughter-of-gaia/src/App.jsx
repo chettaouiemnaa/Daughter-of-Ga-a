@@ -121,7 +121,7 @@ fr: {
     note: "Les événements en journée sont privilégiés, afin de préserver la tranquillité des animaux et du voisinage." },
   prestations: [
     { t: "Lancements de produits & de marques", d: "Un écrin naturel qui met votre marque en valeur, loin des showrooms conventionnels." },
-    { t: "Événements d'entreprise", d: "Séminaires et journées d'équipe dans un cadre qui change le rythme des échanges." },
+    { t: "Événements corporate", d: "Séminaires, journées d'équipe et réceptions d'entreprise, dans un cadre qui change le rythme des échanges." },
     { t: "Anniversaires", d: "Une célébration privée, en petit comité, avec la nature pour décor." },
     { t: "Événements enfants", d: "Un grand terrain, de la verdure, et des animaux à observer respectueusement." },
     { t: "Baby showers", d: "Un moment doux et intimiste, au jardin ou sous la terrasse couverte." },
