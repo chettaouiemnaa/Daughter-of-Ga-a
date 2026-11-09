@@ -37,6 +37,31 @@ const DECOR_IMG = [
   { src: V_SALON,    pos: "center 45%" },
 ];
 
+/* ═══════════════════════════════════════════════════════════
+   PALETTE
+   Les six couleurs de la charte, déclinées. Aucune teinte
+   étrangère : le vert tendre et le rosé sont l'olive et le
+   terracotta éclaircis, et les trois fonds ont exactement la
+   même clarté que le sable — la couleur monte, les contrastes
+   restent ceux qui ont été mesurés.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Fonds de section, tous à la clarté du sable */
+const F_SABLE  = "#EDE4D3";
+const F_CREME  = "#F6F1E7";
+const F_VERT   = "#E7EBCE";   // olive de la charte, éclairci
+const F_ROSE   = "#F4E4DC";   // terracotta de la charte, éclairci
+
+/* Aplat profond, pour les bandes pleines — crème dessus à 7,7:1 */
+const F_OLIVE_PROFOND = "#484E39";
+
+/* Accents de texte. Le terracotta de marque (#B5654A) tombe à 3,38:1
+   sur le sable : illisible aux tailles de 9 et 10 pixels où il servait.
+   Ces deux variantes passent la norme et alternent d'une section à
+   l'autre, ce qui donne au passage sa couleur à la page. */
+const A_TERRE = "#97543E";
+const A_OLIVE = "#626A4E";
+
 const MOIS = {
   fr: ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"],
   en: ["January","February","March","April","May","June","July","August","September","October","November","December"],
@@ -976,10 +1001,10 @@ function Rule({ delay = 0 }) {
   );
 }
 
-function Eyebrow({ children, light = false }) {
+function Eyebrow({ children, light = false, ton = A_TERRE }) {
   return (
     <p className="uppercase tracking-[0.32em] text-[10px] mb-5 mono"
-      style={{ color: light ? "rgba(246,241,231,.75)" : "#B5654A" }}>
+      style={{ color: light ? "rgba(246,241,231,.75)" : ton }}>
       {children}
     </p>
   );
@@ -1324,9 +1349,13 @@ export default function App() {
       @keyframes washB{0%{transform:translate3d(16%,10%,0) scale(1.35);}50%{transform:translate3d(-10%,-8%,0) scale(1.1);}100%{transform:translate3d(16%,10%,0) scale(1.35);}}
       @keyframes washC{0%{transform:translate3d(2%,-14%,0) scale(1.2);}50%{transform:translate3d(-6%,12%,0) scale(1.5);}100%{transform:translate3d(2%,-14%,0) scale(1.2);}}
       .wash{position:absolute;border-radius:50%;filter:blur(90px);will-change:transform;}
-      .wash-a{width:70%;height:80%;left:-14%;top:-18%;background:radial-gradient(circle,rgba(107,115,85,.20),transparent 68%);animation:washA 58s ease-in-out infinite;}
-      .wash-b{width:66%;height:76%;right:-16%;bottom:-20%;background:radial-gradient(circle,rgba(181,101,74,.16),transparent 66%);animation:washB 74s ease-in-out infinite;}
-      .wash-c{width:58%;height:66%;left:30%;top:12%;background:radial-gradient(circle,rgba(199,183,154,.30),transparent 64%);animation:washC 66s ease-in-out infinite;}
+      /* Les trois voiles portaient les couleurs de la charte à 16-30 %,
+         trop pâles pour se voir. Ils passent à 48-62 %, mais dans des tons
+         de même clarté que le sable : la page se colore sans qu'aucun
+         contraste de texte ne bouge. */
+      .wash-a{width:70%;height:80%;left:-14%;top:-18%;background:radial-gradient(circle,rgba(221,235,185,.62),transparent 68%);animation:washA 58s ease-in-out infinite;}
+      .wash-b{width:66%;height:76%;right:-16%;bottom:-20%;background:radial-gradient(circle,rgba(246,225,217,.58),transparent 66%);animation:washB 74s ease-in-out infinite;}
+      .wash-c{width:58%;height:66%;left:30%;top:12%;background:radial-gradient(circle,rgba(241,228,205,.48),transparent 64%);animation:washC 66s ease-in-out infinite;}
       .grain-doux{position:absolute;inset:0;opacity:.05;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");}
       .day-cell{transition:color .3s,transform .25s;}
       .day-cell:hover:not(:disabled){transform:scale(1.25);color:#B5654A;}
@@ -1559,7 +1588,7 @@ export default function App() {
         {/* LES DÉCORS */}
         <section id="decors" className="py-16">
           <div className="max-w-4xl mx-auto px-8 text-center mb-16">
-            <Reveal><Eyebrow>{t.tournages.decorsE}</Eyebrow></Reveal>
+            <Reveal><Eyebrow ton={A_OLIVE}>{t.tournages.decorsE}</Eyebrow></Reveal>
             <WordReveal className="display text-4xl sm:text-6xl" style={{ fontWeight: 300 }}>
               {t.tournages.decorsT}
             </WordReveal>
@@ -1588,7 +1617,7 @@ export default function App() {
         <section id="maison" className="relative max-w-3xl mx-auto px-8 py-32 text-center">
           <FondAbstrait intensite={0.6} />
           <div className="relative">
-            <Reveal><Eyebrow>{t.tournages.maisonE}</Eyebrow></Reveal>
+            <Reveal><Eyebrow ton={A_TERRE}>{t.tournages.maisonE}</Eyebrow></Reveal>
             <WordReveal className="display text-4xl sm:text-6xl mb-8" style={{ fontWeight: 300 }}>
               {t.tournages.maisonT}
             </WordReveal>
@@ -1607,7 +1636,7 @@ export default function App() {
         <section id="pratique" className="relative max-w-5xl mx-auto px-8 py-24 text-center">
           <FondAbstrait intensite={0.5} />
           <div className="relative">
-            <Reveal><Eyebrow>{t.tournages.pratiqueE}</Eyebrow></Reveal>
+            <Reveal><Eyebrow ton={A_OLIVE}>{t.tournages.pratiqueE}</Eyebrow></Reveal>
             <WordReveal className="display text-4xl sm:text-6xl mb-16" style={{ fontWeight: 300 }}>
               {t.tournages.pratiqueT}
             </WordReveal>
@@ -1615,7 +1644,7 @@ export default function App() {
               {t.atouts.map((a, i) => (
                 <Reveal key={i} delay={i * 110}>
                   <div className="text-center">
-                    <span className="mono text-[10px]" style={{ color: "#B5654A" }}>{String(i + 1).padStart(2, "0")}</span>
+                    <span className="mono text-[10px]" style={{ color: A_TERRE }}>{String(i + 1).padStart(2, "0")}</span>
                     <h3 className="display text-2xl mt-4 mb-3" style={{ fontWeight: 400 }}>{a.t}</h3>
                     <p className="body-font text-sm leading-relaxed" style={{ color: "#5a4f42" }}>{a.d}</p>
                   </div>
@@ -1770,6 +1799,9 @@ export default function App() {
           { href: "#devis", texte: t.nav.devis, accent: true, onClick: versDevis },
         ]} />
 
+      {/* Les sections suivantes portent leur propre largeur : le fond se
+          pose donc sur une enveloppe, pour tenir toute la largeur. */}
+      <div style={{ background: F_CREME }}>
       {/* ── MISSION ── */}
       <section id="mission" className="relative max-w-4xl mx-auto px-8 pt-32 sm:pt-44 pb-24 sm:pb-32 text-center">
         <FondAbstrait intensite={0.9} />
@@ -1793,7 +1825,7 @@ export default function App() {
           {t.valeurs.map((v, i) => (
             <Reveal key={i} delay={i * 130}>
               <div className="text-center px-2">
-                <span className="mono text-[10px]" style={{ color: "#B5654A" }}>{String(i + 1).padStart(2, "0")}</span>
+                <span className="mono text-[10px]" style={{ color: A_TERRE }}>{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="display text-2xl mt-4 mb-3" style={{ fontWeight: 400 }}>{v.t}</h3>
                 <p className="body-font text-sm leading-relaxed" style={{ color: "#5a4f42" }}>{v.d}</p>
               </div>
@@ -1802,11 +1834,13 @@ export default function App() {
         </div>
       </section>
 
+      </div>
+
       {/* ── LE DOMAINE ── */}
-      <section id="domaine" className="relative py-24">
+      <section id="domaine" className="relative py-24" style={{ background: F_VERT }}>
         <FondAbstrait intensite={0.55} />
         <div className="relative max-w-3xl mx-auto px-8 text-center">
-          <Reveal><Eyebrow>{t.domaine.eyebrow}</Eyebrow></Reveal>
+          <Reveal><Eyebrow ton={A_OLIVE}>{t.domaine.eyebrow}</Eyebrow></Reveal>
           <WordReveal className="display text-4xl sm:text-6xl mb-8" style={{ fontWeight: 300 }}>
             {t.domaine.titre}
           </WordReveal>
@@ -1853,9 +1887,9 @@ export default function App() {
       </section>
 
       {/* ── HISTOIRE ── */}
-      <section id="histoire" className="py-24">
+      <section id="histoire" className="py-24" style={{ background: F_ROSE }}>
         <div className="max-w-3xl mx-auto px-8 text-center">
-          <Reveal><Eyebrow>{t.histoire.eyebrow}</Eyebrow></Reveal>
+          <Reveal><Eyebrow ton={A_TERRE}>{t.histoire.eyebrow}</Eyebrow></Reveal>
           <WordReveal className="display text-4xl sm:text-6xl mb-10" style={{ fontWeight: 300 }}>
             {t.histoire.titre}
           </WordReveal>
@@ -1894,7 +1928,7 @@ export default function App() {
       <section id="experiences" className="relative max-w-4xl mx-auto px-8 py-28 text-center">
         <FondAbstrait intensite={0.7} />
         <div className="relative">
-        <Reveal><Eyebrow>{t.experiences.eyebrow}</Eyebrow></Reveal>
+        <Reveal><Eyebrow ton={A_OLIVE}>{t.experiences.eyebrow}</Eyebrow></Reveal>
         <WordReveal className="display text-4xl sm:text-6xl mb-16" style={{ fontWeight: 300 }}>
           {t.experiences.titre}
         </WordReveal>
@@ -1902,7 +1936,7 @@ export default function App() {
           {t.prestations.map((p, i) => (
             <Reveal key={i} delay={i * 70}>
               <div>
-                <span className="mono text-[10px] block mb-3" style={{ color: "#B5654A" }}>{String(i + 1).padStart(2, "0")}</span>
+                <span className="mono text-[10px] block mb-3" style={{ color: A_OLIVE }}>{String(i + 1).padStart(2, "0")}</span>
                 <div className="flex items-center justify-center gap-3 flex-wrap">
                   <h3 className="display text-2xl sm:text-3xl" style={{ fontWeight: 400 }}>{p.t}</h3>
                   {p.soon && <span className="mono text-[8px] uppercase tracking-[0.2em] px-2 py-1" style={{ color: "#626A4E", background: "#e5dcc8" }}>{t.experiences.bientot}</span>}
@@ -1921,14 +1955,14 @@ export default function App() {
       </section>
 
       {/* ── BANDEAU ── */}
-      <div className="overflow-hidden py-10">
+      <div className="overflow-hidden py-12" style={{ background: F_OLIVE_PROFOND }}>
         <div className="marquee flex whitespace-nowrap">
           {[...Array(2)].map((_, k) => (
             <span key={k} className="flex items-center">
               {t.bandeau.map((mot, i) => (
-                <span key={i} className="display text-2xl sm:text-4xl flex items-center" style={{ color: "#857C6A", fontWeight: 300 }}>
+                <span key={i} className="display text-2xl sm:text-4xl flex items-center" style={{ color: "#F6F1E7", fontWeight: 300 }}>
                   <span className="px-10">{mot}</span>
-                  <span style={{ color: "#B5654A", fontSize: ".4em" }}>✦</span>
+                  <span style={{ color: "#C7B79A", fontSize: ".4em" }}>✦</span>
                 </span>
               ))}
             </span>
@@ -1962,9 +1996,9 @@ export default function App() {
       </section>
 
       {/* ── GALERIE ── */}
-      <section id="galerie" className="pt-24">
+      <section id="galerie" className="pt-24" style={{ background: F_CREME }}>
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <Reveal><Eyebrow>{t.galerie.eyebrow}</Eyebrow></Reveal>
+          <Reveal><Eyebrow ton={A_TERRE}>{t.galerie.eyebrow}</Eyebrow></Reveal>
           <WordReveal className="display text-4xl sm:text-6xl mb-6" style={{ fontWeight: 300 }}>
             {t.galerie.titre}
           </WordReveal>
@@ -2018,11 +2052,12 @@ export default function App() {
         </div>
       </section>
 
+      <div style={{ background: F_VERT }}>
       {/* ── DISPONIBILITÉS ── */}
       <section id="disponibilites" className="relative max-w-3xl mx-auto px-8 py-28 text-center">
         <FondAbstrait intensite={0.6} />
         <div className="relative">
-        <Reveal><Eyebrow>{t.dispo.eyebrow}</Eyebrow></Reveal>
+        <Reveal><Eyebrow ton={A_OLIVE}>{t.dispo.eyebrow}</Eyebrow></Reveal>
         <WordReveal className="display text-4xl sm:text-6xl mb-12" style={{ fontWeight: 300 }}>
           {t.dispo.titre}
         </WordReveal>
@@ -2045,7 +2080,7 @@ export default function App() {
 
       {/* ── DEVIS ── */}
       <section id="devis" className="max-w-2xl mx-auto px-8 py-28 text-center">
-        <Reveal><Eyebrow>{t.devis.eyebrow}</Eyebrow></Reveal>
+        <Reveal><Eyebrow ton={A_TERRE}>{t.devis.eyebrow}</Eyebrow></Reveal>
         <WordReveal className="display text-4xl sm:text-6xl mb-6" style={{ fontWeight: 300 }}>
           {t.devis.titre}
         </WordReveal>
@@ -2123,11 +2158,14 @@ export default function App() {
         </Reveal>
       </section>
 
+      </div>
+
+      <div style={{ background: F_ROSE }}>
       {/* ── FAQ ── */}
       <section id="faq" className="relative max-w-2xl mx-auto px-8 py-28 text-center">
         <FondAbstrait intensite={0.5} />
         <div className="relative">
-        <Reveal><Eyebrow>{t.faqT.eyebrow}</Eyebrow></Reveal>
+        <Reveal><Eyebrow ton={A_OLIVE}>{t.faqT.eyebrow}</Eyebrow></Reveal>
         <WordReveal className="display text-4xl sm:text-6xl mb-14" style={{ fontWeight: 300 }}>
           {t.faqT.titre}
         </WordReveal>
@@ -2136,6 +2174,7 @@ export default function App() {
         </div>
         </div>
       </section>
+      </div>
       </main>
 
       {/* ── CONTACT ── */}

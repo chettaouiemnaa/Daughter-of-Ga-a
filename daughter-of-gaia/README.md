@@ -125,22 +125,45 @@ src/
 
 ## Identité
 
-| | |
-|---|---|
-| Sable | `#EDE4D3` |
-| Blanc cassé | `#F6F1E7` |
-| Encre | `#2B2118` |
-| Olive | `#626A4E` |
-| Terracotta | `#B5654A` |
-| Terracotta lisible | `#97543E` |
-| Filet | `#C7B79A` |
-| Filet de champ | `#8C816D` |
-| Mention | `#6D6654` |
+Six couleurs, déclinées. Aucune teinte étrangère à la charte : le vert tendre
+et le rosé sont l'olive et le terracotta éclaircis. Les constantes vivent en
+haut d'`App.jsx`, sous le titre « PALETTE ».
 
-Les quatre dernières valeurs existent pour le contraste : le terracotta de
-marque (3,38:1 sur le sable) reste aux titres et aux accents, sa variante
-sombre porte les messages d'erreur ; le filet clair reste décoratif, le filet
-sombre dessine les champs de formulaire.
+**Fonds de section** — tous à la clarté exacte du sable, ce qui laisse chaque
+contraste de texte inchangé quand les sections alternent.
+
+| | | |
+|---|---|---|
+| Sable | `#EDE4D3` | `F_SABLE` |
+| Blanc cassé | `#F6F1E7` | `F_CREME` |
+| Vert tendre | `#E7EBCE` | `F_VERT` — olive éclairci |
+| Rosé poudre | `#F4E4DC` | `F_ROSE` — terracotta éclairci |
+| Olive profond | `#484E39` | `F_OLIVE_PROFOND` — bandes pleines, crème dessus à 7,7:1 |
+
+**Texte et accents**
+
+| | | |
+|---|---|---|
+| Encre | `#2B2118` | titres |
+| Courant | `#5a4f42` | paragraphes |
+| Terracotta accent | `#97543E` | `A_TERRE` — surtitres, numéros |
+| Olive accent | `#626A4E` | `A_OLIVE` — surtitres, numéros |
+| Mention | `#6D6654` | notes discrètes |
+| Filet | `#C7B79A` | traits décoratifs |
+| Filet de champ | `#8C816D` | champs de formulaire |
+
+Le terracotta de marque `#B5654A` tombe à 3,38:1 sur le sable : il reste aux
+grands titres et aux signes décoratifs, jamais aux textes de 9 ou 10 pixels,
+où `A_TERRE` prend le relais.
+
+**Rythme des fonds**, du haut vers le bas de l'accueil : crème, vert tendre,
+rosé, sable, bande olive profond, photo, crème, photo, vert tendre, rosé,
+pied de page sombre. Les sections qui portent leur propre largeur sont
+enveloppées dans un bloc pleine largeur qui reçoit le fond.
+
+Les trois voiles flous de `FondAbstrait` portent les mêmes teintes, à 48-62 %
+d'opacité mais à la clarté du sable : la page se colore sans qu'aucun
+contraste ne bouge.
 
 Titres en **Cormorant Garamond** (graisse 300), textes en **Jost** (300),
 mentions en **IBM Plex Mono**. Appelées depuis Google Fonts par un
