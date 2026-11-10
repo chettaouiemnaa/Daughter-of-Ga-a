@@ -158,10 +158,11 @@ fr: {
     legendes: ["Ils sont chez eux", "La terrasse", "L'espace couvert",
       "Un cheval au bout de l'allée", "Le salon, face à la maison", "Ils broutent entre les arbres",
       "Chevaux de bois à la fenêtre", "La terrasse, le soir"] },
-  refuge: { eyebrow: "Le refuge", titre: "Sauvés, réhabilités, et chez eux.",
-    p1: "Les chevaux, chiens et autres animaux du domaine ont été sauvés, recueillis ou réhabilités, ou y sont nés. Le domaine est leur maison avant d'être un lieu de réception. Ils évoluent dans leur environnement, à leur rythme, et leur bien-être passe avant l'événement.",
-    p2: "Sept chevaux ont été recueillis depuis l'ouverture. Quatre vivent ici aujourd'hui. Les trois autres sont repartis une fois remis sur pied, et c'était bien le but.",
-    liste: ["Rencontres laissées à leur initiative", "Observation à distance, dans le calme", "Niveaux sonores et horaires encadrés", "Zones de repos strictement préservées"],
+  refuge: { eyebrow: "Le refuge", titre: "Leur maison, avant tout.",
+    p1: "Daughter of Gaïa est aussi un refuge pour les chevaux, les chiens et les autres animaux qui y vivent. Certains ont été recueillis et soignés, d'autres y ont vu le jour. Chacun a son histoire et tous partagent aujourd'hui un environnement où leur bien-être est une priorité.",
+    p2: "Au fil du temps, plusieurs chevaux ont retrouvé un nouveau foyer après avoir été remis sur pied. D'autres continuent de vivre paisiblement sur le domaine, à leur propre rythme.",
+    principes: "Les événements s'organisent dans le respect de leur tranquillité, avec quelques principes essentiels\u00a0:",
+    liste: ["Rencontres laissées à leur initiative", "Observation respectueuse, à distance", "Niveaux sonores et horaires encadrés", "Espaces de repos préservés"],
     alt: "Un cheval alezan à la fenêtre de l'espace couvert" },
   dispo: { eyebrow: "Disponibilités", titre: "Choisissez une date", note: "Les dates barrées sont déjà réservées" },
   devis: { eyebrow: "Demande de devis", titre: "Parlez-nous de votre projet",
@@ -288,10 +289,11 @@ en: {
     legendes: ["They live here", "The terrace", "The covered space",
       "A horse at the end of the path", "The lounge, facing the house", "Grazing between the trees",
       "Wooden horses in the window", "The terrace at night"] },
-  refuge: { eyebrow: "The sanctuary", titre: "Rescued, rehabilitated, and home.",
-    p1: "The horses, dogs and other animals of the estate were rescued, taken in or rehabilitated, or were born here. The estate is their home before it is a venue. They move through their own environment, at their own pace, and their wellbeing comes before the event.",
-    p2: "Seven horses have been taken in since we opened. Four live here today. The other three left once they were back on their feet, which was the whole point.",
-    liste: ["Encounters left to their initiative", "Observation from a distance, in quiet", "Sound levels and hours kept in check", "Resting areas strictly preserved"],
+  refuge: { eyebrow: "The sanctuary", titre: "Their home, above all.",
+    p1: "Daughter of Gaïa is also a sanctuary for the horses, dogs and other animals that live here. Some were taken in and cared for, others were born here. Each has its own story, and all of them now share surroundings where their wellbeing comes first.",
+    p2: "Over time, several horses have found a new home once back on their feet. Others continue to live peacefully on the estate, at their own pace.",
+    principes: "Events are organised with respect for their peace, following a few essential principles:",
+    liste: ["Encounters left to their initiative", "Respectful observation, from a distance", "Sound levels and hours kept in check", "Resting areas preserved"],
     alt: "A chestnut horse at the window of the covered space" },
   dispo: { eyebrow: "Availability", titre: "Choose a date", note: "Crossed-out dates are already booked" },
   devis: { eyebrow: "Request a quote", titre: "Tell us about your project",
@@ -2074,7 +2076,10 @@ export default function App() {
             </p>
           </Reveal>
           <Reveal delay={340}>
-            <ul className="body-font text-sm mt-12 space-y-4" style={{ color: "rgba(246,241,231,.82)" }}>
+            <p className="body-font leading-relaxed mt-12" style={{ color: "rgba(246,241,231,.9)" }}>
+              {t.refuge.principes}
+            </p>
+            <ul className="body-font text-sm mt-5 space-y-4" style={{ color: "rgba(246,241,231,.82)" }}>
               {t.refuge.liste.map((x, i) => (
                 <li key={i}>{x}</li>
               ))}
