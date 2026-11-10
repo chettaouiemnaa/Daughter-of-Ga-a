@@ -114,7 +114,7 @@ fr: {
   mission: { titre: "Bien plus qu'un lieu de réception. Un refuge vivant où chaque expérience contribue à une histoire plus grande.",
     texte: "Chaque réservation contribue directement au bien-être des animaux recueillis sur le domaine et au développement de Daughter of Gaïa." },
   valeurs: [
-    { t: "Une évasion aux portes de la ville", d: "L'impression d'être à des kilomètres de la ville. La réalité\u00a0? Vous êtes au début de la Soukra." },
+    { t: "Une évasion aux portes de la ville", d: "À l'entrée de La Soukra, à proximité immédiate de La Marsa, Daughter of Gaïa offre le sentiment d'être à des kilomètres de la ville, sans jamais s'en éloigner." },
     { t: "Respect du vivant", d: "Chaque décision est pensée dans le respect des animaux, de la nature et de l'équilibre du lieu." },
     { t: "Des animaux sauvés", d: "Chaque cheval présent ici a été sauvé, recueilli ou réhabilité, faisant de Daughter of Gaïa un véritable lieu de vie avant d'être un lieu d'événements." },
     { t: "Un domaine entièrement privatisé", d: "Chaque réservation vous offre l'exclusivité du domaine, pour vivre pleinement votre événement." },
@@ -245,7 +245,7 @@ en: {
   mission: { titre: "Far more than a venue. A living sanctuary where every experience contributes to a larger story.",
     texte: "Every booking directly supports the wellbeing of the animals taken in on the estate, and the growth of Daughter of Gaïa." },
   valeurs: [
-    { t: "An escape at the city's edge", d: "It feels like you are miles from the city. In truth? You are at the entrance of La Soukra." },
+    { t: "An escape at the city's edge", d: "At the entrance to La Soukra, right by La Marsa, Daughter of Gaïa gives the feeling of being miles from the city, without ever leaving it." },
     { t: "Respect for the living", d: "Every decision is made with the animals, the land and the balance of the place in mind." },
     { t: "Rescued animals", d: "Every horse here was rescued, taken in or rehabilitated, making Daughter of Gaïa a true home before it is a venue." },
     { t: "An entirely private estate", d: "Each booking gives you exclusive use of the estate, so you can live your event to the full." },
