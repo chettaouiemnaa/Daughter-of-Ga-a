@@ -120,7 +120,7 @@ fr: {
     { t: "Un domaine entièrement privatisé", d: "Chaque réservation vous offre l'exclusivité du domaine, pour vivre pleinement votre événement." },
   ],
   domaine: { eyebrow: "Le domaine", titre: "4 000 m² où la ville disparaît",
-    texte: "Des espaces pensés pour s'adapter naturellement à votre événement. Une terrasse tournée vers le jardin, un espace intérieur en matériaux naturels, une cuisine prête à recevoir.",
+    texte: "Une propriété privée où la nature occupe toute sa place. Des espaces pensés pour recevoir, dans un environnement qui se prête aussi bien aux événements professionnels qu'aux célébrations privées.",
     citation: "Et partout autour, une nature faite pour être vécue.",
     alt: "Trois chevaux au repos devant la maison, à l'ombre d'un arbre" },
   espaces: [
@@ -251,7 +251,7 @@ en: {
     { t: "An entirely private estate", d: "Each booking gives you exclusive use of the estate, so you can live your event to the full." },
   ],
   domaine: { eyebrow: "The estate", titre: "4,000 m² where the city disappears",
-    texte: "Spaces designed to adapt naturally to your event. A terrace facing the garden, an interior in natural materials, a kitchen ready to receive.",
+    texte: "A private estate where nature has all the room it needs. Spaces designed for hosting, in a setting suited as much to professional events as to private celebrations.",
     citation: "And all around, a landscape made to be lived in.",
     alt: "Three horses at rest in front of the house, in the shade of a tree" },
   espaces: [
