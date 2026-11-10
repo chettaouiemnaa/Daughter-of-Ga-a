@@ -1027,6 +1027,28 @@ function Eyebrow({ children, light = false, ton = A_TERRE }) {
   );
 }
 
+/* Le rameau d'olivier : un seul motif, répété au-dessus des quatre valeurs,
+   comme une signature. Trait fin couleur olive : une tige, deux feuilles
+   dressées, deux feuilles qui retombent, une feuille au bout. */
+const FEUILLE = "M0 0C3 -2.1 8.2 -2.3 12 0C8.2 2.3 3 2.1 0 0Z";
+const FEUILLES = [
+  [24, 12.2, -52], [39, 11.6, -50], // dressées
+  [29, 12, 62], [44, 11.5, 60],     // qui retombent
+  [53, 11.3, 28],
+];
+function RameauOlivier({ couleur = A_OLIVE, largeur = 64 }) {
+  return (
+    <svg viewBox="0 0 72 24" width={largeur} height={largeur * 24 / 72} className="mx-auto block"
+      fill="none" stroke={couleur} strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 13C22 12.2 43 11.2 59 11" />
+      {FEUILLES.map(([x, y, r], i) => (
+        <path key={i} d={FEUILLE} transform={`translate(${x} ${y}) rotate(${r})`} />
+      ))}
+      <path d={FEUILLE} transform="translate(58.5 11) rotate(-4)" />
+    </svg>
+  );
+}
+
 /* ─────────── Calendrier ─────────── */
 function Calendrier({ blocked, onDayClick, admin = false, lang = "fr" }) {
   const MOIS_L = MOIS[lang], JOURS_L = JOURS[lang];
@@ -1916,8 +1938,8 @@ export default function App() {
           {t.valeurs.map((v, i) => (
             <Reveal key={i} delay={i * 130}>
               <div className="text-center px-2 xl:px-0">
-                <span className="mono text-[10px]" style={{ color: A_TERRE }}>{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="display text-2xl mt-4 mb-3" style={{ fontWeight: 400 }}>{v.t}</h3>
+                <RameauOlivier />
+                <h3 className="display text-2xl mt-5 mb-3" style={{ fontWeight: 400 }}>{v.t}</h3>
                 <p className="body-font leading-relaxed" style={{ color: "#5a4f42" }}>{v.d}</p>
               </div>
             </Reveal>
