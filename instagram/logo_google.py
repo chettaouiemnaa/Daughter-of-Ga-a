@@ -73,7 +73,24 @@ def monogramme(fond, encre):
     return im
 
 
+def icones_du_site():
+    """Favicon et icônes du site, pour que Google affiche le logo à côté du
+    lien daughterofgaia.com. Le « G » crème sur terracotta, comme la fiche
+    Google ; un peu plus gras, pour rester lisible en 16 px."""
+    public = RACINE.parent / "daughter-of-gaia" / "public"
+    im = Image.new("RGB", (C, C), TERRA)
+    ImageDraw.Draw(im).text((C / 2, C / 2), "G", font=police("CormorantGaramond[wght].ttf", 700, 500),
+                            fill=BLANC, anchor="mm")
+    # Google veut un favicon carré, en multiple de 48 px.
+    im.save(public / "favicon.ico", sizes=[(16, 16), (32, 32), (48, 48)])
+    for fichier, t in (("icon-192.png", 192), ("icon-512.png", 512), ("apple-touch-icon.png", 180)):
+        im.resize((t, t), Image.LANCZOS).save(public / fichier, optimize=True)
+    # Le logo complet, référencé dans les données structurées de la page.
+    nom(TERRA, BLANC, BLANC).resize((512, 512), Image.LANCZOS).save(public / "logo.png", optimize=True)
+
+
 if __name__ == "__main__":
+    icones_du_site()
     SORTIE.mkdir(exist_ok=True)
     versions = {
         "1-nom-sable": nom(SABLE, ENCRE, TERRA),
