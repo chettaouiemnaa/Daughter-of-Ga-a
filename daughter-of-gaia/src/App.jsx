@@ -1028,23 +1028,29 @@ function Eyebrow({ children, light = false, ton = A_TERRE }) {
 }
 
 /* Le rameau d'olivier : un seul motif, répété au-dessus des quatre valeurs,
-   comme une signature. Trait fin couleur olive : une tige, deux feuilles
-   dressées, deux feuilles qui retombent, une feuille au bout. */
-const FEUILLE = "M0 0C3 -2.1 8.2 -2.3 12 0C8.2 2.3 3 2.1 0 0Z";
-const FEUILLES = [
-  [24, 12.2, -52], [39, 11.6, -50], // dressées
-  [29, 12, 62], [44, 11.5, 60],     // qui retombent
-  [53, 11.3, 28],
-];
+   comme une signature. Trait fin couleur olive : une tige légèrement
+   arquée, six feuilles en alternance, une feuille au bout et deux olives
+   qui pendent. C'est le dessin choisi sur les rendus de proposition. */
+const RAMEAU_TIGE_FEUILLES =
+  "M3 14.5 Q27 9.5 50 11 " +
+  "M10.65 13.07 Q16.56 11.45 18.9 5.79 Q12.99 7.4 10.65 13.07Z " +
+  "M17.31 12.09 Q20.91 16.58 26.67 16.38 Q23.07 11.89 17.31 12.09Z " +
+  "M23.93 11.36 Q29.24 10.42 31.57 5.56 Q26.26 6.5 23.93 11.36Z " +
+  "M30.5 10.89 Q33.26 15.09 38.29 15.2 Q35.53 11 30.5 10.89Z " +
+  "M37.04 10.67 Q41.69 10.32 43.94 6.23 Q39.29 6.58 37.04 10.67Z " +
+  "M43.54 10.71 Q45.51 14.53 49.8 14.84 Q47.83 11.02 43.54 10.71Z " +
+  "M50 11 Q53.1 13.41 56.49 11.42 Q53.39 9.02 50 11Z";
 function RameauOlivier({ couleur = A_OLIVE, largeur = 64 }) {
+  /* viewBox de 58 de large : la pointe de la feuille du bout (x = 56,5)
+     et l'épaisseur du trait restent entières, sans être rognées. */
   return (
-    <svg viewBox="0 0 72 24" width={largeur} height={largeur * 24 / 72} className="mx-auto block"
-      fill="none" stroke={couleur} strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M5 13C22 12.2 43 11.2 59 11" />
-      {FEUILLES.map(([x, y, r], i) => (
-        <path key={i} d={FEUILLE} transform={`translate(${x} ${y}) rotate(${r})`} />
-      ))}
-      <path d={FEUILLE} transform="translate(58.5 11) rotate(-4)" />
+    <svg viewBox="0 0 58 24" width={largeur} height={largeur * 24 / 58} className="mx-auto block"
+      fill="none" stroke={couleur} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d={RAMEAU_TIGE_FEUILLES} />
+      <path d="M23.93 11.36 Q24.23 14.36 25.53 16.46" />
+      <ellipse cx="25.53" cy="18.36" rx="1.45" ry="1.9" transform="rotate(-14 25.53 18.36)" />
+      <path d="M37.04 10.67 Q37.34 13.67 38.64 15.77" />
+      <ellipse cx="38.64" cy="17.67" rx="1.45" ry="1.9" transform="rotate(-14 38.64 17.67)" />
     </svg>
   );
 }
