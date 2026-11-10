@@ -131,7 +131,7 @@ fr: {
     { t: "Parking privé", v: "40 voitures" }, { t: "Sauvés ou nés au\u00a0domaine", v: "7 chevaux" },
   ],
   espacesNote: "Au cœur d'un domaine privé de 4 000 m², Daughter of Gaïa dévoile 650 m² d'espaces extérieurs aménagés, prolongés par 135 m² couverts comprenant une terrasse ouverte de 70 m², un espace intérieur de 45 m² et une cuisine de 20 m². Un cadre où intérieur et extérieur se rencontrent naturellement, pour accueillir des événements dans une atmosphère singulière.",
-  histoire: { eyebrow: "L'histoire", titre: "Avant d'être un lieu, une conviction.",
+  histoire: { eyebrow: "L'histoire", titre: "Avant d'être un lieu,\nune conviction.",
     p0: "Daughter of Gaïa est né d'un attachement profond à la nature et aux animaux, et de l'envie de créer un lieu où les rencontres et les célébrations trouvent leur place dans cet environnement.",
     p1: "Son nom s'inspire de Gaïa, déesse de la Terre dans la mythologie grecque, symbole de vie et de nature. Une philosophie qui guide chaque choix, du respect des animaux à la manière d'imaginer les événements.",
     p2: "Certains animaux y ont trouvé refuge, d'autres y sont nés. Tous font partie de l'histoire du domaine et de ce qui le rend si particulier.",
@@ -267,7 +267,7 @@ en: {
     { t: "Private parking", v: "40 cars" }, { t: "Rescued or born on the\u00a0estate", v: "7 horses" },
   ],
   espacesNote: "At the heart of a 4,000 m² private estate, Daughter of Gaïa opens onto 650 m² of landscaped outdoor space, extended by 135 m² under cover, with a 70 m² open terrace, a 45 m² indoor room and a 20 m² kitchen. A setting where inside and outside meet naturally, to host events in an atmosphere of their own.",
-  histoire: { eyebrow: "The story", titre: "Before it was a place, it was a conviction.",
+  histoire: { eyebrow: "The story", titre: "Before it was a place,\nit was a conviction.",
     p0: "Daughter of Gaïa was born of a deep attachment to nature and animals, and of the wish to create a place where gatherings and celebrations find their place within this setting.",
     p1: "Its name is inspired by Gaia, goddess of the Earth in Greek mythology, a symbol of life and nature. A philosophy that guides every choice, from respect for the animals to the way events are imagined.",
     p2: "Some animals found refuge here, others were born here. All of them are part of the estate's story and of what makes it so special.",
@@ -922,16 +922,28 @@ function WordReveal({ children, className = "", style = {}, delay = 0, as: Tag =
     const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setSeen(true); io.disconnect(); } }, { threshold: 0.2 });
     io.observe(el); return () => io.disconnect();
   }, []);
+  /* Un « \n » dans le titre impose un retour à la ligne à cet endroit
+     (par exemple juste après une virgule), au lieu de laisser le dernier
+     mot partir seul sur la ligne suivante. */
+  let n = 0;
   return (
     <Tag ref={ref} className={className} style={style}>
-      {String(children).split(" ").map((w, i) => (
-        <span key={i} className="inline-block overflow-hidden align-bottom">
-          <span className="inline-block" style={{
-            transform: seen ? "none" : "translateY(105%)",
-            opacity: seen ? 1 : 0,
-            transition: `transform .95s cubic-bezier(.22,1,.36,1) ${delay + i * 60}ms, opacity .8s ease ${delay + i * 60}ms`,
-          }}>{w}&nbsp;</span>
-        </span>
+      {String(children).split("\n").map((ligne, l) => (
+        <React.Fragment key={l}>
+          {l > 0 && <br />}
+          {ligne.split(" ").map((w) => {
+            const i = n++;
+            return (
+              <span key={i} className="inline-block overflow-hidden align-bottom">
+                <span className="inline-block" style={{
+                  transform: seen ? "none" : "translateY(105%)",
+                  opacity: seen ? 1 : 0,
+                  transition: `transform .95s cubic-bezier(.22,1,.36,1) ${delay + i * 60}ms, opacity .8s ease ${delay + i * 60}ms`,
+                }}>{w}&nbsp;</span>
+              </span>
+            );
+          })}
+        </React.Fragment>
       ))}
     </Tag>
   );
@@ -1461,6 +1473,13 @@ export default function App() {
          largeur), un peu moins sur les ecrans les plus etroits ; 24 px
          ailleurs. balance evite un mot seul si elle devait passer a la ligne. */
       .citation-ligne{font-size:min(1.25rem,calc((100vw - 2rem) / 20));line-height:1.4;text-wrap:balance;}
+      /* Titre de l'histoire, coupe apres la virgule : la ligne la plus longue
+         (« Before it was a place, ») mesure 8,32 em. Sur les petits telephones
+         la taille se reduit juste assez pour que chaque ligne tienne ; des
+         360 px environ, c'est la taille des autres titres (text-4xl, puis
+         text-6xl des 640 px). */
+      .titre-histoire{font-size:min(2.25rem,calc((100vw - 4rem) / 8.4));line-height:1.11;}
+      @media (min-width:640px){.titre-histoire{font-size:3.75rem;line-height:1;}}
       @media (min-width:640px){.citation-ligne{font-size:1.5rem;line-height:2rem;}}
       html{scroll-behavior:smooth;}
 
@@ -2052,7 +2071,7 @@ export default function App() {
       <section id="histoire" className="py-24">
         <div className="max-w-3xl mx-auto px-8 text-center">
           <Reveal><Eyebrow ton={A_TERRE}>{t.histoire.eyebrow}</Eyebrow></Reveal>
-          <WordReveal className="display text-4xl sm:text-6xl mb-10" style={{ fontWeight: 300 }}>
+          <WordReveal className="display titre-histoire mb-10" style={{ fontWeight: 300 }}>
             {t.histoire.titre}
           </WordReveal>
           <Reveal delay={240}>
