@@ -1887,7 +1887,7 @@ export default function App() {
               120 m² » laissait imaginer une salle de reception fermee, alors
               que l'interieur en fait 45 et que tout le reste est dehors. */}
           <Reveal delay={700}>
-            <p className="body-font text-sm mt-16 max-w-2xl mx-auto leading-relaxed text-center" style={{ color: "#5a4f42" }}>
+            <p className="body-font mt-16 max-w-2xl mx-auto leading-relaxed text-center" style={{ color: "#5a4f42" }}>
               {t.espacesNote}
             </p>
           </Reveal>
@@ -1901,11 +1901,11 @@ export default function App() {
           <WordReveal className="display text-4xl sm:text-6xl mb-10" style={{ fontWeight: 300 }}>
             {t.histoire.titre}
           </WordReveal>
-          <MaskText delay={120} className="body-font text-lg leading-relaxed mb-7 max-w-2xl mx-auto" style={{ color: "#3f362b" }}>
-            {t.histoire.p0}
-          </MaskText>
           <Reveal delay={240}>
             <div className="max-w-2xl mx-auto space-y-6 body-font leading-relaxed" style={{ color: "#5a4f42" }}>
+              <p>
+                {t.histoire.p0}
+              </p>
               <p>
                 {t.histoire.p1}
               </p>
