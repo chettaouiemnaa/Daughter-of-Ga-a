@@ -1055,6 +1055,47 @@ function RameauOlivier({ couleur = A_OLIVE, largeur = 64 }) {
   );
 }
 
+/* Pictos de la liste du refuge, dans l'ordre des quatre principes :
+   fer à cheval (les rencontres), œil (l'observation à distance), horloge
+   (sons et horaires), lune (le repos). Trait fin, dans le beige doré de la
+   palette (#C7B79A), lisible sur la photo sombre. Purement décoratifs. */
+const CLOUS_FER = [[9.6, 12.6], [8.9, 17.4], [10.4, 21.8], [22.4, 12.6], [23.1, 17.4], [21.6, 21.8]];
+const PICTOS_REFUGE = [
+  { taille: 20, corps: (
+    <>
+      <path d="M9.2 7 C5.6 13.5 5.8 21.8 10.6 25.8 C13.8 28.4 18.2 28.4 21.4 25.8 C26.2 21.8 26.4 13.5 22.8 7 M12.6 7.6 C10 13.3 10.2 19.8 13.6 22.8 C15.2 24.1 16.8 24.1 18.4 22.8 C21.8 19.8 22 13.3 19.4 7.6 M9.2 7 L12.6 7.6 M22.8 7 L19.4 7.6" />
+      {CLOUS_FER.map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="0.55" fill="currentColor" stroke="none" />)}
+    </>
+  ) },
+  { taille: 20, corps: (
+    <>
+      <path d="M3.5 16 Q16 5.5 28.5 16 Q16 26.5 3.5 16Z" />
+      <circle cx="16" cy="16" r="4.2" />
+      <circle cx="16" cy="16" r="1.3" fill="currentColor" stroke="none" />
+    </>
+  ) },
+  { taille: 19, corps: (
+    <>
+      <circle cx="16" cy="16" r="11.5" />
+      <path d="M16 16 L16 8.6 M16 16 L21.4 19" />
+      <circle cx="16" cy="16" r="0.9" fill="currentColor" stroke="none" />
+    </>
+  ) },
+  { taille: 19, corps: <path d="M20.5 4.8 A11.5 11.5 0 1 0 27.6 20.6 A9.2 9.2 0 0 1 20.5 4.8Z" /> },
+];
+function PictoRefuge({ i }) {
+  const p = PICTOS_REFUGE[i];
+  if (!p) return null;
+  return (
+    <span className="inline-flex w-[22px] flex-none justify-center" style={{ color: "#C7B79A" }}>
+      <svg viewBox="0 0 32 32" width={p.taille} height={p.taille} fill="none" stroke="currentColor"
+        strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {p.corps}
+      </svg>
+    </span>
+  );
+}
+
 /* ─────────── Calendrier ─────────── */
 function Calendrier({ blocked, onDayClick, admin = false, lang = "fr" }) {
   const MOIS_L = MOIS[lang], JOURS_L = JOURS[lang];
@@ -2170,7 +2211,7 @@ export default function App() {
             </p>
             <ul className="body-font text-sm mt-5 space-y-4" style={{ color: "rgba(246,241,231,.82)" }}>
               {t.refuge.liste.map((x, i) => (
-                <li key={i}>{x}</li>
+                <li key={i} className="flex items-center gap-3.5"><PictoRefuge i={i} /><span>{x}</span></li>
               ))}
             </ul>
           </Reveal>
