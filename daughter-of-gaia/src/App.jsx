@@ -2095,7 +2095,7 @@ export default function App() {
           {t.prestations.map((p, i) => (
             <Reveal key={i} delay={i * 70}>
               <div>
-                <span className="mono text-[10px] block mb-3" style={{ color: A_OLIVE }}>{String(i + 1).padStart(2, "0")}</span>
+                <span className="mono text-[10px] block mb-3" style={{ color: A_TERRE }}>{String(i + 1).padStart(2, "0")}</span>
                 <div className="flex items-center justify-center gap-3 flex-wrap">
                   <h3 className="display text-2xl sm:text-3xl" style={{ fontWeight: 400 }}>{p.t}</h3>
                   {p.soon && <span className="mono text-[8px] uppercase tracking-[0.2em] px-2 py-1" style={{ color: "#626A4E", background: "#e5dcc8" }}>{t.experiences.bientot}</span>}
