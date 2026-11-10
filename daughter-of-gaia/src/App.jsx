@@ -700,11 +700,9 @@ function GalerieHorizontale({ items, label }) {
         <div className="flex items-center gap-4 px-8" style={{ width: "max-content" }}>
           {items.map((g, i) => (
             <figure key={i} className="shrink-0 relative overflow-hidden gal-fig" style={{ width: g.mw || "76vw", height: g.mh || "58vh", scrollSnapAlign: "center" }}>
+              {/* Pas de légende sur la photo : le texte reste en alt, pour
+                  Google et les lecteurs d'écran. */}
               <img src={g.src} alt={g.l} loading="lazy" decoding="async" className="w-full h-full object-cover gal-img" style={{ objectPosition: g.pos || "center" }} />
-              <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(20,14,8,.55), transparent 50%)" }} />
-              <figcaption className="absolute bottom-5 inset-x-0 text-center mono text-[9px] uppercase tracking-[0.24em]" style={{ color: "rgba(246,241,231,.95)" }}>
-                {g.l}
-              </figcaption>
             </figure>
           ))}
         </div>
@@ -720,12 +718,6 @@ function GalerieHorizontale({ items, label }) {
               style={{ width: g.w, height: g.h }}>
               <img src={g.src} alt={g.l} loading="lazy" decoding="async" className="w-full h-full object-cover gal-img"
                 style={{ objectPosition: g.pos || "center" }} />
-              <div className="absolute inset-0 transition-opacity duration-700 opacity-0 group-hover:opacity-100"
-                style={{ background: "linear-gradient(to top, rgba(20,14,8,.55), transparent 55%)" }} />
-              <figcaption className="absolute bottom-5 inset-x-0 text-center mono text-[9px] uppercase tracking-[0.24em]"
-                style={{ color: "rgba(246,241,231,.95)", textShadow: "0 1px 14px rgba(0,0,0,.7)" }}>
-                {g.l}
-              </figcaption>
             </figure>
           ))}
         </div>
