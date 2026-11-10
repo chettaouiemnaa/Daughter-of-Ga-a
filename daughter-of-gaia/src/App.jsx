@@ -15,6 +15,11 @@ const P_CHEVAL_NB = "/images/cheval-noir-blanc.jpg";
 const P_SALLE = "/images/salle-lustre.jpg";
 const P_TERRASSE_VASQUE = "/images/terrasse-vasque.jpg";
 const P_TROIS_CHEVAUX = "/images/trois-chevaux.jpg";
+const P_ALLEE_PORTAIL = "/images/allee-portail.jpg";
+const P_SALON_JARDIN = "/images/salon-jardin.jpg";
+const P_CHEVAUX_ARBRES = "/images/chevaux-entre-arbres.jpg";
+const P_FENETRE_BOIS = "/images/fenetre-chevaux-bois.jpg";
+const P_TERRASSE_NUIT = "/images/terrasse-nuit.jpg";
 
 
 const V_HERO = "/images/tournage-hero.jpg";
@@ -151,7 +156,9 @@ fr: {
     lien: "Découvrir la page tournages" },
   bandeau: ["Respect du vivant", "Animaux sauvés", "Nature préservée", "Domaine privatisé", "Sur réservation"],
   galerie: { eyebrow: "Galerie", titre: "Le domaine en images", faire: "Faites défiler",
-    legendes: ["Ils sont chez eux", "La terrasse", "L'espace couvert", "À l'ombre, devant la maison"] },
+    legendes: ["Ils sont chez eux", "La terrasse", "L'espace couvert", "À l'ombre, devant la maison",
+      "Un cheval au bout de l'allée", "Le salon, face à la maison", "Ils broutent entre les arbres",
+      "Chevaux de bois à la fenêtre", "La terrasse, le soir"] },
   refuge: { eyebrow: "Le refuge", titre: "Sauvés, réhabilités, et chez eux.",
     p1: "Chaque cheval, chien ou autre animal présent ici a été sauvé, recueilli ou réhabilité. Le domaine est leur maison avant d'être un lieu de réception. Ils évoluent dans leur environnement, à leur rythme, et leur bien-être passe avant l'événement.",
     p2: "Sept chevaux ont été recueillis depuis l'ouverture. Quatre vivent ici aujourd'hui. Les trois autres sont repartis une fois remis sur pied, et c'était bien le but.",
@@ -280,7 +287,9 @@ en: {
     lien: "See the filming page" },
   bandeau: ["Respect for the living", "Rescued animals", "Protected nature", "Private estate", "By reservation"],
   galerie: { eyebrow: "Gallery", titre: "The estate in pictures", faire: "Scroll across",
-    legendes: ["They live here", "The terrace", "The covered space", "In the shade, by the house"] },
+    legendes: ["They live here", "The terrace", "The covered space", "In the shade, by the house",
+      "A horse at the end of the path", "The lounge, facing the house", "Grazing between the trees",
+      "Wooden horses in the window", "The terrace at night"] },
   refuge: { eyebrow: "The sanctuary", titre: "Rescued, rehabilitated, and home.",
     p1: "Every horse, dog or other animal here was rescued, taken in or rehabilitated. The estate is their home before it is a venue. They move through their own environment, at their own pace, and their wellbeing comes before the event.",
     p2: "Seven horses have been taken in since we opened. Four live here today. The other three left once they were back on their feet, which was the whole point.",
@@ -676,9 +685,9 @@ function GalerieHorizontale({ items, label }) {
           dépassent de l'écran restent hors de portée. */}
       <div className="lg:hidden overflow-x-auto pb-6" tabIndex={0} role="region" aria-label={label}
         style={{ scrollSnapType: "x mandatory" }}>
-        <div className="flex gap-4 px-8" style={{ width: "max-content" }}>
+        <div className="flex items-center gap-4 px-8" style={{ width: "max-content" }}>
           {items.map((g, i) => (
-            <figure key={i} className="shrink-0 relative overflow-hidden gal-fig" style={{ width: "76vw", height: "58vh", scrollSnapAlign: "center" }}>
+            <figure key={i} className="shrink-0 relative overflow-hidden gal-fig" style={{ width: g.mw || "76vw", height: g.mh || "58vh", scrollSnapAlign: "center" }}>
               <img src={g.src} alt={g.l} loading="lazy" decoding="async" className="w-full h-full object-cover gal-img" style={{ objectPosition: g.pos || "center" }} />
               <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(20,14,8,.55), transparent 50%)" }} />
               <figcaption className="absolute bottom-5 inset-x-0 text-center mono text-[9px] uppercase tracking-[0.24em]" style={{ color: "rgba(246,241,231,.95)" }}>
@@ -2014,6 +2023,14 @@ export default function App() {
           { src: P_TERRASSE_VASQUE, l: t.galerie.legendes[1], pos: "center 60%", w: "min(86vw,600px)", h: "min(50vh,430px)" },
           { src: P_SALLE, l: t.galerie.legendes[2], pos: "center 40%", w: "min(74vw,400px)", h: "min(66vh,575px)" },
           { src: P_TROIS_CHEVAUX, l: t.galerie.legendes[3], pos: "center 62%", w: "min(82vw,520px)", h: "min(56vh,490px)" },
+          { src: P_ALLEE_PORTAIL, l: t.galerie.legendes[4], pos: "center 50%", w: "min(76vw,420px)", h: "min(64vh,560px)" },
+          { src: P_SALON_JARDIN, l: t.galerie.legendes[5], pos: "center 60%", w: "min(84vw,520px)", h: "min(60vh,560px)" },
+          { src: P_CHEVAUX_ARBRES, l: t.galerie.legendes[6], pos: "center 55%", w: "min(80vw,460px)", h: "min(58vh,510px)" },
+          { src: P_FENETRE_BOIS, l: t.galerie.legendes[7], pos: "center 50%", w: "min(74vw,420px)", h: "min(62vh,540px)" },
+          /* Seule photo en paysage. Le cadre vertical du telephone en
+             perdait plus de la moitie (le poney ou le cheval, jamais les
+             deux) : elle garde son 4/3 partout, mw/mh sur telephone. */
+          { src: P_TERRASSE_NUIT, l: t.galerie.legendes[8], pos: "center", w: "min(88vw,680px)", h: "min(54vh,510px)", mw: "86vw", mh: "64.5vw" },
         ]} />
       </section>
 
