@@ -121,7 +121,7 @@ fr: {
   ],
   domaine: { eyebrow: "Le domaine", titre: "4 000 m² où la ville disparaît",
     texte: "Une propriété privée où la nature occupe toute sa place. Des espaces pensés pour recevoir, dans un environnement qui se prête aussi bien aux événements professionnels qu'aux célébrations privées.",
-    citation: "Et partout autour, une nature faite pour être vécue.",
+    citation: "Ici, vous êtes les invités des chevaux.",
     alt: "Trois chevaux au repos devant la maison, à l'ombre d'un arbre" },
   espaces: [
     { t: "Le domaine", v: "4 000 m²" }, { t: "Espace aménagé", v: "650 m²" },
@@ -252,7 +252,7 @@ en: {
   ],
   domaine: { eyebrow: "The estate", titre: "4,000 m² where the city disappears",
     texte: "A private estate where nature has all the room it needs. Spaces designed for hosting, in a setting suited as much to professional events as to private celebrations.",
-    citation: "And all around, a landscape made to be lived in.",
+    citation: "Here, you are the horses' guests.",
     alt: "Three horses at rest in front of the house, in the shade of a tree" },
   espaces: [
     { t: "The estate", v: "4 000 m²" }, { t: "Landscaped area", v: "650 m²" },
