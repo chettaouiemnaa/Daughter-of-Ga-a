@@ -156,7 +156,7 @@ fr: {
     lien: "Découvrir la page tournages" },
   bandeau: ["Respect du vivant", "Animaux sauvés", "Nature préservée", "Domaine privatisé", "Sur réservation"],
   galerie: { eyebrow: "Galerie", titre: "Le domaine en images", faire: "Faites défiler",
-    legendes: ["Ils sont chez eux", "La terrasse", "L'espace couvert", "À l'ombre, devant la maison",
+    legendes: ["Ils sont chez eux", "La terrasse", "L'espace couvert",
       "Un cheval au bout de l'allée", "Le salon, face à la maison", "Ils broutent entre les arbres",
       "Chevaux de bois à la fenêtre", "La terrasse, le soir"] },
   refuge: { eyebrow: "Le refuge", titre: "Sauvés, réhabilités, et chez eux.",
@@ -287,7 +287,7 @@ en: {
     lien: "See the filming page" },
   bandeau: ["Respect for the living", "Rescued animals", "Protected nature", "Private estate", "By reservation"],
   galerie: { eyebrow: "Gallery", titre: "The estate in pictures", faire: "Scroll across",
-    legendes: ["They live here", "The terrace", "The covered space", "In the shade, by the house",
+    legendes: ["They live here", "The terrace", "The covered space",
       "A horse at the end of the path", "The lounge, facing the house", "Grazing between the trees",
       "Wooden horses in the window", "The terrace at night"] },
   refuge: { eyebrow: "The sanctuary", titre: "Rescued, rehabilitated, and home.",
@@ -2022,15 +2022,14 @@ export default function App() {
           { src: P_CHEVAL_NB, l: t.galerie.legendes[0], pos: "center 40%", w: "min(80vw,460px)", h: "min(58vh,510px)" },
           { src: P_TERRASSE_VASQUE, l: t.galerie.legendes[1], pos: "center 60%", w: "min(86vw,600px)", h: "min(50vh,430px)" },
           { src: P_SALLE, l: t.galerie.legendes[2], pos: "center 40%", w: "min(74vw,400px)", h: "min(66vh,575px)" },
-          { src: P_TROIS_CHEVAUX, l: t.galerie.legendes[3], pos: "center 62%", w: "min(82vw,520px)", h: "min(56vh,490px)" },
-          { src: P_ALLEE_PORTAIL, l: t.galerie.legendes[4], pos: "center 50%", w: "min(76vw,420px)", h: "min(64vh,560px)" },
-          { src: P_SALON_JARDIN, l: t.galerie.legendes[5], pos: "center 60%", w: "min(84vw,520px)", h: "min(60vh,560px)" },
-          { src: P_CHEVAUX_ARBRES, l: t.galerie.legendes[6], pos: "center 55%", w: "min(80vw,460px)", h: "min(58vh,510px)" },
-          { src: P_FENETRE_BOIS, l: t.galerie.legendes[7], pos: "center 50%", w: "min(74vw,420px)", h: "min(62vh,540px)" },
+          { src: P_ALLEE_PORTAIL, l: t.galerie.legendes[3], pos: "center 50%", w: "min(76vw,420px)", h: "min(64vh,560px)" },
+          { src: P_SALON_JARDIN, l: t.galerie.legendes[4], pos: "center 60%", w: "min(84vw,520px)", h: "min(60vh,560px)" },
+          { src: P_CHEVAUX_ARBRES, l: t.galerie.legendes[5], pos: "center 55%", w: "min(80vw,460px)", h: "min(58vh,510px)" },
+          { src: P_FENETRE_BOIS, l: t.galerie.legendes[6], pos: "center 50%", w: "min(74vw,420px)", h: "min(62vh,540px)" },
           /* Seule photo en paysage. Le cadre vertical du telephone en
              perdait plus de la moitie (le poney ou le cheval, jamais les
              deux) : elle garde son 4/3 partout, mw/mh sur telephone. */
-          { src: P_TERRASSE_NUIT, l: t.galerie.legendes[8], pos: "center", w: "min(88vw,680px)", h: "min(54vh,510px)", mw: "86vw", mh: "64.5vw" },
+          { src: P_TERRASSE_NUIT, l: t.galerie.legendes[7], pos: "center", w: "min(88vw,680px)", h: "min(54vh,510px)", mw: "86vw", mh: "64.5vw" },
         ]} />
       </section>
 
