@@ -116,7 +116,7 @@ fr: {
   valeurs: [
     { t: "Une évasion aux portes de la ville", d: "À l'entrée de La Soukra, à proximité immédiate de La Marsa, Daughter of Gaïa offre le sentiment d'être à des kilomètres de la ville, sans jamais s'en éloigner." },
     { t: "Respect du vivant", d: "Chaque décision est pensée dans le respect des animaux, de la nature et de l'équilibre du lieu." },
-    { t: "Des animaux sauvés", d: "Chaque cheval présent ici a été sauvé, recueilli ou réhabilité, faisant de Daughter of Gaïa un véritable lieu de vie avant d'être un lieu d'événements." },
+    { t: "Des animaux sauvés et accueillis", d: "Certains chevaux ont trouvé refuge à Daughter of Gaïa, d'autres y ont vu le jour. Tous y grandissent et évoluent dans un environnement où leur bien-être et leur tranquillité sont une priorité." },
     { t: "Un domaine entièrement privatisé", d: "Chaque réservation vous offre l'exclusivité du domaine, pour vivre pleinement votre événement." },
   ],
   domaine: { eyebrow: "Le domaine", titre: "4 000 m² où la ville disparaît",
@@ -246,7 +246,7 @@ en: {
   valeurs: [
     { t: "An escape at the city's edge", d: "At the entrance to La Soukra, right by La Marsa, Daughter of Gaïa gives the feeling of being miles from the city, without ever leaving it." },
     { t: "Respect for the living", d: "Every decision is made with the animals, the land and the balance of the place in mind." },
-    { t: "Rescued animals", d: "Every horse here was rescued, taken in or rehabilitated, making Daughter of Gaïa a true home before it is a venue." },
+    { t: "Animals rescued and welcomed", d: "Some horses found refuge at Daughter of Gaïa, others were born here. All of them grow up and live in surroundings where their wellbeing and their peace come first." },
     { t: "An entirely private estate", d: "Each booking gives you exclusive use of the estate, so you can live your event to the full." },
   ],
   domaine: { eyebrow: "The estate", titre: "4,000 m² where the city disappears",
