@@ -97,6 +97,8 @@ const META = {
    L'adresse figure déjà en clair dans le pied de page du site. */
 const ADRESSE_DEVIS = "contact@daughterofgaia.com";
 const RELAIS_DEVIS = `https://formsubmit.co/ajax/${ADRESSE_DEVIS}`;
+/* Champ du formulaire de devis -> identifiant de l'element et de son message */
+const ID_CHAMP = { date: "champ-date", name: "champ-nom", email: "champ-email", phone: "champ-tel", guests: "champ-invites", type: "champ-type" };
 
 /* Palette : sable #EDE4D3 · blanc cassé #F6F1E7 · encre #2B2118
    olive #626A4E · terracotta #B5654A · ligne #C7B79A */
@@ -169,7 +171,12 @@ fr: {
     texte: "Chaque événement est étudié individuellement. Décrivez-nous ce que vous imaginez, nous revenons vers vous avec une proposition adaptée.",
     date: "Date souhaitée", datePh: "Sélectionnez une date dans le calendrier",
     dateModifier: "modifier la date", nom: "Nom", email: "Email",
-    tel: "Téléphone", invites: "Invités", type: "Type d'expérience", typePh: "Choisissez une expérience", autre: "Autre", projet: "Votre projet",
+    tel: "Téléphone", invites: "Invités", type: "Type d'expérience", typePh: "Choisissez une expérience", autre: "Autre",
+    manque: { date: "Merci de choisir une date dans le calendrier.", nom: "Merci d'indiquer votre nom.",
+      email: "Merci d'indiquer votre adresse e-mail.", emailFormat: "Cette adresse e-mail semble incomplète.",
+      tel: "Merci d'indiquer votre numéro de téléphone.", telFormat: "Ce numéro semble incomplet.",
+      invites: "Merci d'indiquer le nombre d'invités.", type: "Merci de choisir un type d'expérience." },
+    manqueResume: "Il manque quelques informations pour envoyer votre demande.", projet: "Votre projet",
     projetPh: "Horaires envisagés, ambiance recherchée, besoins particuliers…", envoyer: "Envoyer ma demande",
     envoiEnCours: "Envoi en cours…",
     erreur: "L'envoi a rencontré un incident. Réessayez, ou écrivez-nous directement à",
@@ -300,7 +307,12 @@ en: {
     texte: "Every event is considered individually. Describe what you have in mind and we will come back to you with a tailored proposal.",
     date: "Preferred date", datePh: "Select a date in the calendar",
     dateModifier: "change the date", nom: "Name", email: "Email",
-    tel: "Phone", invites: "Guests", type: "Type of experience", typePh: "Choose an experience", autre: "Other", projet: "Your project",
+    tel: "Phone", invites: "Guests", type: "Type of experience", typePh: "Choose an experience", autre: "Other",
+    manque: { date: "Please choose a date in the calendar.", nom: "Please enter your name.",
+      email: "Please enter your email address.", emailFormat: "This email address looks incomplete.",
+      tel: "Please enter your phone number.", telFormat: "This number looks incomplete.",
+      invites: "Please enter the number of guests.", type: "Please choose a type of experience." },
+    manqueResume: "A few details are missing to send your request.", projet: "Your project",
     projetPh: "Timings, atmosphere, particular requirements…", envoyer: "Send my request",
     envoiEnCours: "Sending…",
     erreur: "Something interrupted the sending. Please try again, or write to us directly at",
@@ -1114,6 +1126,10 @@ export default function App() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", guests: "", type: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  /* Champs manquants ou mal remplis : champ -> cle du message dans
+     t.devis.manque. On garde la cle et non le texte, pour que le message
+     suive le changement de langue. */
+  const [erreurs, setErreurs] = useState({});
   const [envoi, setEnvoi] = useState("repos");   // repos | envoi | erreur
   const [piege, setPiege] = useState("");         // champ leurre anti-robot
   const ouvertureRef = useRef(Date.now());        // pour mesurer le temps de remplissage
@@ -1151,6 +1167,10 @@ export default function App() {
     return () => window.removeEventListener("popstate", surRetour);
   }, []);
 
+  useEffect(() => {
+    if (selectedDate) setErreurs((er) => (er.date ? { ...er, date: undefined } : er));
+  }, [selectedDate]);
+
   /* Le titre de l'onglet et la description suivent la page consultée. */
   useEffect(() => {
     const m = META[page] || META.accueil;
@@ -1167,6 +1187,30 @@ export default function App() {
   async function envoyerDevis(e) {
     e.preventDefault();
     if (envoi === "envoi") return;          // évite le double clic
+    /* Les informations de base sont obligatoires : date, nom, e-mail,
+       téléphone, nombre d'invités et type d'expérience. Seul « Votre projet »
+       reste libre. Les messages sont ceux du site, dans sa langue, et non les
+       bulles du navigateur, qui changent d'un téléphone à l'autre. */
+    const manque = {};
+    if (!selectedDate) manque.date = "date";
+    if (!form.name.trim()) manque.name = "nom";
+    if (!form.email.trim()) manque.email = "email";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())) manque.email = "emailFormat";
+    const chiffres = form.phone.replace(/\D/g, "");
+    if (!chiffres) manque.phone = "tel";
+    else if (chiffres.length < 8) manque.phone = "telFormat";
+    if (!(Number(form.guests) >= 1)) manque.guests = "invites";
+    if (!form.type) manque.type = "type";
+    setErreurs(manque);
+    const premier = ["date", "name", "email", "phone", "guests", "type"].find((k) => manque[k]);
+    if (premier) {
+      const champ = document.getElementById(ID_CHAMP[premier]);
+      if (champ) {
+        champ.scrollIntoView({ block: "center", behavior: "smooth" });
+        champ.focus({ preventScroll: true });
+      }
+      return;
+    }
 
     /* Deux filtres anti-robot. On feint la réussite dans les deux cas :
        signaler le rejet apprendrait au robot comment passer.
@@ -1208,6 +1252,19 @@ export default function App() {
       setEnvoi("erreur");
     }
   }
+
+  /* Saisie d'un champ du devis : le message d'erreur s'efface des que la
+     personne corrige. */
+  const majChamp = (cle, valeur) => {
+    setForm((f) => ({ ...f, [cle]: valeur }));
+    if (erreurs[cle]) setErreurs((er) => ({ ...er, [cle]: undefined }));
+  };
+  const bordure = (cle) => ({ borderBottom: `1px solid ${erreurs[cle] ? "#97543E" : "#8C816D"}` });
+  const messageChamp = (cle) => erreurs[cle] ? (
+    <p id={`${ID_CHAMP[cle]}-erreur`} className="body-font text-sm mt-2 text-center" style={{ color: "#97543E" }}>
+      {t.devis.manque[erreurs[cle]]}
+    </p>
+  ) : null;
 
   /* Connexion à l'espace propriétaire.
      Le code n'est plus comparé dans la page — où il était lisible par tous —
@@ -2136,7 +2193,7 @@ export default function App() {
               </p>
             </div>
           ) : (
-            <form onSubmit={envoyerDevis} className="space-y-8 text-left">
+            <form onSubmit={envoyerDevis} noValidate className="space-y-8 text-left">
               {/* Leurre : invisible pour les visiteurs, rempli par les robots */}
               <input type="text" name="_honey" tabIndex={-1} autoComplete="off"
                 aria-hidden="true" value={piege} onChange={(e) => setPiege(e.target.value)}
@@ -2147,37 +2204,50 @@ export default function App() {
                 <span className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.date}</span>
                 {/* Bouton et non champ de saisie : la date se choisit dans le
                     calendrier, plus haut. Un clic y renvoie. */}
-                <button type="button" onClick={versCalendrier}
+                <button type="button" id="champ-date" onClick={versCalendrier}
                   aria-label={selectedDate ? `${t.devis.date} : ${selectedDate} — ${t.devis.dateModifier}` : `${t.devis.date} : ${t.devis.datePh}`}
-                  className={`champ-date body-font w-full mt-3 px-0 py-3 min-h-[44px] bg-transparent text-sm text-center flex items-center justify-center gap-2${selectedDate ? "" : " champ-date-vide"}`}>
+                  aria-describedby={erreurs.date ? "champ-date-erreur" : undefined}
+                  className={`champ-date body-font w-full mt-3 px-0 py-3 min-h-[44px] bg-transparent text-sm text-center flex items-center justify-center gap-2${selectedDate ? "" : " champ-date-vide"}`}
+                  style={erreurs.date ? { borderColor: "#97543E" } : undefined}>
                   <CalendarDays size={13} aria-hidden="true" />
                   <span>{selectedDate || t.devis.datePh}</span>
                 </button>
+                {messageChamp("date")}
               </div>
               <div className="grid sm:grid-cols-2 gap-8">
                 <div><label htmlFor="champ-nom" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.nom}</label>
-                  <input id="champ-nom" type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
+                  <input id="champ-nom" type="text" required value={form.name} onChange={(e) => majChamp("name", e.target.value)}
+                    aria-invalid={erreurs.name ? true : undefined} aria-describedby={erreurs.name ? "champ-nom-erreur" : undefined}
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={bordure("name")} />
+                  {messageChamp("name")}</div>
                 <div><label htmlFor="champ-email" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.email}</label>
-                  <input id="champ-email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
+                  <input id="champ-email" type="email" required value={form.email} onChange={(e) => majChamp("email", e.target.value)}
+                    aria-invalid={erreurs.email ? true : undefined} aria-describedby={erreurs.email ? "champ-email-erreur" : undefined}
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={bordure("email")} />
+                  {messageChamp("email")}</div>
               </div>
               <div className="grid sm:grid-cols-2 gap-8">
                 <div><label htmlFor="champ-tel" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.tel}</label>
-                  <input id="champ-tel" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
+                  <input id="champ-tel" type="tel" required autoComplete="tel" value={form.phone} onChange={(e) => majChamp("phone", e.target.value)}
+                    aria-invalid={erreurs.phone ? true : undefined} aria-describedby={erreurs.phone ? "champ-tel-erreur" : undefined}
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={bordure("phone")} />
+                  {messageChamp("phone")}</div>
                 <div><label htmlFor="champ-invites" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.invites}</label>
-                  <input id="champ-invites" type="number" min="1" value={form.guests} onChange={(e) => setForm({ ...form, guests: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
+                  <input id="champ-invites" type="number" min="1" required inputMode="numeric" value={form.guests} onChange={(e) => majChamp("guests", e.target.value)}
+                    aria-invalid={erreurs.guests ? true : undefined} aria-describedby={erreurs.guests ? "champ-invites-erreur" : undefined}
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={bordure("guests")} />
+                  {messageChamp("guests")}</div>
               </div>
               <div><label htmlFor="champ-type" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.type}</label>
                 {/* Aucune experience preselectionnee : la liste s'ouvre sur une
                     invite, et le choix est demande avant l'envoi. */}
-                <select id="champ-type" required value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}
-                  className={`body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center${form.type ? "" : " champ-type-vide"}`} style={{ borderBottom: "1px solid #8C816D" }}>
+                <select id="champ-type" required value={form.type} onChange={(e) => majChamp("type", e.target.value)}
+                  aria-invalid={erreurs.type ? true : undefined} aria-describedby={erreurs.type ? "champ-type-erreur" : undefined}
+                  className={`body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center${form.type ? "" : " champ-type-vide"}`} style={bordure("type")}>
                   <option value="" disabled>{t.devis.typePh}</option>
                   {t.prestations.map((p) => <option key={p.t}>{p.t}</option>)}<option>{t.devis.autre}</option>
-                </select></div>
+                </select>
+                {messageChamp("type")}</div>
               <div><label htmlFor="champ-projet" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.projet}</label>
                 <textarea id="champ-projet" rows={3} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
                   placeholder={t.devis.projetPh}
@@ -2191,6 +2261,11 @@ export default function App() {
                     {envoi === "envoi" ? t.devis.envoiEnCours : t.devis.envoyer}
                   </span>
                 </button>
+                {Object.values(erreurs).some(Boolean) && (
+                  <p className="body-font text-sm mt-6 max-w-sm mx-auto text-balance" style={{ color: "#97543E" }} role="alert">
+                    {t.devis.manqueResume}
+                  </p>
+                )}
                 {envoi === "erreur" && (
                   <p className="body-font text-sm mt-6 max-w-sm mx-auto" style={{ color: "#97543E" }} role="alert">
                     {t.devis.erreur}{" "}
