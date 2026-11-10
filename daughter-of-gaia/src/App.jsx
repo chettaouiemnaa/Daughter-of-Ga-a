@@ -1018,8 +1018,21 @@ function Calendrier({ blocked, onDayClick, admin = false, lang = "fr" }) {
   const MOIS_L = MOIS[lang], JOURS_L = JOURS[lang];
   const [monthOffset, setMonthOffset] = useState(0);
   const [fade, setFade] = useState(false);
-  const today = useMemo(() => new Date(2026, 6, 29), []);
-  const viewDate = new Date(today.getFullYear(), today.getMonth() + monthOffset + (admin ? 0 : 1), 1);
+  /* Date du jour, prise a l'heure de Tunis quel que soit le fuseau du
+     visiteur. Elle etait figee au 29 juillet 2026 : le calendrier public
+     s'ouvrait alors sur un mois deja passe, et ses dates restaient
+     selectionnables. */
+  const today = useMemo(() => {
+    const maintenant = new Date();
+    try {
+      const [a, m, j] = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Tunis", year: "numeric", month: "2-digit", day: "2-digit" })
+        .format(maintenant).split("-").map(Number);
+      if (a && m && j) return new Date(a, m - 1, j);
+    } catch { /* navigateur sans fuseaux horaires : date locale */ }
+    return new Date(maintenant.getFullYear(), maintenant.getMonth(), maintenant.getDate());
+  }, []);
+  /* Le calendrier s'ouvre sur le mois en cours, public comme proprietaire. */
+  const viewDate = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
   const year = viewDate.getFullYear(), month = viewDate.getMonth();
   const startOffset = (new Date(year, month, 1).getDay() + 6) % 7;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -1045,15 +1058,18 @@ function Calendrier({ blocked, onDayClick, admin = false, lang = "fr" }) {
           if (d === null) return <div key={i} />;
           const key = `${year}-${month + 1}-${d}`;
           const isBlocked = blocked.has(key);
+          /* Jour deja passe : estompe, sans barre (la barre signale une date
+             reservee), et inactif, cote public comme cote proprietaire. */
+          const isPast = new Date(year, month, d) < today;
           return (
             <button key={i} onClick={() => onDayClick(key, lang === "fr" ? `${d} ${MOIS_L[month]} ${year}` : `${MOIS_L[month]} ${d}, ${year}`, isBlocked)}
-              disabled={!admin && isBlocked} className="day-cell fu aspect-square text-sm body-font relative"
+              disabled={isPast || (!admin && isBlocked)} className="day-cell fu aspect-square text-sm body-font relative"
               style={{
                 animationDelay: `${i * 14}ms`, animationDuration: ".8s",
-                color: isBlocked ? (admin ? "#B5654A" : "#c2b79f") : "#2B2118",
-                textDecoration: isBlocked && !admin ? "line-through" : "none",
-                cursor: !admin && isBlocked ? "not-allowed" : "pointer",
-                fontWeight: isBlocked && admin ? 600 : 400,
+                color: isPast ? "#c2b79f" : isBlocked ? (admin ? "#B5654A" : "#c2b79f") : "#2B2118",
+                textDecoration: isBlocked && !admin && !isPast ? "line-through" : "none",
+                cursor: isPast || (!admin && isBlocked) ? "not-allowed" : "pointer",
+                fontWeight: isBlocked && admin && !isPast ? 600 : 400,
               }}>{d}</button>
           );
         })}
