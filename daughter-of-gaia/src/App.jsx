@@ -80,9 +80,9 @@ function pageDepuisChemin(chemin) {
    dans ses résultats et ce que montrent les aperçus de partage. */
 const META = {
   accueil: {
-    titre: "Lieu événementiel à Tunis — Daughter of Gaïa, La Soukra",
+    titre: "Lieu événementiel à Tunis, près de La Marsa — Daughter of Gaïa",
     description:
-      "Domaine privé de 4 000 m² à La Soukra, aux portes de Tunis. Privatisation complète jusqu'à 100 invités : séminaires, anniversaires, brunchs, tournages.",
+      "Domaine privé de 4 000 m² à La Soukra, tout près de La Marsa. Privatisation complète jusqu'à 100 invités : séminaires, anniversaires, brunchs, tournages.",
   },
   tournages: {
     titre: "Lieu de tournage près de Tunis — Daughter of Gaïa, La Soukra",
