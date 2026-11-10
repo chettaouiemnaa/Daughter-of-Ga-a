@@ -2113,8 +2113,11 @@ export default function App() {
         </div>
       </section>
 
-      {/* ── BANDEAU ── */}
-      <div className="overflow-hidden py-10">
+      {/* ── BANDEAU ──
+          Même vide au-dessus et en dessous (56 px), pour qu'il soit centré
+          entre le cadre des expériences et la photo des tournages : la
+          photo n'a plus de marge propre au-dessus d'elle. */}
+      <div className="overflow-hidden py-14">
         <div className="marquee flex whitespace-nowrap">
           {[...Array(2)].map((_, k) => (
             <span key={k} className="flex items-center">
@@ -2130,7 +2133,7 @@ export default function App() {
       </div>
 
       {/* ── APPEL TOURNAGES ── */}
-      <section className="relative w-full overflow-hidden my-16">
+      <section className="relative w-full overflow-hidden mb-16">
         <button onClick={() => allerA("tournages")} className="block w-full text-left group">
           <VoletsReveal className="relative w-full h-[56vh] sm:h-[70vh]">
             <img src={V_PERGOLA} alt={t.decors[0].t} loading="lazy" decoding="async"
