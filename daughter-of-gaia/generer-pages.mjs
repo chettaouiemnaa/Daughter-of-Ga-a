@@ -21,27 +21,27 @@ if (!fs.existsSync(source)) {
 
 let html = fs.readFileSync(source, "utf-8");
 
-const TITRE = "Lieu de tournage près de Tunis — Daughter of Gaïa, La Soukra";
+const TITRE = "Daughter of Gaïa, lieu de tournage à La Soukra près de Tunis";
 const DESCRIPTION =
-  "Décor de tournage à 20 minutes de Tunis : des décors extérieurs variés, une maison entièrement filmable, lumière naturelle toute la journée et des chevaux sur place.";
+  "Décor de tournage à 20 minutes de Tunis, avec des décors extérieurs variés, une maison entièrement filmable, une lumière naturelle toute la journée et des chevaux sur place.";
 const URL_PAGE = "https://www.daughterofgaia.com/tournages";
 
 const CONTENU = `
       <div style="max-width:40rem;margin:4rem auto;padding:0 1.5rem;font-family:system-ui,sans-serif;line-height:1.7;color:#2B2118;">
-        <h1 style="font-weight:400;">Lieu de tournage près de Tunis — Daughter of Gaïa</h1>
+        <h1 style="font-weight:400;">Daughter of Gaïa, lieu de tournage près de Tunis</h1>
 
-        <p>Daughter of Gaïa met une partie de son domaine à disposition des productions, à vingt minutes du centre de Tunis, à La Soukra (Ariana). Un décor déjà en place : des décors extérieurs variés, une maison entièrement filmable et de la lumière naturelle toute la journée.</p>
+        <p>Daughter of Gaïa met une partie de son domaine à disposition des productions, à vingt minutes du centre de Tunis, à La Soukra (Ariana). Un décor déjà en place, avec des décors extérieurs variés, une maison entièrement filmable et de la lumière naturelle toute la journée.</p>
 
         <p><strong>Ces espaces sont réservés aux productions.</strong> Les événements privés se tiennent dans les autres espaces du domaine.</p>
 
         <h2 style="font-weight:400;">Les décors extérieurs</h2>
-        <p>Parmi eux : le salon de jardin sous la pergola, avec canapés en teck, four à pain en pierre et bougainvilliers en fleur. La piscine et le bar extérieur, arcades en pierre et bassin turquoise, plein sud. Le jardin sous les bougainvilliers, autour d'un olivier centenaire. La pelouse et les palmiers, dégagée et praticable pour les travellings. Le salon sous voûte de brique, plafond à chevrons, marbre et portes cintrées — un intérieur colonial d'époque, prêt à filmer.</p>
+        <p>Parmi eux, le salon de jardin sous la pergola, avec canapés en teck, four à pain en pierre et bougainvilliers en fleur. La piscine et le bar extérieur, arcades en pierre et bassin turquoise, plein sud. Le jardin sous les bougainvilliers, autour d'un olivier centenaire. La pelouse et les palmiers, dégagée et praticable pour les travellings. Le salon sous voûte de brique, plafond à chevrons, marbre et portes cintrées. Un intérieur colonial d'époque, prêt à filmer.</p>
 
         <h2 style="font-weight:400;">Des chevaux dans le cadre, déjà sur place</h2>
-        <p>Des chevaux recueillis vivent sur le domaine et entrent naturellement à l'image : ils sont déjà chez eux.</p>
+        <p>Des chevaux recueillis vivent sur le domaine et entrent naturellement à l'image. Ils sont déjà chez eux.</p>
 
         <h2 style="font-weight:400;">Une base technique sur place</h2>
-        <p>La maison accueille loges, maquillage, régie, repas d'équipe et stockage du matériel, dans un espace couvert, climatisé et fermé, à quelques pas des décors extérieurs. Le domaine est réservé à une seule production à la fois : le site entier est à vous. Les tournages se déroulent en journée, les nuitées se passent hors du domaine.</p>
+        <p>La maison accueille loges, maquillage, régie, repas d'équipe et stockage du matériel, dans un espace couvert, climatisé et fermé, à quelques pas des décors extérieurs. Le domaine est réservé à une seule production à la fois. Le site entier est à vous. Les tournages se déroulent en journée, les nuitées se passent hors du domaine.</p>
 
         <h2 style="font-weight:400;">Organiser un repérage</h2>
         <p>Les tournages se déroulent en journée, afin de préserver la tranquillité des animaux et du voisinage. Chaque projet fait l'objet d'une visite technique préalable.</p>
@@ -73,7 +73,7 @@ const FAQ_TOURNAGE = {
       name: "Où se situe le lieu de tournage ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "À La Soukra, dans le gouvernorat de l'Ariana, à une vingtaine de minutes du centre de Tunis. Adresse : 64 avenue Fattouma Bourguiba.",
+        text: "À La Soukra, dans le gouvernorat de l'Ariana, à une vingtaine de minutes du centre de Tunis, au 64 avenue Fattouma Bourguiba.",
       },
     },
     {
@@ -81,7 +81,7 @@ const FAQ_TOURNAGE = {
       name: "Quels décors sont disponibles ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Plusieurs décors extérieurs — parmi eux un salon de jardin sous pergola avec four à pain en pierre, une piscine avec bar en brique et arcades, un jardin sous bougainvilliers autour d'un olivier centenaire, une pelouse dégagée bordée de palmiers — et un intérieur colonial sous voûte de brique, marbre et portes cintrées.",
+        text: "Plusieurs décors extérieurs, parmi lesquels un salon de jardin sous pergola avec four à pain en pierre, une piscine avec bar en brique et arcades, un jardin sous bougainvilliers autour d'un olivier centenaire et une pelouse dégagée bordée de palmiers. S'y ajoute un intérieur colonial sous voûte de brique, avec marbre et portes cintrées.",
       },
     },
     {
@@ -89,7 +89,7 @@ const FAQ_TOURNAGE = {
       name: "Des animaux peuvent-ils apparaître à l'image ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Oui. Des chevaux recueillis vivent sur le domaine et entrent naturellement dans le cadre : ils sont déjà chez eux.",
+        text: "Oui. Des chevaux recueillis vivent sur le domaine et entrent naturellement dans le cadre. Ils sont déjà chez eux.",
       },
     },
     {
@@ -105,7 +105,7 @@ const FAQ_TOURNAGE = {
       name: "Plusieurs tournages peuvent-ils avoir lieu en même temps ?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Le domaine est réservé à une seule production à la fois : vous êtes les seuls sur place.",
+        text: "Le domaine est réservé à une seule production à la fois. Vous êtes les seuls sur place.",
       },
     },
     {
@@ -127,9 +127,9 @@ const remplacements = [
   [/(<meta name="description" content=")[^"]*(")/, `$1${DESCRIPTION}$2`],
   [/(<link rel="canonical" href=")[^"]*(")/, `$1${URL_PAGE}$2`],
   [/(<meta property="og:url" content=")[^"]*(")/, `$1${URL_PAGE}$2`],
-  [/(<meta property="og:title" content=")[^"]*(")/, `$1Daughter of Gaïa — Lieu de tournage près de Tunis$2`],
+  [/(<meta property="og:title" content=")[^"]*(")/, `$1Daughter of Gaïa, lieu de tournage près de Tunis$2`],
   [/(<meta property="og:description" content=")[^"]*(")/, `$1${DESCRIPTION}$2`],
-  [/(<meta name="twitter:title" content=")[^"]*(")/, `$1Daughter of Gaïa — Lieu de tournage près de Tunis$2`],
+  [/(<meta name="twitter:title" content=")[^"]*(")/, `$1Daughter of Gaïa, lieu de tournage près de Tunis$2`],
   [/(<meta name="twitter:description" content=")[^"]*(")/, `$1${DESCRIPTION}$2`],
   [/<noscript>.*?<\/noscript>/s, `<noscript>${CONTENU}\n    </noscript>`],
 ];
