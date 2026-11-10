@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useLayoutEffect, useRef } from "react";
 import {
   ChevronLeft, ChevronRight, ChevronDown, ArrowRight, ArrowLeft, Mail, Phone, MapPin,
-  Users, Lock, LogOut, Loader2, Plus, Minus, Eye, EyeOff,
+  Users, Lock, LogOut, Loader2, Plus, Minus, Eye, EyeOff, CalendarDays,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════
@@ -10,25 +10,17 @@ import {
    ═══════════════════════════════════════════════════════════ */
 const P_CHEVAL_BAR = "/images/cheval-bar.jpg";
 const P_CHEVAUX_PIE = "/images/chevaux-pie.jpg";
-const P_JARDIN_SOIR = "/images/jardin-soir.jpg";
 const P_CHEVAUX_FENETRE = "/images/chevaux-fenetre.jpg";
 const P_CHEVAL_NB = "/images/cheval-noir-blanc.jpg";
 const P_SALLE = "/images/salle-lustre.jpg";
 const P_TERRASSE_VASQUE = "/images/terrasse-vasque.jpg";
 const P_TROIS_CHEVAUX = "/images/trois-chevaux.jpg";
+const P_ALLEE_PORTAIL = "/images/allee-portail.jpg";
+const P_SALON_JARDIN = "/images/salon-jardin.jpg";
+const P_CHEVAUX_ARBRES = "/images/chevaux-entre-arbres.jpg";
+const P_FENETRE_BOIS = "/images/fenetre-chevaux-bois.jpg";
+const P_TERRASSE_NUIT = "/images/terrasse-nuit.jpg";
 
-/* Vidéo d'ouverture : téléphone uniquement (elle est filmée à la
-   verticale). Boucle de 5 s sans son, fondu entre la fin et le début. */
-const VIDEO_OUVERTURE = "/videos/ouverture-jardin.mp4";
-const POSTER_OUVERTURE = "/videos/ouverture-jardin.jpg";
-/* Même séquence en image animée : relais quand l'iPhone bloque la vidéo. */
-const ANIM_OUVERTURE = "/videos/ouverture-jardin.avif";
-
-const IMAGES = {
-  lieu: P_JARDIN_SOIR,
-  histoire: P_CHEVAUX_PIE,
-  animaux: P_CHEVAL_NB,
-};
 
 const V_HERO = "/images/tournage-hero.jpg";
 const V_PERGOLA = "/images/pergola.jpg";
@@ -37,6 +29,12 @@ const V_JARDIN_V = "/images/jardin-bougainvilliers.jpg";
 const V_PALMIERS = "/images/palmiers.jpg";
 const V_SALON = "/images/salon.jpg";
 
+/* Declare apres les constantes V_ : une const n'est pas lisible avant sa
+   ligne, et IMAGES lisait V_PALMIERS. La page ne s'affichait plus. */
+const IMAGES = {
+  histoire: P_CHEVAUX_PIE,
+};
+
 const DECOR_IMG = [
   { src: V_PERGOLA,  pos: "center 55%" },
   { src: V_PISCINE,  pos: "center 45%" },
@@ -44,6 +42,19 @@ const DECOR_IMG = [
   { src: V_PALMIERS, pos: "center 50%" },
   { src: V_SALON,    pos: "center 45%" },
 ];
+
+/* ═══════════════════════════════════════════════════════════
+   ACCENTS DE TEXTE
+   Le sable reste le seul fond du site. Ces deux variantes des
+   couleurs de la charte existent pour le contraste, rien de plus.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Accents de texte. Le terracotta de marque (#B5654A) tombe à 3,38:1
+   sur le sable : illisible aux tailles de 9 et 10 pixels où il servait.
+   Ces deux variantes passent la norme et alternent d'une section à
+   l'autre, ce qui donne au passage sa couleur à la page. */
+const A_TERRE = "#97543E";
+const A_OLIVE = "#626A4E";
 
 const MOIS = {
   fr: ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"],
@@ -69,14 +80,14 @@ function pageDepuisChemin(chemin) {
    dans ses résultats et ce que montrent les aperçus de partage. */
 const META = {
   accueil: {
-    titre: "Lieu événementiel à Tunis — Daughter of Gaïa, La Soukra",
+    titre: "Daughter of Gaïa, lieu événementiel à Tunis près de La Marsa",
     description:
-      "Domaine privé de 4 000 m² à La Soukra, aux portes de Tunis. Privatisation complète jusqu'à 80 invités : séminaires, anniversaires, brunchs, tournages.",
+      "Domaine privé de 4 000 m² à La Soukra, tout près de La Marsa. Privatisation complète jusqu'à 100 invités, pour vos séminaires, anniversaires, brunchs et tournages.",
   },
   tournages: {
-    titre: "Lieu de tournage près de Tunis — Daughter of Gaïa, La Soukra",
+    titre: "Daughter of Gaïa, lieu de tournage à La Soukra près de Tunis",
     description:
-      "Décor de tournage à 20 minutes de Tunis : des décors extérieurs variés, une maison entièrement filmable, lumière naturelle toute la journée et des chevaux sur place.",
+      "Décor de tournage à 20 minutes de Tunis, avec des décors extérieurs variés, une maison entièrement filmable, une lumière naturelle toute la journée et des chevaux sur place.",
   },
 };
 
@@ -86,9 +97,11 @@ const META = {
    L'adresse figure déjà en clair dans le pied de page du site. */
 const ADRESSE_DEVIS = "contact@daughterofgaia.com";
 const RELAIS_DEVIS = `https://formsubmit.co/ajax/${ADRESSE_DEVIS}`;
+/* Champ du formulaire de devis -> identifiant de l'element et de son message */
+const ID_CHAMP = { date: "champ-date", name: "champ-nom", email: "champ-email", phone: "champ-tel", guests: "champ-invites", type: "champ-type" };
 
 /* Palette : sable #EDE4D3 · blanc cassé #F6F1E7 · encre #2B2118
-   olive #6B7355 · terracotta #B5654A · ligne #C7B79A */
+   olive #626A4E · terracotta #B5654A · ligne #C7B79A */
 
 const T = {
 fr: {
@@ -103,71 +116,81 @@ fr: {
   mission: { titre: "Bien plus qu'un lieu de réception. Un refuge vivant où chaque expérience contribue à une histoire plus grande.",
     texte: "Chaque réservation contribue directement au bien-être des animaux recueillis sur le domaine et au développement de Daughter of Gaïa." },
   valeurs: [
-    { t: "Une évasion aux portes de la ville", d: "L'impression d'être à des kilomètres de la ville. La réalité\u00a0? Vous êtes au début de la Soukra." },
+    { t: "Une évasion aux portes de la ville", d: "À l'entrée de La Soukra, à proximité immédiate de La Marsa, Daughter of Gaïa offre le sentiment d'être à des kilomètres de la ville, sans jamais s'en éloigner." },
     { t: "Respect du vivant", d: "Chaque décision est pensée dans le respect des animaux, de la nature et de l'équilibre du lieu." },
-    { t: "Des animaux sauvés", d: "Chaque cheval présent ici a été sauvé, recueilli ou réhabilité, faisant de Daughter of Gaïa un véritable lieu de vie avant d'être un lieu d'événements." },
-    { t: "Un domaine entièrement privatisé", d: "Chaque réservation vous offre l'exclusivité du domaine, pour vivre pleinement votre événement." },
+    { t: "Des animaux sauvés et accueillis", d: "Certains chevaux ont trouvé refuge à Daughter of Gaïa, d'autres y ont vu le jour. Tous y grandissent et évoluent dans un environnement où leur bien-être et leur tranquillité sont une priorité." },
+    { t: "Un domaine entièrement privatisable", d: "Chaque réservation vous offre l'exclusivité du domaine, pour vivre pleinement votre événement." },
   ],
   domaine: { eyebrow: "Le domaine", titre: "4 000 m² où la ville disparaît",
-    texte: "Des espaces pensés pour s'adapter naturellement à votre événement. Une terrasse tournée vers le jardin, un espace intérieur en matériaux naturels, une cuisine prête à recevoir.",
-    citation: "Et partout autour, une nature qui n'a jamais été dessinée pour impressionner, mais pour être vécue.",
-    alt: "Le jardin au soleil couchant, les chevaux au fond" },
+    texte: "Une propriété privée où la nature occupe toute sa place. Des espaces pensés pour recevoir, dans un environnement qui se prête aussi bien aux événements professionnels qu'aux célébrations privées.",
+    citation: "Un domaine où la nature et l'art de recevoir se rencontrent.",
+    alt: "Trois chevaux au repos devant la maison, à l'ombre d'un arbre" },
   espaces: [
-    { t: "Le domaine", v: "4 000 m²" }, { t: "Espace aménagé", v: "500 m²" },
-    { t: "Espace couvert", v: "120 m²" }, { t: "Capacité idéale", v: "80 invités" },
-    { t: "Parking privé", v: "40 voitures" }, { t: "Sauvés et réhabilités", v: "7 chevaux" },
+    { t: "Le domaine", v: "4 000 m²" }, { t: "Espace aménagé", v: "650 m²" },
+    { t: "Espace couvert", v: "135 m²" }, { t: "Capacité d'accueil", v: "100 invités" },
+    { t: "Parking privé", v: "40 voitures" }, { t: "Sauvés ou nés au\u00a0domaine", v: "7 chevaux" },
   ],
-  histoire: { eyebrow: "L'histoire", titre: "Avant d'être un lieu, une conviction.",
-    p0: "L'idée n'a jamais été de créer un simple lieu événementiel.",
-    p1: "Daughter of Gaïa est née d'une envie différente — imaginer un domaine où les événements s'intègrent au lieu, plutôt que l'inverse. Un endroit où la nature et les animaux ne deviennent jamais un décor, mais restent au cœur de chaque expérience.",
-    p2: "Le nom trouve son origine dans Gaïa, déesse de la Terre dans la mythologie grecque. Il rappelle une conviction simple. Le respect du vivant guide chacune de nos décisions.",
-    p3: "C'est pourquoi nous privilégions des événements qui s'intègrent naturellement au domaine, dans le respect de son environnement et du bien-être des animaux qui y vivent.",
-    p4: "Ici, chaque détail a été imaginé avec une même intention — offrir des moments d'exception sans jamais compromettre l'essentiel.",
+  espacesNote: "Au cœur d'un domaine privé de 4 000 m², Daughter of Gaïa dévoile 650 m² d'espaces extérieurs aménagés, prolongés par 135 m² couverts comprenant une terrasse ouverte de 70 m², un espace intérieur de 45 m² et une cuisine de 20 m². Un cadre où intérieur et extérieur se rencontrent naturellement, pour accueillir des événements dans une atmosphère singulière.",
+  histoire: { eyebrow: "L'histoire", titre: "Avant d'être un lieu,\nune conviction",
+    p0: "Daughter of Gaïa est né d'un attachement profond à la nature et aux animaux, et de l'envie de créer un lieu où les rencontres et les célébrations trouvent leur place dans cet environnement.",
+    p1: "Son nom s'inspire de Gaïa, déesse de la Terre dans la mythologie grecque, symbole de vie et de nature. Une philosophie qui guide chaque choix, du respect des animaux à la manière d'imaginer les événements.",
+    p2: "Certains animaux y ont trouvé refuge, d'autres y sont nés. Tous font partie de l'histoire du domaine et de ce qui le rend si particulier.",
+    p3: "Chaque espace a été imaginé avec cette même attention, pour accueillir des événements dans un cadre singulier tout en préservant l'équilibre et la tranquillité du lieu.",
     citation: "There are places you visit. And there are places you feel.",
     alt: "Deux chevaux pie qui broutent côte à côte" },
   experiences: { eyebrow: "Expériences", titre: "Ce que le domaine accueille", bientot: "bientôt",
     note: "Les événements en journée sont privilégiés, afin de préserver la tranquillité des animaux et du voisinage." },
   prestations: [
-    { t: "Lancements de produits & de marques", d: "Un écrin naturel qui met votre marque en valeur, loin des showrooms conventionnels." },
-    { t: "Événements d'entreprise", d: "Séminaires et journées d'équipe dans un cadre qui change le rythme des échanges." },
+    { t: "Lancements de produits & de marques", d: "Un écrin naturel qui met votre marque en valeur, avec le jardin pour scénographie." },
+    { t: "Événements corporate", d: "Séminaires, journées d'équipe et réceptions d'entreprise dans un cadre naturel et singulier, propice aux rencontres et aux échanges." },
     { t: "Anniversaires", d: "Une célébration privée, en petit comité, avec la nature pour décor." },
     { t: "Événements enfants", d: "Un grand terrain, de la verdure, et des animaux à observer respectueusement." },
     { t: "Baby showers", d: "Un moment doux et intimiste, au jardin ou sous la terrasse couverte." },
-    { t: "Brunchs privés", d: "Cuisine équipée et terrasse — tout est là pour recevoir sans contrainte." },
+    { t: "Brunchs privés", d: "Cuisine équipée et terrasse. Tout est là pour recevoir en toute liberté." },
     { t: "Table d'hôte", d: "Une longue table dressée pour un repas partagé au rythme du domaine, entourée d'animaux en liberté et du chant des oiseaux." },
-    { t: "Shootings photo & vidéo", d: "Lumière naturelle, décors variés, présence animale — un terrain de jeu pour les créatifs." },
+    { t: "Shootings photo & vidéo", d: "Lumière naturelle, décors variés, présence animale. Un terrain de jeu pour les créatifs." },
     { t: "Tournages de films", d: "Décors multiples en extérieur, une maison entièrement filmable, et de la lumière naturelle toute la journée." },
     { t: "Mariages intimistes", d: "Petits mariages et événements liés au mariage.", soon: true },
   ],
-  appel: { eyebrow: "Tournages & production", titre: "Un lieu à part, réservé aux tournages.",
-    texte: "Une maison entièrement filmable, des décors extérieurs variés, et des chevaux qui entrent naturellement dans le cadre.",
+  appel: { eyebrow: "Tournages & production", titre: "Une maison privée, réservée aux tournages.",
+    texte: "Elle s'ajoute au domaine et à ses chevaux pour accueillir les productions, avec ses intérieurs de caractère, sa piscine, ses jardins et sa pergola, entièrement filmables.",
     lien: "Découvrir la page tournages" },
-  bandeau: ["Respect du vivant", "Animaux sauvés", "Nature préservée", "Domaine privatisé", "Sur réservation"],
+  bandeau: ["Respect du vivant", "Animaux sauvés", "Nature préservée", "Domaine privatisable", "Sur réservation"],
   galerie: { eyebrow: "Galerie", titre: "Le domaine en images", faire: "Faites défiler",
-    legendes: ["Le jardin", "Ils sont chez eux", "La terrasse", "L'espace couvert", "À l'ombre, devant la maison"] },
-  refuge: { eyebrow: "Le refuge", titre: "Sauvés, réhabilités, et chez eux.",
-    p1: "Chaque cheval, chien ou autre animal présent ici a été sauvé, recueilli ou réhabilité. Ils ne sont ni une attraction, ni une animation. Ils évoluent dans leur environnement, à leur rythme, et leur bien-être passe avant l'événement.",
-    p2: "Sept chevaux ont été recueillis depuis l'ouverture. Quatre vivent ici aujourd'hui. Les trois autres sont repartis une fois remis sur pied, et c'était bien le but.",
-    liste: ["Aucune interaction imposée", "Observation à distance, dans le calme", "Niveaux sonores et horaires encadrés", "Zones de repos strictement préservées"],
-    alt: "Un cheval noir et blanc qui s'avance sous les arbres" },
-  dispo: { eyebrow: "Disponibilités", titre: "Choisissez une date", note: "Les dates barrées ne sont plus disponibles" },
+    legendes: ["Ils sont chez eux", "La terrasse", "L'espace couvert",
+      "Un cheval au bout de l'allée", "Le salon, face à la maison", "Ils broutent entre les arbres",
+      "Chevaux de bois à la fenêtre", "La terrasse, le soir"] },
+  refuge: { eyebrow: "Le refuge", titre: "Leur maison, avant tout.",
+    p1: "Daughter of Gaïa est aussi un refuge pour les chevaux, les chiens et les autres animaux qui y vivent. Certains ont été recueillis et soignés, d'autres y ont vu le jour. Chacun a son histoire et tous partagent aujourd'hui un environnement où leur bien-être est une priorité.",
+    p2: "Au fil du temps, plusieurs chevaux ont retrouvé un nouveau foyer après avoir été remis sur pied. D'autres continuent de vivre paisiblement sur le domaine, à leur propre rythme.",
+    principes: "Les événements s'organisent dans le respect de leur tranquillité, avec quelques principes essentiels.",
+    liste: ["Rencontres laissées à leur initiative", "Observation respectueuse, à distance", "Niveaux sonores et horaires encadrés", "Espaces de repos préservés"],
+    alt: "Un cheval alezan à la fenêtre de l'espace couvert" },
+  dispo: { eyebrow: "Disponibilités", titre: "Choisissez une date", note: "Les dates barrées sont déjà réservées" },
   devis: { eyebrow: "Demande de devis", titre: "Parlez-nous de votre projet",
     texte: "Chaque événement est étudié individuellement. Décrivez-nous ce que vous imaginez, nous revenons vers vous avec une proposition adaptée.",
-    date: "Date souhaitée", datePh: "Sélectionnez une date dans le calendrier", nom: "Nom", email: "Email",
-    tel: "Téléphone", invites: "Invités", type: "Type d'expérience", autre: "Autre", projet: "Votre projet",
+    date: "Date souhaitée", datePh: "Sélectionnez une date dans le calendrier",
+    dateModifier: "modifier la date", nom: "Nom", email: "Email",
+    tel: "Téléphone", invites: "Invités", type: "Type d'expérience", typePh: "Choisissez une expérience", autre: "Autre",
+    manque: { date: "Merci de choisir une date dans le calendrier.", nom: "Merci d'indiquer votre nom.",
+      email: "Merci d'indiquer votre adresse e-mail.", emailFormat: "Cette adresse e-mail semble incomplète.",
+      tel: "Merci d'indiquer votre numéro de téléphone.", telFormat: "Ce numéro semble incomplet.",
+      invites: "Merci d'indiquer le nombre d'invités.", type: "Merci de choisir un type d'expérience." },
+    manqueResume: "Il manque quelques informations pour envoyer votre demande.", projet: "Votre projet",
     projetPh: "Horaires envisagés, ambiance recherchée, besoins particuliers…", envoyer: "Envoyer ma demande",
     envoiEnCours: "Envoi en cours…",
-    erreur: "L'envoi n'a pas abouti. Réessayez, ou écrivez-nous directement à",
+    erreur: "L'envoi a rencontré un incident. Réessayez, ou écrivez-nous directement à",
     merci: "Merci.", confirm1: "Votre demande a bien été transmise", confirm2: "pour le",
     confirm3: "Nous revenons vers vous rapidement avec une proposition personnalisée." },
   faqT: { eyebrow: "Questions fréquentes", titre: "Bon à savoir" },
   faq: [
-    { q: "Le lieu est-il ouvert au public\u00a0?", r: "Non. Daughter of Gaïa accueille uniquement des événements privés, sur réservation. Chaque réservation privatise entièrement le domaine, et vous êtes les seuls sur place." },
-    { q: "Peut-on approcher les animaux\u00a0?", r: "Les animaux vivent chez eux et ne sont pas une attraction. Ils sont observables à distance, dans le respect de leur tranquillité. Aucune interaction n'est organisée." },
+    { q: "Le lieu est-il ouvert au public\u00a0?", r: "Daughter of Gaïa accueille uniquement des événements privés, sur réservation. Chaque réservation privatise entièrement le domaine, et vous êtes les seuls sur place." },
+    { q: "Peut-on approcher les animaux\u00a0?", r: "Les animaux vivent chez eux. On les observe à distance, dans le respect de leur tranquillité, et la rencontre reste à leur initiative." },
     { q: "Pourquoi privilégier les événements en journée\u00a0?", r: "Pour préserver le calme des animaux et le repos du voisinage. Les formats en journée sont donc favorisés." },
-    { q: "Combien de personnes le lieu peut-il accueillir\u00a0?", r: "Jusqu'à 80 invités, avec un parking de 40 places à l'entrée. Le nombre idéal dépend du format de votre événement et des espaces mobilisés — décrivez-nous votre projet, nous vous conseillerons." },
-    { q: "La cuisine est-elle utilisable\u00a0?", r: "Oui, l'ensemble couvert dispose d'une cuisine entièrement équipée. Vous pouvez recevoir votre traiteur ou cuisiner sur place." },
-    { q: "La maison fait-elle partie du lieu de réception ?", r: "Non. La maison et ses décors sont réservés aux tournages et aux prises de vue, et ne sont pas proposés pour les événements privés. Ces derniers se tiennent dans les espaces du domaine — jardin, terrasse et espace couvert." },
+    { q: "Combien de personnes le lieu peut-il accueillir\u00a0?", r: "Jusqu'à 100 invités, avec un parking de 40 places à l'entrée. Ces 100 personnes se répartissent entre les 650 m² aménagés, la terrasse couverte de 70 m² et la salle de 45 m². Le domaine est un lieu de plein air, conçu pour des réceptions qui se vivent dehors, à l'abri quand il le faut. Décrivez-nous votre format, nous vous dirons ce qu'il permet." },
+    { q: "Quelle est la surface des espaces couverts\u00a0?", r: "135 m² au total, avec 70 m² de terrasse couverte ouverte sur l'extérieur, une salle de 45 m² et une cuisine de 20 m². Autour, 650 m² aménagés, et tout le reste des 4 000 m² en plein air." },
+    { q: "La cuisine est-elle utilisable\u00a0?", r: "Oui. Une cuisine de 20 m², entièrement équipée, fait partie de l'ensemble couvert. Vous pouvez y recevoir votre traiteur ou cuisiner sur place." },
+    { q: "La maison fait-elle partie du lieu de réception ?", r: "La maison et ses décors sont réservés aux tournages et aux prises de vue. Les événements privés se tiennent dans le jardin, la terrasse et l'espace couvert du domaine." },
     { q: "Comment obtenir un devis\u00a0?", r: "Choisissez une date dans le calendrier, décrivez votre projet, et nous revenons vers vous avec une proposition adaptée." },
   ],
   contact: { sur: "Private Experiences \u00a0•\u00a0 By Reservation",
@@ -175,15 +198,15 @@ fr: {
   tournages: {
     sur: "Daughter of Gaïa \u00a0•\u00a0 Production",
     titre: "Un lieu à part, réservé aux tournages.",
-    accroche: "Villa coloniale, piscine, jardins, pergola et chevaux en liberté — plusieurs décors à quelques minutes de Tunis, distincts des espaces de réception.",
+    accroche: "Villa coloniale, piscine, jardins, pergola et chevaux en liberté. Plusieurs décors à quelques minutes de Tunis, distincts des espaces de réception.",
     btn: "Voir les décors",
     nav: { decors: "Les décors", maison: "La maison", pratique: "En pratique", domaine: "Le domaine", contact: "Contact" },
-    introT: "Plusieurs univers sur un seul site, sans un mètre de décor à monter.",
-    intro: "Une villa coloniale à voûtes de brique, une piscine bordée d'arcades en pierre, une pergola ouverte sur le jardin, des palmiers, des bougainvilliers — et des chevaux qui vivent là et entrent naturellement dans le cadre. Un vocabulaire assez large pour jouer l'Andalousie, le Maghreb ou le Levant.",
+    introT: "Plusieurs univers sur un seul site, décors déjà en place.",
+    intro: "Une villa coloniale à voûtes de brique, une piscine bordée d'arcades en pierre, une pergola ouverte sur le jardin, des palmiers, des bougainvilliers, et des chevaux qui vivent là et entrent naturellement dans le cadre. Un vocabulaire assez large pour jouer l'Andalousie, le Maghreb ou le Levant.",
     decorsE: "Repérage", decorsT: "Du jardin au séjour",
     maisonE: "La maison", maisonT: "Un décor à part entière, et une base pour vos équipes",
-    maison1: "La maison est réservée aux productions : elle ne figure pas parmi les espaces proposés pour les événements privés. Elle se filme autant qu'elle s'utilise — séjour sous voûte de brique posée à chevrons, sol en marbre, lustre en cristal, portes cintrées ouvrant sur le jardin. Un intérieur colonial complet, disponible pour vos plans comme pour vos besoins techniques.",
-    maison2: "Elle accueille aussi vos loges, le maquillage, la régie, les repas d'équipe et le stockage du matériel, dans un espace couvert, climatisé et fermé, à quelques pas des décors extérieurs. Sans hébergement toutefois, les nuitées ne sont pas proposées sur le domaine.",
+    maison1: "La maison est réservée aux productions et aux prises de vue. Elle se filme autant qu'elle s'utilise. Séjour sous voûte de brique posée à chevrons, sol en marbre, lustre en cristal, portes cintrées ouvrant sur le jardin. Un intérieur colonial complet, disponible pour vos plans comme pour vos besoins techniques.",
+    maison2: "Elle accueille aussi vos loges, le maquillage, la régie, les repas d'équipe et le stockage du matériel, dans un espace couvert, climatisé et fermé, à quelques pas des décors extérieurs. Les tournages se déroulent en journée ; les nuitées se passent hors du domaine.",
     pratiqueE: "En pratique", pratiqueT: "Ce que le domaine vous apporte",
     pratiqueN: "Les tournages se déroulent en journée, afin de préserver la tranquillité des animaux et du voisinage. Chaque projet fait l'objet d'une visite technique préalable.",
     contactE: "Contact production", contactT: "Parlons de votre tournage.",
@@ -191,30 +214,31 @@ fr: {
     retour: "Retour au domaine",
   },
   decors: [
-    { n: "01", t: "Le salon de jardin sous la pergola", d: "Canapés en teck, four à pain en pierre, bougainvilliers en fleur — et des chevaux qui broutent à quelques mètres, dans le même plan. Aucun figurant animalier à faire venir." },
+    { n: "01", t: "Le salon de jardin sous la pergola", d: "Canapés en teck, four à pain en pierre, bougainvilliers en fleur, et des chevaux qui broutent à quelques mètres, dans le même plan. Les figurants à quatre pattes sont déjà sur place." },
     { n: "02", t: "La piscine et le bar extérieur", d: "Arcades en pierre, bar en brique, bassin turquoise. Plein sud, lumière franche du matin jusqu'en fin d'après-midi." },
     { n: "03", t: "Le jardin sous les bougainvilliers", d: "Un olivier centenaire, un mur de fleurs, des banquettes à l'ombre. Un décor plus intime, pour les plans rapprochés." },
     { n: "04", t: "La pelouse et les palmiers", d: "Un grand espace dégagé, praticable pour les travellings et l'installation du matériel, avec des ombres portées toute la journée." },
-    { n: "05", t: "Le salon sous voûte de brique", d: "Plafond en brique posée à chevrons, lustre en cristal, sol en marbre, portes cintrées ouvrant sur la piscine. Un intérieur colonial que l'on ne reconstitue pas en studio." },
+    { n: "05", t: "Le salon sous voûte de brique", d: "Plafond en brique posée à chevrons, lustre en cristal, sol en marbre, portes cintrées ouvrant sur la piscine. Un intérieur colonial d'époque, prêt à filmer." },
   ],
   atouts: [
-    { t: "Lumière naturelle", d: "Orientation dégagée, sans vis-à-vis. Le soleil traverse le domaine du matin au soir." },
-    { t: "Intérieur et extérieur", d: "Villa coloniale, jardin, piscine, pré et écuries — plusieurs univers sur un seul site." },
-    { t: "Chevaux sur place", d: "Des chevaux qui vivent sur le domaine, visibles à l'image sans transport ni prestataire extérieur." },
+    { t: "Lumière naturelle", d: "Orientation dégagée, horizon libre. Le soleil traverse le domaine du matin au soir." },
+    { t: "Intérieur et extérieur", d: "Villa coloniale, jardin, piscine, pré et écuries. Plusieurs univers sur un seul site." },
+    { t: "Chevaux sur place", d: "Des chevaux qui vivent sur le domaine, disponibles à l'image, déjà chez eux." },
     { t: "Accès", d: "À quelques minutes du centre de Tunis, à La Soukra." },
-    { t: "Maison filmable", d: "Voûtes de brique, marbre et arcades — un décor intérieur complet, doublé d'une base technique." },
-    { t: "Privatisation totale", d: "Le domaine est réservé à une seule production à la fois. Aucun autre événement en parallèle." },
+    { t: "Maison filmable", d: "Voûtes de brique, marbre et arcades. Un décor intérieur complet, doublé d'une base technique." },
+    { t: "Privatisation totale", d: "Le domaine est réservé à une seule production à la fois. Le site entier est à vous." },
   ],
   admin: { titre: "Daughter of Gaïa · Administration", quitter: "Quitter", acces: "Accès réservé",
     code: "Entrez votre code", codePh: "Code d'accès", erreur: "Code incorrect.", ouvrir: "Ouvrir",
     dispo: "Disponibilités", bloquer: "Bloquer ou libérer une date",
     aide: "Cliquez sur une date pour la rendre indisponible. Cliquez à nouveau pour la libérer.",
-    enreg: "enregistrement…", bloquees: "Dates bloquées", aucune: "Aucune date bloquée.",
+    enreg: "enregistrement…", bloquees: "Dates bloquées", aucune: "Toutes les dates sont ouvertes.",
     afficher: "Afficher le code", masquer: "Masquer le code",
     verification: "Vérification…",
     erreurServeur: "Connexion au serveur impossible. Réessayez dans un instant.",
-    erreurEnreg: "La date n'a pas pu être enregistrée. Vérifiez votre connexion et réessayez.",
-    baseAbsente: "La base de données n'est pas encore configurée sur le serveur." },
+    erreurEnreg: "L'enregistrement a rencontré un incident. Vérifiez votre connexion et réessayez.",
+    baseAbsente: "La base de données reste à configurer sur le serveur.",
+    tropDeTentatives: "Trop de tentatives. Par sécurité, l'accès est suspendu pendant {min} min." },
 },
 en: {
   hero: { sur: "Private Experiences \u00a0•\u00a0 By Reservation",
@@ -228,71 +252,81 @@ en: {
   mission: { titre: "Far more than a venue. A living sanctuary where every experience contributes to a larger story.",
     texte: "Every booking directly supports the wellbeing of the animals taken in on the estate, and the growth of Daughter of Gaïa." },
   valeurs: [
-    { t: "An escape at the city's edge", d: "It feels like you are miles from the city. In truth? You are at the entrance of La Soukra." },
+    { t: "An escape at the city's edge", d: "At the entrance to La Soukra, right by La Marsa, Daughter of Gaïa gives the feeling of being miles from the city, without ever leaving it." },
     { t: "Respect for the living", d: "Every decision is made with the animals, the land and the balance of the place in mind." },
-    { t: "Rescued animals", d: "Every horse here was rescued, taken in or rehabilitated, making Daughter of Gaïa a true home before it is a venue." },
-    { t: "An entirely private estate", d: "Each booking gives you exclusive use of the estate, so you can live your event to the full." },
+    { t: "Animals rescued and welcomed", d: "Some horses found refuge at Daughter of Gaïa, others were born here. All of them grow up and live in surroundings where their wellbeing and their peace come first." },
+    { t: "An estate for exclusive hire", d: "Each booking gives you exclusive use of the estate, so you can live your event to the full." },
   ],
   domaine: { eyebrow: "The estate", titre: "4,000 m² where the city disappears",
-    texte: "Spaces designed to adapt naturally to your event. A terrace facing the garden, an interior in natural materials, a kitchen ready to receive.",
-    citation: "And all around, a landscape that was never designed to impress, but to be lived in.",
-    alt: "The garden at sunset, horses in the background" },
+    texte: "A private estate where nature has all the room it needs. Spaces designed for hosting, in a setting suited as much to professional events as to private celebrations.",
+    citation: "An estate where nature and the art of hosting meet.",
+    alt: "Three horses at rest in front of the house, in the shade of a tree" },
   espaces: [
-    { t: "The estate", v: "4 000 m²" }, { t: "Landscaped area", v: "500 m²" },
-    { t: "Covered space", v: "120 m²" }, { t: "Ideal capacity", v: "80 guests" },
-    { t: "Private parking", v: "40 cars" }, { t: "Rescued and rehabilitated", v: "7 horses" },
+    { t: "The estate", v: "4 000 m²" }, { t: "Landscaped area", v: "650 m²" },
+    { t: "Covered space", v: "135 m²" }, { t: "Guest capacity", v: "100 guests" },
+    { t: "Private parking", v: "40 cars" }, { t: "Rescued or born on the\u00a0estate", v: "7 horses" },
   ],
-  histoire: { eyebrow: "The story", titre: "Before it was a place, it was a conviction.",
-    p0: "The idea was never to create just another event venue.",
-    p1: "Daughter of Gaïa was born of a different ambition — to imagine an estate where events fit into the place, rather than the other way round. Somewhere nature and animals never become scenery, but stay at the heart of every experience.",
-    p2: "The name comes from Gaia, goddess of the Earth in Greek mythology. It stands for a simple conviction. Respect for the living guides every decision we make.",
-    p3: "That is why we favour events that fit naturally into the estate, with respect for its environment and for the wellbeing of the animals who live here.",
-    p4: "Here, every detail was imagined with a single intention — to offer exceptional moments without ever compromising what matters.",
+  espacesNote: "At the heart of a 4,000 m² private estate, Daughter of Gaïa opens onto 650 m² of landscaped outdoor space, extended by 135 m² under cover, with a 70 m² open terrace, a 45 m² indoor room and a 20 m² kitchen. A setting where inside and outside meet naturally, to host events in an atmosphere of their own.",
+  histoire: { eyebrow: "The story", titre: "Before it was a place,\nit was a conviction",
+    p0: "Daughter of Gaïa was born of a deep attachment to nature and animals, and of the wish to create a place where gatherings and celebrations find their place within this setting.",
+    p1: "Its name is inspired by Gaia, goddess of the Earth in Greek mythology, a symbol of life and nature. A philosophy that guides every choice, from respect for the animals to the way events are imagined.",
+    p2: "Some animals found refuge here, others were born here. All of them are part of the estate's story and of what makes it so special.",
+    p3: "Every space was designed with the same care, to host events in a distinctive setting while preserving the balance and tranquillity of the place.",
     citation: "There are places you visit. And there are places you feel.",
     alt: "Two piebald horses grazing side by side" },
   experiences: { eyebrow: "Experiences", titre: "What the estate hosts", bientot: "soon",
     note: "Daytime events are favoured, to preserve the peace of the animals and of the neighbourhood." },
   prestations: [
-    { t: "Product & brand launches", d: "A natural setting that puts your brand forward, far from conventional showrooms." },
-    { t: "Corporate events", d: "Seminars and team days in a setting that changes the rhythm of a conversation." },
+    { t: "Product & brand launches", d: "A natural setting that puts your brand forward, with the garden as its stage." },
+    { t: "Corporate events", d: "Seminars, team days and corporate receptions in a natural, distinctive setting, ideal for meeting and exchanging ideas." },
     { t: "Birthdays", d: "A private celebration, in small numbers, with nature as the backdrop." },
     { t: "Children's events", d: "Open ground, greenery, and animals to observe respectfully." },
     { t: "Baby showers", d: "A gentle, intimate moment, in the garden or under the covered terrace." },
-    { t: "Private brunches", d: "Fitted kitchen and terrace — everything is here to receive without constraint." },
+    { t: "Private brunches", d: "Fitted kitchen and terrace. Everything is here to host with ease." },
     { t: "Table d'hôte", d: "One long table set for a shared meal at the estate's own pace, surrounded by free-roaming animals and birdsong." },
-    { t: "Photo & video shoots", d: "Natural light, varied settings, animals on site — a playground for creatives." },
+    { t: "Photo & video shoots", d: "Natural light, varied settings, animals on site. A playground for creatives." },
     { t: "Film shoots", d: "Multiple outdoor locations, a house you can film throughout, and natural light all day long." },
     { t: "Intimate weddings", d: "Small weddings and wedding-related events.", soon: true },
   ],
-  appel: { eyebrow: "Filming & production", titre: "A place apart, reserved for filming.",
-    texte: "A house you can film throughout, varied outdoor locations, and horses that walk naturally into frame.",
+  appel: { eyebrow: "Filming & production", titre: "A private house, reserved for filming.",
+    texte: "It joins the estate and its horses to welcome productions, with characterful interiors, a pool, gardens and a pergola, all ready to film.",
     lien: "See the filming page" },
-  bandeau: ["Respect for the living", "Rescued animals", "Protected nature", "Private estate", "By reservation"],
+  bandeau: ["Respect for the living", "Rescued animals", "Protected nature", "Exclusive hire", "By reservation"],
   galerie: { eyebrow: "Gallery", titre: "The estate in pictures", faire: "Scroll across",
-    legendes: ["The garden", "They live here", "The terrace", "The covered space", "In the shade, by the house"] },
-  refuge: { eyebrow: "The sanctuary", titre: "Rescued, rehabilitated, and home.",
-    p1: "Every horse, dog or other animal here was rescued, taken in or rehabilitated. They are neither an attraction nor an act. They move through their own environment, at their own pace, and their wellbeing comes before the event.",
-    p2: "Seven horses have been taken in since we opened. Four live here today. The other three left once they were back on their feet, which was the whole point.",
-    liste: ["No forced interaction", "Observation from a distance, in quiet", "Sound levels and hours kept in check", "Resting areas strictly preserved"],
-    alt: "A black-and-white horse walking out from under the trees" },
-  dispo: { eyebrow: "Availability", titre: "Choose a date", note: "Crossed-out dates are no longer available" },
+    legendes: ["They live here", "The terrace", "The covered space",
+      "A horse at the end of the path", "The lounge, facing the house", "Grazing between the trees",
+      "Wooden horses in the window", "The terrace at night"] },
+  refuge: { eyebrow: "The sanctuary", titre: "Their home, above all.",
+    p1: "Daughter of Gaïa is also a sanctuary for the horses, dogs and other animals that live here. Some were taken in and cared for, others were born here. Each has its own story, and all of them now share surroundings where their wellbeing comes first.",
+    p2: "Over time, several horses have found a new home once back on their feet. Others continue to live peacefully on the estate, at their own pace.",
+    principes: "Events are organised with respect for their peace, following a few essential principles.",
+    liste: ["Encounters left to their initiative", "Respectful observation, from a distance", "Sound levels and hours kept in check", "Resting areas preserved"],
+    alt: "A chestnut horse at the window of the covered space" },
+  dispo: { eyebrow: "Availability", titre: "Choose a date", note: "Crossed-out dates are already booked" },
   devis: { eyebrow: "Request a quote", titre: "Tell us about your project",
     texte: "Every event is considered individually. Describe what you have in mind and we will come back to you with a tailored proposal.",
-    date: "Preferred date", datePh: "Select a date in the calendar", nom: "Name", email: "Email",
-    tel: "Phone", invites: "Guests", type: "Type of experience", autre: "Other", projet: "Your project",
+    date: "Preferred date", datePh: "Select a date in the calendar",
+    dateModifier: "change the date", nom: "Name", email: "Email",
+    tel: "Phone", invites: "Guests", type: "Type of experience", typePh: "Choose an experience", autre: "Other",
+    manque: { date: "Please choose a date in the calendar.", nom: "Please enter your name.",
+      email: "Please enter your email address.", emailFormat: "This email address looks incomplete.",
+      tel: "Please enter your phone number.", telFormat: "This number looks incomplete.",
+      invites: "Please enter the number of guests.", type: "Please choose a type of experience." },
+    manqueResume: "A few details are missing to send your request.", projet: "Your project",
     projetPh: "Timings, atmosphere, particular requirements…", envoyer: "Send my request",
     envoiEnCours: "Sending…",
-    erreur: "The message could not be sent. Please try again, or write to us directly at",
+    erreur: "Something interrupted the sending. Please try again, or write to us directly at",
     merci: "Thank you.", confirm1: "Your request has been sent", confirm2: "for",
     confirm3: "We will come back to you shortly with a personalised proposal." },
   faqT: { eyebrow: "Frequently asked", titre: "Good to know" },
   faq: [
-    { q: "Is the estate open to the public?", r: "No. Daughter of Gaïa hosts private events by reservation only. Each booking privatises the entire estate, and you are the only ones on site." },
-    { q: "Can we approach the animals?", r: "The animals are at home here and are not an attraction. They can be observed from a distance, with respect for their quiet. No interaction is arranged." },
+    { q: "Is the estate open to the public?", r: "Daughter of Gaïa hosts private events by reservation only. Each booking privatises the entire estate, and you are the only ones on site." },
+    { q: "Can we approach the animals?", r: "The animals are at home here. They are observed from a distance, with respect for their quiet, and any encounter is left to their initiative." },
     { q: "Why favour daytime events?", r: "To preserve the calm of the animals and the rest of the neighbourhood. Daytime formats are therefore preferred." },
-    { q: "How many people can the estate host?", r: "Up to 80 guests, with 40 parking spaces at the entrance. The ideal number depends on your format and the spaces used — describe your project and we will advise you." },
-    { q: "Can we use the kitchen?", r: "Yes, the covered space has a fully fitted kitchen. You are welcome to bring your caterer or cook on site." },
-    { q: "Is the house part of the event venue?", r: "No. The house and its locations are reserved for filming and photo shoots, and are not offered for private events. Those take place in the estate's own spaces — garden, terrace and covered area." },
+    { q: "How many people can the estate host?", r: "Up to 100 guests, with 40 parking spaces at the entrance. Those 100 people spread across the 650 m² laid out for events, the 70 m² covered terrace and the 45 m² room. This is an open-air estate, built for receptions that happen outdoors, with shelter when it is needed. Tell us your format and we will tell you what it allows." },
+    { q: "How big are the covered spaces?", r: "135 m² in all, with a 70 m² covered terrace open to the outside, a 45 m² room and a 20 m² kitchen. Around them, 650 m² laid out for events, and all the rest of the 4,000 m² in the open air." },
+    { q: "Can we use the kitchen?", r: "Yes. A fully fitted kitchen of 20 m² is part of the covered space. You are welcome to bring your caterer or cook on site." },
+    { q: "Is the house part of the event venue?", r: "The house and its locations are reserved for filming and photo shoots. Private events take place in the estate's garden, terrace and covered area." },
     { q: "How do I get a quote?", r: "Choose a date in the calendar, describe your project, and we will come back to you with a tailored proposal." },
   ],
   contact: { sur: "Private Experiences \u00a0•\u00a0 By Reservation",
@@ -300,15 +334,15 @@ en: {
   tournages: {
     sur: "Daughter of Gaïa \u00a0•\u00a0 Production",
     titre: "A place apart, reserved for filming.",
-    accroche: "Colonial villa, pool, gardens, pergola and free-roaming horses — several locations minutes from Tunis, separate from the event spaces.",
+    accroche: "Colonial villa, pool, gardens, pergola and free-roaming horses. Several locations minutes from Tunis, separate from the event spaces.",
     btn: "See the locations",
     nav: { decors: "Locations", maison: "The house", pratique: "Practical", domaine: "The estate", contact: "Contact" },
-    introT: "Several worlds on a single site, without a metre of set to build.",
-    intro: "A colonial villa with brick vaulting, a pool framed by stone arcades, a pergola opening onto the garden, palms, bougainvillea — and horses that live here and walk naturally into frame. A vocabulary broad enough to play Andalusia, the Maghreb or the Levant.",
+    introT: "Several worlds on a single site, every set already standing.",
+    intro: "A colonial villa with brick vaulting, a pool framed by stone arcades, a pergola opening onto the garden, palms, bougainvillea, and horses that live here and walk naturally into frame. A vocabulary broad enough to play Andalusia, the Maghreb or the Levant.",
     decorsE: "Location scout", decorsT: "From the garden to the drawing room",
     maisonE: "The house", maisonT: "A location in its own right, and a base for your crew",
-    maison1: "The house is reserved for productions: it is not among the spaces offered for private events. It is as much to film as to use — a living room under herringbone brick vaulting, marble floors, a crystal chandelier, arched doors opening onto the garden. A complete colonial interior, available for your shots as much as for your technical needs.",
-    maison2: "It also takes your dressing rooms, make-up, production office, crew meals and equipment storage, in a covered, air-conditioned and secure space a few steps from the outdoor locations. No accommodation however, overnight stays are not offered on the estate.",
+    maison1: "The house is reserved for productions and photo shoots. It is as much to film as to use. A living room under herringbone brick vaulting, marble floors, a crystal chandelier, arched doors opening onto the garden. A complete colonial interior, available for your shots as much as for your technical needs.",
+    maison2: "It also takes your dressing rooms, make-up, production office, crew meals and equipment storage, in a covered, air-conditioned and secure space a few steps from the outdoor locations. Shoots run by day; nights are spent off the estate.",
     pratiqueE: "Practical", pratiqueT: "What the estate gives you",
     pratiqueN: "Shoots take place during the day, to preserve the peace of the animals and of the neighbourhood. Every project begins with a technical visit.",
     contactE: "Production contact", contactT: "Let's talk about your shoot.",
@@ -316,30 +350,31 @@ en: {
     retour: "Back to the estate",
   },
   decors: [
-    { n: "01", t: "The garden lounge under the pergola", d: "Teak sofas, a stone bread oven, bougainvillea in flower — and horses grazing a few metres away, in the same shot. No animal wrangler to bring in." },
+    { n: "01", t: "The garden lounge under the pergola", d: "Teak sofas, a stone bread oven, bougainvillea in flower, and horses grazing a few metres away, in the same shot. The four-legged extras already live here." },
     { n: "02", t: "The pool and outdoor bar", d: "Stone arcades, a brick bar, a turquoise basin. Due south, with clean light from morning until late afternoon." },
     { n: "03", t: "The garden under the bougainvillea", d: "A century-old olive tree, a wall of flowers, benches in the shade. A more intimate setting, for close shots." },
     { n: "04", t: "The lawn and the palms", d: "A large open area, workable for dolly shots and equipment set-up, with cast shadows throughout the day." },
-    { n: "05", t: "The drawing room under brick vaulting", d: "Herringbone brick ceiling, crystal chandelier, marble floor, arched doors opening onto the pool. A colonial interior you do not rebuild in a studio." },
+    { n: "05", t: "The drawing room under brick vaulting", d: "Herringbone brick ceiling, crystal chandelier, marble floor, arched doors opening onto the pool. A period colonial interior, ready to shoot." },
   ],
   atouts: [
-    { t: "Natural light", d: "Open orientation, nothing overlooking. The sun crosses the estate from morning to evening." },
-    { t: "Indoors and out", d: "Colonial villa, garden, pool, paddock and stables — several worlds on a single site." },
-    { t: "Horses on site", d: "Horses that live on the estate, available on camera without transport or an outside supplier." },
+    { t: "Natural light", d: "Open orientation, clear horizon. The sun crosses the estate from morning to evening." },
+    { t: "Indoors and out", d: "Colonial villa, garden, pool, paddock and stables. Several worlds on a single site." },
+    { t: "Horses on site", d: "Horses that live on the estate, ready for camera, already at home." },
     { t: "Access", d: "Minutes from central Tunis, in La Soukra." },
-    { t: "A house you can film", d: "Brick vaulting, marble and arcades — a complete interior location, doubling as a technical base." },
-    { t: "Full privatisation", d: "The estate is reserved for one production at a time. No other event running alongside." },
+    { t: "A house you can film", d: "Brick vaulting, marble and arcades. A complete interior location, doubling as a technical base." },
+    { t: "Full privatisation", d: "The estate is reserved for one production at a time. The whole site is yours." },
   ],
   admin: { titre: "Daughter of Gaïa · Administration", quitter: "Exit", acces: "Restricted access",
     code: "Enter your code", codePh: "Access code", erreur: "Incorrect code.", ouvrir: "Open",
     dispo: "Availability", bloquer: "Block or release a date",
     aide: "Click a date to make it unavailable. Click again to release it.",
-    enreg: "saving…", bloquees: "Blocked dates", aucune: "No blocked dates.",
+    enreg: "saving…", bloquees: "Blocked dates", aucune: "Every date is open.",
     afficher: "Show code", masquer: "Hide code",
     verification: "Checking…",
     erreurServeur: "Could not reach the server. Please try again shortly.",
-    erreurEnreg: "The date could not be saved. Check your connection and try again.",
-    baseAbsente: "The database is not configured on the server yet." },
+    erreurEnreg: "Something interrupted the save. Check your connection and try again.",
+    baseAbsente: "The database still needs to be configured on the server.",
+    tropDeTentatives: "Too many attempts. For security, access is suspended for {min} min." },
 },
 };
 
@@ -468,7 +503,7 @@ function MenuMobile({ ouvert, fermer, t, lang, setLang, entrees = [], masqueDes 
               className="mono text-xs uppercase tracking-[0.2em] px-5 h-11 rounded-full transition-colors duration-500"
               style={{ border: "1px solid #C7B79A",
                        background: lang === l ? "#2B2118" : "transparent",
-                       color: lang === l ? "#F6F1E7" : "#6B7355" }}>
+                       color: lang === l ? "#F6F1E7" : "#626A4E" }}>
               {l}
             </button>
           ))}
@@ -488,7 +523,7 @@ function Rideau() {
   }, []);
   if (phase === 2) return null;
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none"
+    <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none" aria-hidden="true"
       style={{ background: "#1a130c", clipPath: phase >= 1 ? "inset(0 0 100% 0)" : "inset(0 0 0 0)",
                transition: "clip-path 1.4s cubic-bezier(.76,0,.24,1)" }}>
       <div style={{ opacity: phase >= 1 ? 0 : 1, transition: "opacity .7s ease" }} className="text-center">
@@ -535,96 +570,42 @@ function LumiereFiltree() {
 /* Photos qui se succèdent en fondu, avec zoom lent */
 function Diaporama({ images, interval = 6500, overlay }) {
   const [i, setI] = useState(0);
+
+  /* Les photos n'entrent dans la page qu'une fois leur tour approchant.
+     Toutes présentes dès le départ, elles se téléchargeaient ensemble —
+     trois pleines pages d'images pour une seule visible. loading="lazy"
+     n'y changeait rien : superposées en plein écran, elles sont toutes
+     « dans la fenêtre » aux yeux du navigateur. */
+  const [chargees, setChargees] = useState(() => new Set([0]));
   useEffect(() => {
     const t = setInterval(() => setI((v) => (v + 1) % images.length), interval);
     return () => clearInterval(t);
   }, [images.length, interval]);
+
+  /* La suivante est demandée une seconde et demie après l'arrivée de la
+     courante : le premier écran reste léger, et la photo est prête bien
+     avant le fondu. */
+  useEffect(() => {
+    const suivante = (i + 1) % images.length;
+    const t = setTimeout(() => setChargees((vues) => (vues.has(suivante) ? vues : new Set([...vues, suivante]))), 1500);
+    return () => clearTimeout(t);
+  }, [i, images.length]);
+
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {images.map((im, k) => (
-        <img key={k} src={im.src} alt={im.alt} className="absolute inset-0 w-full h-full object-cover"
+      {images.map((im, k) => (!chargees.has(k) ? null : (
+        <img key={k} src={im.src} alt={im.alt} decoding="async" className="absolute inset-0 w-full h-full object-cover"
           style={{
             objectPosition: im.pos || "center",
             opacity: k === i ? 1 : 0,
-            transform: k === i ? "scale(1.14)" : "scale(1.02)",
+            /* La photo active revient a sa taille reelle : agrandie de 14 %,
+               elle rognait le bar sur les cotes. Le mouvement lent est garde,
+               mais il va desormais du plus large vers le cadre normal. */
+            transform: k === i ? "scale(1)" : "scale(1.08)",
             transition: "opacity 2.4s ease, transform 8s ease-out",
           }} />
-      ))}
+      )))}
       {overlay}
-    </div>
-  );
-}
-
-/* Ouverture : vidéo du jardin sur téléphone, diaporama ailleurs.
-   La vidéo est verticale, donc réservée aux écrans étroits. Elle cède
-   la place au diaporama si le visiteur limite les animations ou ses
-   données (mode économie). Le choix est fait avant le premier rendu
-   pour ne pas charger les photos puis la vidéo. */
-function choisirVideo() {
-  if (typeof window === "undefined" || !window.matchMedia) return false;
-  const etroit = window.matchMedia("(max-width: 767px)").matches;
-  return etroit;
-}
-
-function FondOuverture({ images }) {
-  const [video, setVideo] = useState(choisirVideo);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const maj = () => setVideo(choisirVideo());
-    if (mq.addEventListener) mq.addEventListener("change", maj);
-    return () => { if (mq.removeEventListener) mq.removeEventListener("change", maj); };
-  }, []);
-
-  /* Lecture automatique, sans jamais de bouton « play ».
-     - « muted » est posé AVANT de charger la vidéo : React ne l'écrit pas
-       dans le HTML, et sans lui l'iPhone refuse la lecture automatique.
-     - En mode économie d'énergie, l'iPhone bloque TOUTES les vidéos. Il
-       anime en revanche les images animées : on bascule alors sur la même
-       séquence en AVIF animé (balise <img>), qui tourne sans interaction.
-       Le bouton natif de la vidéo est masqué en CSS. */
-  const [secours, setSecours] = useState(false);
-
-  useEffect(() => {
-    const v = ref.current;
-    if (!v || secours) return;
-    v.muted = true;
-    v.defaultMuted = true;
-    v.setAttribute("muted", "");
-    v.setAttribute("playsinline", "");
-    v.setAttribute("webkit-playsinline", "");
-    if (!v.src) v.src = VIDEO_OUVERTURE;
-
-    let fini = false;
-    const basculer = () => { if (!fini) { fini = true; setSecours(true); } };
-    const ok = () => { fini = true; };
-    v.addEventListener("playing", ok);
-    const p = v.play();
-    if (p && p.catch) p.catch((e) => { if (e && e.name === "NotAllowedError") basculer(); });
-    /* Certains iPhone ne refusent pas : la vidéo reste figée. On vérifie
-       qu'elle avance une fois chargée. */
-    const t = setTimeout(() => {
-      if (!fini && v.readyState >= 2 && (v.paused || v.currentTime === 0)) basculer();
-    }, 1800);
-    return () => { clearTimeout(t); v.removeEventListener("playing", ok); };
-  }, [video, secours]);
-
-  if (!video) return <Diaporama images={images} />;
-  return (
-    <div className="absolute inset-0 overflow-hidden"
-      style={{ backgroundImage: `url(${POSTER_OUVERTURE})`, backgroundSize: "cover", backgroundPosition: "center" }}>
-      {secours ? (
-        <img src={ANIM_OUVERTURE} alt="" aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover"
-          onError={(e) => { e.currentTarget.style.display = "none"; }} />
-      ) : (
-        <video ref={ref} poster={POSTER_OUVERTURE}
-          className="video-fond absolute inset-0 w-full h-full object-cover"
-          autoPlay muted loop playsInline preload="auto" controls={false}
-          disablePictureInPicture aria-hidden="true" tabIndex={-1}
-          style={{ pointerEvents: "none" }} />
-      )}
     </div>
   );
 }
@@ -677,7 +658,7 @@ function LetterReveal({ children, className = "", style = {}, delay = 0 }) {
 }
 
 /* Galerie qui défile horizontalement au scroll */
-function GalerieHorizontale({ items }) {
+function GalerieHorizontale({ items, label }) {
   const outer = useRef(null);
   const track = useRef(null);
   const [dist, setDist] = useState(0);
@@ -710,16 +691,18 @@ function GalerieHorizontale({ items }) {
 
   return (
     <>
-      {/* Mobile : défilement tactile classique */}
-      <div className="lg:hidden overflow-x-auto pb-6" style={{ scrollSnapType: "x mandatory" }}>
-        <div className="flex gap-4 px-8" style={{ width: "max-content" }}>
+      {/* Mobile : défilement tactile classique.
+          tabIndex rend la bande atteignable au clavier — sans lui, les
+          flèches ne peuvent pas la faire défiler, et les photos qui
+          dépassent de l'écran restent hors de portée. */}
+      <div className="lg:hidden overflow-x-auto pb-6" tabIndex={0} role="region" aria-label={label}
+        style={{ scrollSnapType: "x mandatory" }}>
+        <div className="flex items-center gap-4 px-8" style={{ width: "max-content" }}>
           {items.map((g, i) => (
-            <figure key={i} className="shrink-0 relative overflow-hidden gal-fig" style={{ width: "76vw", height: "58vh", scrollSnapAlign: "center" }}>
-              <img src={g.src} alt={g.l} className="w-full h-full object-cover gal-img" style={{ objectPosition: g.pos || "center" }} />
-              <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(20,14,8,.55), transparent 50%)" }} />
-              <figcaption className="absolute bottom-5 inset-x-0 text-center mono text-[9px] uppercase tracking-[0.24em]" style={{ color: "rgba(246,241,231,.95)" }}>
-                {g.l}
-              </figcaption>
+            <figure key={i} className="shrink-0 relative overflow-hidden gal-fig" style={{ width: g.mw || "76vw", height: g.mh || "58vh", scrollSnapAlign: "center" }}>
+              {/* Pas de légende sur la photo : le texte reste en alt, pour
+                  Google et les lecteurs d'écran. */}
+              <img src={g.src} alt={g.l} loading="lazy" decoding="async" className="w-full h-full object-cover gal-img" style={{ objectPosition: g.pos || "center" }} />
             </figure>
           ))}
         </div>
@@ -733,14 +716,8 @@ function GalerieHorizontale({ items }) {
           {items.map((g, i) => (
             <figure key={i} className="shrink-0 relative overflow-hidden gal-fig group"
               style={{ width: g.w, height: g.h }}>
-              <img src={g.src} alt={g.l} className="w-full h-full object-cover gal-img"
+              <img src={g.src} alt={g.l} loading="lazy" decoding="async" className="w-full h-full object-cover gal-img"
                 style={{ objectPosition: g.pos || "center" }} />
-              <div className="absolute inset-0 transition-opacity duration-700 opacity-0 group-hover:opacity-100"
-                style={{ background: "linear-gradient(to top, rgba(20,14,8,.55), transparent 55%)" }} />
-              <figcaption className="absolute bottom-5 inset-x-0 text-center mono text-[9px] uppercase tracking-[0.24em]"
-                style={{ color: "rgba(246,241,231,.95)", textShadow: "0 1px 14px rgba(0,0,0,.7)" }}>
-                {g.l}
-              </figcaption>
             </figure>
           ))}
         </div>
@@ -789,7 +766,7 @@ function Progression() {
   }, []);
   return (
     <div className="fixed top-0 left-0 right-0 z-[70] h-[2px] pointer-events-none" aria-hidden="true">
-      <div style={{ width: `${p}%`, height: "100%", background: "linear-gradient(90deg,#6B7355,#B5654A)", transition: "width .1s linear" }} />
+      <div style={{ width: `${p}%`, height: "100%", background: "linear-gradient(90deg,#626A4E,#B5654A)", transition: "width .1s linear" }} />
     </div>
   );
 }
@@ -937,16 +914,28 @@ function WordReveal({ children, className = "", style = {}, delay = 0, as: Tag =
     const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setSeen(true); io.disconnect(); } }, { threshold: 0.2 });
     io.observe(el); return () => io.disconnect();
   }, []);
+  /* Un « \n » dans le titre impose un retour à la ligne à cet endroit
+     (par exemple juste après une virgule), au lieu de laisser le dernier
+     mot partir seul sur la ligne suivante. */
+  let n = 0;
   return (
     <Tag ref={ref} className={className} style={style}>
-      {String(children).split(" ").map((w, i) => (
-        <span key={i} className="inline-block overflow-hidden align-bottom">
-          <span className="inline-block" style={{
-            transform: seen ? "none" : "translateY(105%)",
-            opacity: seen ? 1 : 0,
-            transition: `transform .95s cubic-bezier(.22,1,.36,1) ${delay + i * 60}ms, opacity .8s ease ${delay + i * 60}ms`,
-          }}>{w}&nbsp;</span>
-        </span>
+      {String(children).split("\n").map((ligne, l) => (
+        <React.Fragment key={l}>
+          {l > 0 && <br />}
+          {ligne.split(" ").map((w) => {
+            const i = n++;
+            return (
+              <span key={i} className="inline-block overflow-hidden align-bottom">
+                <span className="inline-block" style={{
+                  transform: seen ? "none" : "translateY(105%)",
+                  opacity: seen ? 1 : 0,
+                  transition: `transform .95s cubic-bezier(.22,1,.36,1) ${delay + i * 60}ms, opacity .8s ease ${delay + i * 60}ms`,
+                }}>{w}&nbsp;</span>
+              </span>
+            );
+          })}
+        </React.Fragment>
       ))}
     </Tag>
   );
@@ -1033,12 +1022,81 @@ function Rule({ delay = 0 }) {
   );
 }
 
-function Eyebrow({ children, light = false }) {
+function Eyebrow({ children, light = false, ton = A_TERRE }) {
   return (
     <p className="uppercase tracking-[0.32em] text-[10px] mb-5 mono"
-      style={{ color: light ? "rgba(246,241,231,.75)" : "#B5654A" }}>
+      style={{ color: light ? "rgba(246,241,231,.75)" : ton }}>
       {children}
     </p>
+  );
+}
+
+/* Le rameau d'olivier : un seul motif, répété au-dessus des quatre valeurs,
+   comme une signature. Trait fin couleur olive : une tige légèrement
+   arquée, six feuilles en alternance, une feuille au bout et deux olives
+   qui pendent. C'est le dessin choisi sur les rendus de proposition. */
+const RAMEAU_TIGE_FEUILLES =
+  "M3 14.5 Q27 9.5 50 11 " +
+  "M10.65 13.07 Q16.56 11.45 18.9 5.79 Q12.99 7.4 10.65 13.07Z " +
+  "M17.31 12.09 Q20.91 16.58 26.67 16.38 Q23.07 11.89 17.31 12.09Z " +
+  "M23.93 11.36 Q29.24 10.42 31.57 5.56 Q26.26 6.5 23.93 11.36Z " +
+  "M30.5 10.89 Q33.26 15.09 38.29 15.2 Q35.53 11 30.5 10.89Z " +
+  "M37.04 10.67 Q41.69 10.32 43.94 6.23 Q39.29 6.58 37.04 10.67Z " +
+  "M43.54 10.71 Q45.51 14.53 49.8 14.84 Q47.83 11.02 43.54 10.71Z " +
+  "M50 11 Q53.1 13.41 56.49 11.42 Q53.39 9.02 50 11Z";
+function RameauOlivier({ couleur = A_OLIVE, largeur = 64 }) {
+  /* viewBox de 58 de large : la pointe de la feuille du bout (x = 56,5)
+     et l'épaisseur du trait restent entières, sans être rognées. */
+  return (
+    <svg viewBox="0 0 58 24" width={largeur} height={largeur * 24 / 58} className="mx-auto block"
+      fill="none" stroke={couleur} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d={RAMEAU_TIGE_FEUILLES} />
+      <path d="M23.93 11.36 Q24.23 14.36 25.53 16.46" />
+      <ellipse cx="25.53" cy="18.36" rx="1.45" ry="1.9" transform="rotate(-14 25.53 18.36)" />
+      <path d="M37.04 10.67 Q37.34 13.67 38.64 15.77" />
+      <ellipse cx="38.64" cy="17.67" rx="1.45" ry="1.9" transform="rotate(-14 38.64 17.67)" />
+    </svg>
+  );
+}
+
+/* Pictos de la liste du refuge, dans l'ordre des quatre principes :
+   fer à cheval (les rencontres), œil (l'observation à distance), horloge
+   (sons et horaires), lune (le repos). Trait fin, dans le beige doré de la
+   palette (#C7B79A), lisible sur la photo sombre. Purement décoratifs. */
+const CLOUS_FER = [[9.6, 12.6], [8.9, 17.4], [10.4, 21.8], [22.4, 12.6], [23.1, 17.4], [21.6, 21.8]];
+const PICTOS_REFUGE = [
+  { taille: 20, corps: (
+    <>
+      <path d="M9.2 7 C5.6 13.5 5.8 21.8 10.6 25.8 C13.8 28.4 18.2 28.4 21.4 25.8 C26.2 21.8 26.4 13.5 22.8 7 M12.6 7.6 C10 13.3 10.2 19.8 13.6 22.8 C15.2 24.1 16.8 24.1 18.4 22.8 C21.8 19.8 22 13.3 19.4 7.6 M9.2 7 L12.6 7.6 M22.8 7 L19.4 7.6" />
+      {CLOUS_FER.map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r="0.55" fill="currentColor" stroke="none" />)}
+    </>
+  ) },
+  { taille: 20, corps: (
+    <>
+      <path d="M3.5 16 Q16 5.5 28.5 16 Q16 26.5 3.5 16Z" />
+      <circle cx="16" cy="16" r="4.2" />
+      <circle cx="16" cy="16" r="1.3" fill="currentColor" stroke="none" />
+    </>
+  ) },
+  { taille: 19, corps: (
+    <>
+      <circle cx="16" cy="16" r="11.5" />
+      <path d="M16 16 L16 8.6 M16 16 L21.4 19" />
+      <circle cx="16" cy="16" r="0.9" fill="currentColor" stroke="none" />
+    </>
+  ) },
+  { taille: 19, corps: <path d="M20.5 4.8 A11.5 11.5 0 1 0 27.6 20.6 A9.2 9.2 0 0 1 20.5 4.8Z" /> },
+];
+function PictoRefuge({ i }) {
+  const p = PICTOS_REFUGE[i];
+  if (!p) return null;
+  return (
+    <span className="inline-flex w-[22px] flex-none justify-center" style={{ color: "#C7B79A" }}>
+      <svg viewBox="0 0 32 32" width={p.taille} height={p.taille} fill="none" stroke="currentColor"
+        strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {p.corps}
+      </svg>
+    </span>
   );
 }
 
@@ -1047,8 +1105,21 @@ function Calendrier({ blocked, onDayClick, admin = false, lang = "fr" }) {
   const MOIS_L = MOIS[lang], JOURS_L = JOURS[lang];
   const [monthOffset, setMonthOffset] = useState(0);
   const [fade, setFade] = useState(false);
-  const today = useMemo(() => new Date(2026, 6, 29), []);
-  const viewDate = new Date(today.getFullYear(), today.getMonth() + monthOffset + (admin ? 0 : 1), 1);
+  /* Date du jour, prise a l'heure de Tunis quel que soit le fuseau du
+     visiteur. Elle etait figee au 29 juillet 2026 : le calendrier public
+     s'ouvrait alors sur un mois deja passe, et ses dates restaient
+     selectionnables. */
+  const today = useMemo(() => {
+    const maintenant = new Date();
+    try {
+      const [a, m, j] = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Tunis", year: "numeric", month: "2-digit", day: "2-digit" })
+        .format(maintenant).split("-").map(Number);
+      if (a && m && j) return new Date(a, m - 1, j);
+    } catch { /* navigateur sans fuseaux horaires : date locale */ }
+    return new Date(maintenant.getFullYear(), maintenant.getMonth(), maintenant.getDate());
+  }, []);
+  /* Le calendrier s'ouvre sur le mois en cours, public comme proprietaire. */
+  const viewDate = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
   const year = viewDate.getFullYear(), month = viewDate.getMonth();
   const startOffset = (new Date(year, month, 1).getDay() + 6) % 7;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -1067,22 +1138,25 @@ function Calendrier({ blocked, onDayClick, admin = false, lang = "fr" }) {
           className="flex items-center justify-center w-11 h-11 -mr-2 disabled:opacity-25 transition-transform hover:translate-x-1" aria-label="Mois suivant"><ChevronRight size={18} /></button>
       </div>
       <div className="grid grid-cols-7 mb-3">
-        {JOURS_L.map((d, i) => <span key={i} className="mono text-[9px] text-center tracking-widest" style={{ color: "#9a8f76" }}>{d}</span>)}
+        {JOURS_L.map((d, i) => <span key={i} className="mono text-[9px] text-center tracking-widest" style={{ color: "#6D6654" }}>{d}</span>)}
       </div>
       <div className="grid grid-cols-7 gap-y-1 pb-6 transition-opacity duration-200" style={{ opacity: fade ? 0 : 1 }}>
         {cells.map((d, i) => {
           if (d === null) return <div key={i} />;
           const key = `${year}-${month + 1}-${d}`;
           const isBlocked = blocked.has(key);
+          /* Jour deja passe : estompe, sans barre (la barre signale une date
+             reservee), et inactif, cote public comme cote proprietaire. */
+          const isPast = new Date(year, month, d) < today;
           return (
             <button key={i} onClick={() => onDayClick(key, lang === "fr" ? `${d} ${MOIS_L[month]} ${year}` : `${MOIS_L[month]} ${d}, ${year}`, isBlocked)}
-              disabled={!admin && isBlocked} className="day-cell fu aspect-square text-sm body-font relative"
+              disabled={isPast || (!admin && isBlocked)} className="day-cell fu aspect-square text-sm body-font relative"
               style={{
                 animationDelay: `${i * 14}ms`, animationDuration: ".8s",
-                color: isBlocked ? (admin ? "#B5654A" : "#c2b79f") : "#2B2118",
-                textDecoration: isBlocked && !admin ? "line-through" : "none",
-                cursor: !admin && isBlocked ? "not-allowed" : "pointer",
-                fontWeight: isBlocked && admin ? 600 : 400,
+                color: isPast ? "#c2b79f" : isBlocked ? (admin ? "#B5654A" : "#c2b79f") : "#2B2118",
+                textDecoration: isBlocked && !admin && !isPast ? "line-through" : "none",
+                cursor: isPast || (!admin && isBlocked) ? "not-allowed" : "pointer",
+                fontWeight: isBlocked && admin && !isPast ? 600 : 400,
               }}>{d}</button>
           );
         })}
@@ -1103,7 +1177,7 @@ function FaqItem({ q, r, i }) {
           </span>
         </button>
         <div style={{ maxHeight: open ? 260 : 0, opacity: open ? 1 : 0, overflow: "hidden", transition: "max-height .6s cubic-bezier(.22,1,.36,1), opacity .5s" }}>
-          <p className="body-font text-sm pb-8 leading-relaxed max-w-md mx-auto" style={{ color: "#5a4f42" }}>{r}</p>
+          <p className="body-font pb-8 leading-relaxed max-w-md mx-auto" style={{ color: "#5a4f42" }}>{r}</p>
         </div>
       </div>
     </Reveal>
@@ -1125,8 +1199,13 @@ export default function App() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", guests: "", type: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  /* Champs manquants ou mal remplis : champ -> cle du message dans
+     t.devis.manque. On garde la cle et non le texte, pour que le message
+     suive le changement de langue. */
+  const [erreurs, setErreurs] = useState({});
   const [envoi, setEnvoi] = useState("repos");   // repos | envoi | erreur
   const [piege, setPiege] = useState("");         // champ leurre anti-robot
+  const ouvertureRef = useRef(Date.now());        // pour mesurer le temps de remplissage
   const [scrollY, setScrollY] = useState(0);
   const [navSolid, setNavSolid] = useState(false);
   /* La page courante découle de l'adresse : /tournages est une vraie page,
@@ -1161,6 +1240,10 @@ export default function App() {
     return () => window.removeEventListener("popstate", surRetour);
   }, []);
 
+  useEffect(() => {
+    if (selectedDate) setErreurs((er) => (er.date ? { ...er, date: undefined } : er));
+  }, [selectedDate]);
+
   /* Le titre de l'onglet et la description suivent la page consultée. */
   useEffect(() => {
     const m = META[page] || META.accueil;
@@ -1177,14 +1260,45 @@ export default function App() {
   async function envoyerDevis(e) {
     e.preventDefault();
     if (envoi === "envoi") return;          // évite le double clic
-    if (piege) { setSubmitted(true); return; } // robot : on fait semblant
+    /* Les informations de base sont obligatoires : date, nom, e-mail,
+       téléphone, nombre d'invités et type d'expérience. Seul « Votre projet »
+       reste libre. Les messages sont ceux du site, dans sa langue, et non les
+       bulles du navigateur, qui changent d'un téléphone à l'autre. */
+    const manque = {};
+    if (!selectedDate) manque.date = "date";
+    if (!form.name.trim()) manque.name = "nom";
+    if (!form.email.trim()) manque.email = "email";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())) manque.email = "emailFormat";
+    const chiffres = form.phone.replace(/\D/g, "");
+    if (!chiffres) manque.phone = "tel";
+    else if (chiffres.length < 8) manque.phone = "telFormat";
+    if (!(Number(form.guests) >= 1)) manque.guests = "invites";
+    if (!form.type) manque.type = "type";
+    setErreurs(manque);
+    const premier = ["date", "name", "email", "phone", "guests", "type"].find((k) => manque[k]);
+    if (premier) {
+      const champ = document.getElementById(ID_CHAMP[premier]);
+      if (champ) {
+        champ.scrollIntoView({ block: "center", behavior: "smooth" });
+        champ.focus({ preventScroll: true });
+      }
+      return;
+    }
+
+    /* Deux filtres anti-robot. On feint la réussite dans les deux cas :
+       signaler le rejet apprendrait au robot comment passer.
+       - le champ leurre, invisible, qu'un humain ne peut pas remplir
+       - le délai : remplir nom, e-mail et projet prend forcément quelques
+         secondes, alors qu'un robot soumet dans la seconde. */
+    if (piege) { setSubmitted(true); return; }
+    if (Date.now() - ouvertureRef.current < 5000) { setSubmitted(true); return; }
     setEnvoi("envoi");
     try {
       const r = await fetch(RELAIS_DEVIS, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          _subject: `Demande de devis — ${form.name || "sans nom"}`,
+          _subject: `Demande de devis, ${form.name || "sans nom"}`,
           _template: "table",
           _captcha: "false",
           "Date souhaitée": selectedDate || "non précisée",
@@ -1192,7 +1306,7 @@ export default function App() {
           Email: form.email,
           Téléphone: form.phone || "non précisé",
           "Nombre d'invités": form.guests || "non précisé",
-          "Type d'expérience": form.type || t.prestations[0].t,
+          "Type d'expérience": form.type || "non précisé",
           Projet: form.message || "non précisé",
           Langue: lang,
         }),
@@ -1212,6 +1326,19 @@ export default function App() {
     }
   }
 
+  /* Saisie d'un champ du devis : le message d'erreur s'efface des que la
+     personne corrige. */
+  const majChamp = (cle, valeur) => {
+    setForm((f) => ({ ...f, [cle]: valeur }));
+    if (erreurs[cle]) setErreurs((er) => ({ ...er, [cle]: undefined }));
+  };
+  const bordure = (cle) => ({ borderBottom: `1px solid ${erreurs[cle] ? "#97543E" : "#8C816D"}` });
+  const messageChamp = (cle) => erreurs[cle] ? (
+    <p id={`${ID_CHAMP[cle]}-erreur`} className="body-font text-sm mt-2 text-center" style={{ color: "#97543E" }}>
+      {t.devis.manque[erreurs[cle]]}
+    </p>
+  ) : null;
+
   /* Connexion à l'espace propriétaire.
      Le code n'est plus comparé dans la page — où il était lisible par tous —
      mais envoyé au serveur, qui seul connaît la valeur attendue. */
@@ -1228,6 +1355,11 @@ export default function App() {
       });
       const data = await r.json().catch(() => null);
       if (r.status === 401) { setCodeError(t.admin.erreur); return; }
+      if (r.status === 429) {
+        const minutes = Math.max(1, Math.ceil(((data && data.reessayerDans) || 900) / 60));
+        setCodeError(t.admin.tropDeTentatives.replace("{min}", String(minutes)));
+        return;
+      }
       if (r.status === 503 || (data && data.erreur === "base_non_configuree")) {
         setCodeError(t.admin.baseAbsente); return;
       }
@@ -1325,10 +1457,22 @@ export default function App() {
 
   const styleTag = (
     <style>{`
-      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400;500&family=IBM+Plex+Mono:wght@300;400&display=swap');
       .display{font-family:'Cormorant Garamond',serif;}
       .body-font{font-family:'Jost',sans-serif;font-weight:300;}
       .mono{font-family:'IBM Plex Mono',monospace;}
+      /* Phrase de fin de « L'histoire » : sur une seule ligne. 20 px sur
+         telephone tant qu'elle tient (elle demande 19,5 fois sa taille en
+         largeur), un peu moins sur les ecrans les plus etroits ; 24 px
+         ailleurs. balance evite un mot seul si elle devait passer a la ligne. */
+      .citation-ligne{font-size:min(1.25rem,calc((100vw - 2rem) / 20));line-height:1.4;text-wrap:balance;}
+      /* Titre de l'histoire, coupe apres la virgule : la ligne la plus longue
+         (« Before it was a place, ») mesure 8,32 em. Sur les petits telephones
+         la taille se reduit juste assez pour que chaque ligne tienne ; des
+         360 px environ, c'est la taille des autres titres (text-4xl, puis
+         text-6xl des 640 px). */
+      .titre-histoire{font-size:min(2.25rem,calc((100vw - 4rem) / 8.4));line-height:1.11;}
+      @media (min-width:640px){.titre-histoire{font-size:3.75rem;line-height:1;}}
+      @media (min-width:640px){.citation-ligne{font-size:1.5rem;line-height:2rem;}}
       html{scroll-behavior:smooth;}
 
       @keyframes fadeUp{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:none;}}
@@ -1387,6 +1531,9 @@ export default function App() {
       .grain-doux{position:absolute;inset:0;opacity:.05;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");}
       .day-cell{transition:color .3s,transform .25s;}
       .day-cell:hover:not(:disabled){transform:scale(1.25);color:#B5654A;}
+      .champ-date{color:#2B2118;border-bottom:1px solid #8C816D;transition:color .35s,border-color .35s;}
+      .champ-date-vide{color:#6D6654;}
+      .champ-date:hover,.champ-date:focus-visible{color:#B5654A;border-color:#B5654A;}
       .link-u{position:relative;}
       .link-u::after{content:'';position:absolute;left:0;bottom:-4px;height:1px;width:100%;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .6s cubic-bezier(.22,1,.36,1);}
       .link-u:hover::after{transform:scaleX(1);transform-origin:left;}
@@ -1409,6 +1556,10 @@ export default function App() {
          déroulante : c'est text-align-last qui gouverne cette ligne. */
       select{text-align:center;text-align-last:center;}
       select option{text-align:center;}
+      /* Invite « Choisissez une experience » : meme gris que l'invite de date.
+         Les choix de la liste gardent la couleur du texte. */
+      .champ-type-vide{color:#6D6654;}
+      .champ-type-vide option{color:#2B2118;}
 
       /* Les mentions à 9-10px sont illisibles sur téléphone. Relevées au
          minimum lisible sur petit écran seulement : le rendu bureau,
@@ -1418,10 +1569,9 @@ export default function App() {
         .text-\\[9px\\]{font-size:11px;}
         .text-\\[10px\\]{font-size:11px;}
       }
-      input:focus,select:focus,textarea:focus{outline:none;border-color:#6B7355 !important;}
+      input:focus,select:focus,textarea:focus{outline:none;border-color:#626A4E !important;}
       ::selection{background:#B5654A;color:#F6F1E7;}
       @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none !important;transition-duration:.01ms !important;}}
-      .video-fond::-webkit-media-controls,.video-fond::-webkit-media-controls-panel,.video-fond::-webkit-media-controls-play-button,.video-fond::-webkit-media-controls-start-playback-button,.video-fond::-webkit-media-controls-overlay-play-button{display:none !important;-webkit-appearance:none !important;opacity:0 !important;}
     `}</style>
   );
 
@@ -1446,7 +1596,7 @@ export default function App() {
         <button key={l} onClick={() => setLang(l)}
           className="mono text-[9px] uppercase tracking-[0.18em] px-2.5 py-1 transition-colors duration-500"
           style={{ background: lang === l ? "#2B2118" : "transparent",
-                   color: lang === l ? "#F6F1E7" : "#6B7355" }}>
+                   color: lang === l ? "#F6F1E7" : "#626A4E" }}>
           {l}
         </button>
       ))}
@@ -1461,7 +1611,7 @@ export default function App() {
         <header className="max-w-3xl mx-auto px-8 pt-10 flex justify-between items-center">
           <span className="display text-xl tracking-wide">{t.admin.titre}</span>
           <button onClick={() => { setAdminOpen(false); setIsAdmin(false); setCodeInput(""); }}
-            className="mono text-[10px] uppercase tracking-[0.25em] flex items-center gap-2 link-u" style={{ color: "#B5654A" }}><LogOut size={13} /> {t.admin.quitter}</button>
+            className="mono text-[10px] uppercase tracking-[0.25em] flex items-center gap-2 link-u" style={{ color: A_TERRE }}><LogOut size={13} /> {t.admin.quitter}</button>
         </header>
         <div className="max-w-3xl mx-auto px-8 py-16 fu">
           {!isAdmin ? (
@@ -1469,19 +1619,19 @@ export default function App() {
               <Eyebrow>{t.admin.acces}</Eyebrow>
               <h1 className="display text-4xl mb-8" style={{ fontWeight: 300 }}>{t.admin.code}</h1>
               <div className="relative">
-                <input type={codeVisible ? "text" : "password"} value={codeInput}
+                <input type={codeVisible ? "text" : "password"} value={codeInput} aria-label={t.admin.codePh}
                   onChange={(e) => setCodeInput(e.target.value)} autoComplete="current-password"
                   className="body-font w-full pl-0 pr-12 py-3 bg-transparent"
-                  style={{ borderBottom: "1px solid #C7B79A" }} placeholder={t.admin.codePh} />
+                  style={{ borderBottom: "1px solid #8C816D" }} placeholder={t.admin.codePh} />
                 <button type="button" onClick={() => setCodeVisible(!codeVisible)}
                   aria-label={codeVisible ? t.admin.masquer : t.admin.afficher}
                   aria-pressed={codeVisible}
                   className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-11 h-11 transition-opacity hover:opacity-100 opacity-55"
-                  style={{ color: "#6B7355" }}>
+                  style={{ color: "#626A4E" }}>
                   {codeVisible ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
               </div>
-              {codeError && <p className="body-font text-sm mt-3" style={{ color: "#B5654A" }} role="alert">{codeError}</p>}
+              {codeError && <p className="body-font text-sm mt-3" style={{ color: "#97543E" }} role="alert">{codeError}</p>}
               <button type="submit" disabled={verif || !codeInput}
                 className="btn btn-solid body-font mt-8 px-10 py-3.5 text-sm uppercase tracking-[0.2em] disabled:opacity-60"
                 style={{ background: "#666E51", color: "#F6F1E7" }}>
@@ -1499,15 +1649,15 @@ export default function App() {
                 {t.admin.aide}
               </p>
               {loading ? <Loader2 className="animate-spin" color="#B5654A" /> : <Calendrier blocked={blocked} admin lang={lang} onDayClick={toggleBlocked} />}
-              {saving && <p className="mono text-[10px] flex items-center gap-2 mt-2" style={{ color: "#6B7355" }}><Loader2 size={11} className="animate-spin" /> {t.admin.enreg}</p>}
-              {adminErreur && <p className="body-font text-sm mt-3" style={{ color: "#B5654A" }} role="alert">{adminErreur}</p>}
+              {saving && <p className="mono text-[10px] flex items-center gap-2 mt-2" style={{ color: "#626A4E" }}><Loader2 size={11} className="animate-spin" /> {t.admin.enreg}</p>}
+              {adminErreur && <p className="body-font text-sm mt-3" style={{ color: "#97543E" }} role="alert">{adminErreur}</p>}
               <div className="mt-12 max-w-xl">
-                <p className="mono text-[10px] uppercase tracking-[0.25em] mb-4" style={{ color: "#6B7355" }}>{t.admin.bloquees} — {blocked.size}</p>
+                <p className="mono text-[10px] uppercase tracking-[0.25em] mb-4" style={{ color: "#626A4E" }}>{t.admin.bloquees} ({blocked.size})</p>
                 {blocked.size === 0 ? <p className="body-font text-sm" style={{ color: "#5a4f42" }}>{t.admin.aucune}</p> : (
                   <div className="flex flex-wrap gap-2">
                     {[...blocked].sort().map((k) => { const [y, m, d] = k.split("-");
                       return <button key={k} onClick={() => toggleBlocked(k)} className="mono text-[10px] px-3 py-1.5 transition-colors hover:opacity-70"
-                        style={{ border: "1px solid #B5654A", color: "#B5654A" }}>{d}/{m}/{y} ×</button>; })}
+                        style={{ border: "1px solid " + A_TERRE, color: A_TERRE }}>{d}/{m}/{y} ×</button>; })}
                   </div>
                 )}
               </div>
@@ -1526,6 +1676,7 @@ export default function App() {
         <Grain />
         <Progression />
 
+        <main>
         {/* HERO */}
         <section className="relative h-[100svh] w-full overflow-hidden">
           <div className="absolute inset-0" style={{ transform: `translate3d(0,${scrollY * 0.3}px,0)` }}>
@@ -1569,12 +1720,12 @@ export default function App() {
           <div className="max-w-6xl mx-auto px-8 py-5 flex flex-col items-center gap-3 transition-opacity duration-500"
             style={{ opacity: navSolid ? 1 : 0, pointerEvents: navSolid ? "auto" : "none" }}>
             <button onClick={() => allerA("accueil")} className="display text-base tracking-[0.08em] flex items-center min-h-[44px]">Daughter of Gaïa</button>
-            <div className="hidden sm:flex items-center gap-8 mono text-[10px] uppercase tracking-[0.2em] leading-none" style={{ color: "#6B7355" }}>
+            <div className="hidden sm:flex items-center gap-8 mono text-[10px] uppercase tracking-[0.2em] leading-none" style={{ color: "#626A4E" }}>
               <a href="#decors" className="link-u">{t.tournages.nav.decors}</a>
               <a href="#maison" className="link-u">{t.tournages.nav.maison}</a>
               <a href="#pratique" className="link-u">{t.tournages.nav.pratique}</a>
               <button onClick={() => allerA("accueil")} className="link-u uppercase tracking-[0.2em]">{t.tournages.nav.domaine}</button>
-              <a href="#contact-t" className="link-u" style={{ color: "#B5654A" }}>{t.tournages.nav.contact}</a>
+              <a href="#contact-t" className="link-u" style={{ color: A_TERRE }}>{t.tournages.nav.contact}</a>
               {selecteurNav}
             </div>
           </div>
@@ -1603,7 +1754,7 @@ export default function App() {
               </WordReveal>
             </Reveal>
             <Reveal delay={350}>
-              <p className="body-font text-sm sm:text-base mt-10 max-w-xl mx-auto leading-relaxed" style={{ color: "#5a4f42" }}>
+              <p className="body-font mt-10 max-w-xl mx-auto leading-relaxed" style={{ color: "#5a4f42" }}>
                 {t.tournages.intro}
               </p>
             </Reveal>
@@ -1613,7 +1764,7 @@ export default function App() {
         {/* LES DÉCORS */}
         <section id="decors" className="py-16">
           <div className="max-w-4xl mx-auto px-8 text-center mb-16">
-            <Reveal><Eyebrow>{t.tournages.decorsE}</Eyebrow></Reveal>
+            <Reveal><Eyebrow ton={A_OLIVE}>{t.tournages.decorsE}</Eyebrow></Reveal>
             <WordReveal className="display text-4xl sm:text-6xl" style={{ fontWeight: 300 }}>
               {t.tournages.decorsT}
             </WordReveal>
@@ -1623,12 +1774,12 @@ export default function App() {
               <div key={i}>
                 <VoletsReveal className="relative w-full h-[50vh] sm:h-[74vh] zoom-wrap">
                   <Parallax speed={-0.06} className="absolute inset-0 -top-14 -bottom-14">
-                    <img src={DECOR_IMG[i].src} alt={d.t} className="w-full h-full object-cover" style={{ objectPosition: DECOR_IMG[i].pos }} />
+                    <img src={DECOR_IMG[i].src} alt={d.t} loading="lazy" decoding="async" className="w-full h-full object-cover" style={{ objectPosition: DECOR_IMG[i].pos }} />
                   </Parallax>
                 </VoletsReveal>
                 <Reveal delay={120}>
                   <div className="max-w-2xl mx-auto px-8 mt-10 text-center">
-                    <span className="mono text-[10px]" style={{ color: "#B5654A" }}>{d.n}</span>
+                    <span className="mono text-[10px]" style={{ color: A_TERRE }}>{d.n}</span>
                     <h3 className="display text-2xl sm:text-4xl mt-3 mb-4" style={{ fontWeight: 300 }}>{d.t}</h3>
                     <p className="body-font leading-relaxed max-w-xl mx-auto" style={{ color: "#5a4f42" }}>{d.d}</p>
                   </div>
@@ -1642,7 +1793,7 @@ export default function App() {
         <section id="maison" className="relative max-w-3xl mx-auto px-8 py-32 text-center">
           <FondAbstrait intensite={0.6} />
           <div className="relative">
-            <Reveal><Eyebrow>{t.tournages.maisonE}</Eyebrow></Reveal>
+            <Reveal><Eyebrow ton={A_TERRE}>{t.tournages.maisonE}</Eyebrow></Reveal>
             <WordReveal className="display text-4xl sm:text-6xl mb-8" style={{ fontWeight: 300 }}>
               {t.tournages.maisonT}
             </WordReveal>
@@ -1661,7 +1812,7 @@ export default function App() {
         <section id="pratique" className="relative max-w-5xl mx-auto px-8 py-24 text-center">
           <FondAbstrait intensite={0.5} />
           <div className="relative">
-            <Reveal><Eyebrow>{t.tournages.pratiqueE}</Eyebrow></Reveal>
+            <Reveal><Eyebrow ton={A_OLIVE}>{t.tournages.pratiqueE}</Eyebrow></Reveal>
             <WordReveal className="display text-4xl sm:text-6xl mb-16" style={{ fontWeight: 300 }}>
               {t.tournages.pratiqueT}
             </WordReveal>
@@ -1669,9 +1820,9 @@ export default function App() {
               {t.atouts.map((a, i) => (
                 <Reveal key={i} delay={i * 110}>
                   <div className="text-center">
-                    <span className="mono text-[10px]" style={{ color: "#B5654A" }}>{String(i + 1).padStart(2, "0")}</span>
+                    <span className="mono text-[10px]" style={{ color: A_TERRE }}>{String(i + 1).padStart(2, "0")}</span>
                     <h3 className="display text-2xl mt-4 mb-3" style={{ fontWeight: 400 }}>{a.t}</h3>
-                    <p className="body-font text-sm leading-relaxed" style={{ color: "#5a4f42" }}>{a.d}</p>
+                    <p className="body-font leading-relaxed" style={{ color: "#5a4f42" }}>{a.d}</p>
                   </div>
                 </Reveal>
               ))}
@@ -1683,6 +1834,7 @@ export default function App() {
             </Reveal>
           </div>
         </section>
+        </main>
 
         {/* CONTACT */}
         <footer id="contact-t" style={{ background: "#2B2118", color: "#EDE4D3" }}>
@@ -1692,7 +1844,7 @@ export default function App() {
               <p className="display text-4xl sm:text-6xl leading-tight" style={{ fontWeight: 300 }}>
                 {t.tournages.contactT}
               </p>
-              <p className="body-font text-sm mt-8 max-w-lg mx-auto leading-relaxed" style={{ color: "rgba(237,228,211,.75)" }}>
+              <p className="body-font mt-8 max-w-lg mx-auto leading-relaxed" style={{ color: "rgba(237,228,211,.75)" }}>
                 {t.tournages.contactP}
               </p>
             </Reveal>
@@ -1730,12 +1882,12 @@ export default function App() {
       <Grain />
       <Progression />
 
+      <main>
       {/* ── HERO ── */}
       <section className="relative h-[100svh] w-full overflow-hidden">
         <div className="absolute inset-0" style={{ transform: `translate3d(0,${scrollY * 0.32}px,0)` }}>
-          <FondOuverture images={[
-            { src: IMAGES.lieu, alt: t.domaine.alt, pos: "center 62%" },
-            { src: P_CHEVAUX_FENETRE, alt: t.hero.alt, pos: "center 55%" },
+          <Diaporama images={[
+            { src: P_CHEVAL_BAR, alt: t.refuge.alt, pos: "center 45%" },
           ]} />
         </div>
         <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(20,14,8,.52) 0%, rgba(20,14,8,.26) 34%, rgba(20,14,8,.42) 66%, rgba(20,14,8,.74) 100%)" }} />
@@ -1791,7 +1943,7 @@ export default function App() {
 
           <a href="#" className="display text-base tracking-[0.08em] flex items-center min-h-[44px]">Daughter of Gaïa</a>
 
-          <div className="hidden lg:flex items-center gap-8 mono text-[10px] uppercase tracking-[0.2em] leading-none" style={{ color: "#6B7355" }}>
+          <div className="hidden lg:flex items-center gap-8 mono text-[10px] uppercase tracking-[0.2em] leading-none" style={{ color: "#626A4E" }}>
             <a href="#domaine" className="link-u">{t.nav.domaine}</a>
             <a href="#histoire" className="link-u">{t.nav.histoire}</a>
             <a href="#experiences" className="link-u">{t.nav.experiences}</a>
@@ -1799,7 +1951,7 @@ export default function App() {
             <a href="#refuge" className="link-u">{t.nav.refuge}</a>
             <button onClick={() => allerA("tournages")} className="link-u uppercase tracking-[0.2em]">{t.nav.tournages}</button>
             <a href="#disponibilites" className="link-u">{t.nav.dispo}</a>
-            <a href="#devis" onClick={versDevis} className="link-u" style={{ color: "#B5654A" }}>{t.nav.devis}</a>
+            <a href="#devis" onClick={versDevis} className="link-u" style={{ color: A_TERRE }}>{t.nav.devis}</a>
             {selecteurNav}
           </div>
         </div>
@@ -1831,7 +1983,7 @@ export default function App() {
           </WordReveal>
         </Reveal>
         <Reveal delay={400}>
-          <p className="body-font text-sm sm:text-base mt-10 max-w-xl mx-auto leading-relaxed" style={{ color: "#5a4f42" }}>
+          <p className="body-font mt-10 max-w-xl mx-auto leading-relaxed" style={{ color: "#5a4f42" }}>
             {t.mission.texte}
           </p>
         </Reveal>
@@ -1840,13 +1992,13 @@ export default function App() {
 
       {/* ── VALEURS ── */}
       <section className="max-w-6xl mx-auto px-8 pt-20 sm:pt-28 pb-36">
-        <div className="relative grid sm:grid-cols-2 lg:grid-cols-4 gap-y-16 gap-x-10">
+        <div className="relative grid sm:grid-cols-2 xl:grid-cols-4 gap-y-16 gap-x-10">
           {t.valeurs.map((v, i) => (
             <Reveal key={i} delay={i * 130}>
-              <div className="text-center px-2">
-                <span className="mono text-[10px]" style={{ color: "#B5654A" }}>{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="display text-2xl mt-4 mb-3" style={{ fontWeight: 400 }}>{v.t}</h3>
-                <p className="body-font text-sm leading-relaxed" style={{ color: "#5a4f42" }}>{v.d}</p>
+              <div className="text-center px-2 xl:px-0">
+                <RameauOlivier />
+                <h3 className="display text-2xl mt-5 mb-3" style={{ fontWeight: 400 }}>{v.t}</h3>
+                <p className="body-font leading-relaxed" style={{ color: "#5a4f42" }}>{v.d}</p>
               </div>
             </Reveal>
           ))}
@@ -1857,7 +2009,7 @@ export default function App() {
       <section id="domaine" className="relative py-24">
         <FondAbstrait intensite={0.55} />
         <div className="relative max-w-3xl mx-auto px-8 text-center">
-          <Reveal><Eyebrow>{t.domaine.eyebrow}</Eyebrow></Reveal>
+          <Reveal><Eyebrow ton={A_OLIVE}>{t.domaine.eyebrow}</Eyebrow></Reveal>
           <WordReveal className="display text-4xl sm:text-6xl mb-8" style={{ fontWeight: 300 }}>
             {t.domaine.titre}
           </WordReveal>
@@ -1865,17 +2017,21 @@ export default function App() {
             {t.domaine.texte}
           </MaskText>
           <Reveal delay={320}>
-            <p className="display italic text-xl sm:text-2xl mt-9 max-w-2xl mx-auto leading-snug" style={{ color: "#6B7355", fontWeight: 300 }}>
+            <p className="display italic text-xl sm:text-2xl mt-9 max-w-2xl mx-auto leading-snug text-balance" style={{ color: "#626A4E", fontWeight: 300 }}>
               {t.domaine.citation}
             </p>
           </Reveal>
         </div>
 
-        <VoletsReveal className="relative w-full h-[52vh] sm:h-[72vh] mt-16 overflow-hidden">
+        {/* La photo est en portrait (1020 x 1360). Etiree sur toute la
+            largeur, elle etait agrandie jusqu'a 2,5x sa taille reelle sur un
+            grand ecran et n'en montrait que 43 % : floue et coupee. Elle
+            garde donc son format. Le cadre suit son ratio 3/4 et ne depasse
+            jamais 780 px, donc la source n'est plus jamais agrandie. Sur
+            telephone il occupe toute la largeur, comme avant. */}
+        <VoletsReveal className="relative mx-auto mt-16 w-full max-w-[780px] aspect-[3/4] overflow-hidden">
           <LumiereFiltree />
-          <Parallax speed={-0.07} className="absolute inset-0 -top-16 -bottom-16">
-            <Photo src={IMAGES.lieu} alt={t.domaine.alt} className="w-full h-full" tone={1} pos="center 60%" />
-          </Parallax>
+          <Photo src={P_TROIS_CHEVAUX} alt={t.domaine.alt} className="w-full h-full" tone={1} />
         </VoletsReveal>
 
         <div className="relative max-w-5xl mx-auto px-8 mt-16">
@@ -1886,26 +2042,35 @@ export default function App() {
                   <p className="display text-3xl sm:text-4xl" style={{ fontWeight: 300 }}>
                     {/^\d/.test(e.v) ? <CountUp value={e.v} delay={i * 160} /> : e.v}
                   </p>
-                  <p className="mono text-[9px] uppercase tracking-[0.2em] mt-2.5" style={{ color: "#6B7355" }}>{e.t}</p>
+                  <p className="mono text-[9px] uppercase tracking-[0.2em] mt-2.5" style={{ color: "#626A4E" }}>{e.t}</p>
                 </div>
               </Reveal>
             ))}
           </div>
+
+          {/* Le decoupage des surfaces, en toutes lettres : « espace couvert
+              120 m² » laissait imaginer une salle de reception fermee, alors
+              que l'interieur en fait 45 et que tout le reste est dehors. */}
+          <Reveal delay={700}>
+            <p className="body-font text-sm mt-16 max-w-2xl mx-auto leading-relaxed text-center" style={{ color: "#5a4f42" }}>
+              {t.espacesNote}
+            </p>
+          </Reveal>
         </div>
       </section>
 
       {/* ── HISTOIRE ── */}
       <section id="histoire" className="py-24">
         <div className="max-w-3xl mx-auto px-8 text-center">
-          <Reveal><Eyebrow>{t.histoire.eyebrow}</Eyebrow></Reveal>
-          <WordReveal className="display text-4xl sm:text-6xl mb-10" style={{ fontWeight: 300 }}>
+          <Reveal><Eyebrow ton={A_TERRE}>{t.histoire.eyebrow}</Eyebrow></Reveal>
+          <WordReveal className="display titre-histoire mb-10" style={{ fontWeight: 300 }}>
             {t.histoire.titre}
           </WordReveal>
-          <MaskText delay={120} className="body-font text-lg leading-relaxed mb-7 max-w-2xl mx-auto" style={{ color: "#3f362b" }}>
-            {t.histoire.p0}
-          </MaskText>
           <Reveal delay={240}>
             <div className="max-w-2xl mx-auto space-y-6 body-font leading-relaxed" style={{ color: "#5a4f42" }}>
+              <p>
+                {t.histoire.p0}
+              </p>
               <p>
                 {t.histoire.p1}
               </p>
@@ -1915,11 +2080,8 @@ export default function App() {
               <p>
                 {t.histoire.p3}
               </p>
-              <p>
-                {t.histoire.p4}
-              </p>
             </div>
-            <p className="display italic text-xl sm:text-2xl mt-14 max-w-xl mx-auto" style={{ color: "#B5654A", fontWeight: 300 }}>
+            <p className="display italic citation-ligne mt-14 max-w-xl -mx-4 sm:mx-auto" style={{ color: "#B5654A", fontWeight: 300 }}>
               {t.histoire.citation}
             </p>
           </Reveal>
@@ -1936,7 +2098,7 @@ export default function App() {
       <section id="experiences" className="relative max-w-4xl mx-auto px-8 py-28 text-center">
         <FondAbstrait intensite={0.7} />
         <div className="relative">
-        <Reveal><Eyebrow>{t.experiences.eyebrow}</Eyebrow></Reveal>
+        <Reveal><Eyebrow ton={A_OLIVE}>{t.experiences.eyebrow}</Eyebrow></Reveal>
         <WordReveal className="display text-4xl sm:text-6xl mb-16" style={{ fontWeight: 300 }}>
           {t.experiences.titre}
         </WordReveal>
@@ -1944,12 +2106,12 @@ export default function App() {
           {t.prestations.map((p, i) => (
             <Reveal key={i} delay={i * 70}>
               <div>
-                <span className="mono text-[10px] block mb-3" style={{ color: "#B5654A" }}>{String(i + 1).padStart(2, "0")}</span>
+                <span className="mono text-[10px] block mb-3" style={{ color: A_TERRE }}>{String(i + 1).padStart(2, "0")}</span>
                 <div className="flex items-center justify-center gap-3 flex-wrap">
                   <h3 className="display text-2xl sm:text-3xl" style={{ fontWeight: 400 }}>{p.t}</h3>
-                  {p.soon && <span className="mono text-[8px] uppercase tracking-[0.2em] px-2 py-1" style={{ color: "#6B7355", background: "#e5dcc8" }}>{t.experiences.bientot}</span>}
+                  {p.soon && <span className="mono text-[8px] uppercase tracking-[0.2em] px-2 py-1" style={{ color: "#626A4E", background: "#e5dcc8" }}>{t.experiences.bientot}</span>}
                 </div>
-                <p className="body-font text-sm mt-3 leading-relaxed max-w-lg mx-auto" style={{ color: "#5a4f42" }}>{p.d}</p>
+                <p className="body-font mt-3 leading-relaxed max-w-lg mx-auto" style={{ color: "#5a4f42" }}>{p.d}</p>
               </div>
             </Reveal>
           ))}
@@ -1962,13 +2124,16 @@ export default function App() {
         </div>
       </section>
 
-      {/* ── BANDEAU ── */}
-      <div className="overflow-hidden py-10">
+      {/* ── BANDEAU ──
+          Même vide au-dessus et en dessous (56 px), pour qu'il soit centré
+          entre le cadre des expériences et la photo des tournages : la
+          photo n'a plus de marge propre au-dessus d'elle. */}
+      <div className="overflow-hidden py-14">
         <div className="marquee flex whitespace-nowrap">
           {[...Array(2)].map((_, k) => (
             <span key={k} className="flex items-center">
               {t.bandeau.map((mot, i) => (
-                <span key={i} className="display text-2xl sm:text-4xl flex items-center" style={{ color: "#c0b298", fontWeight: 300 }}>
+                <span key={i} className="display text-2xl sm:text-4xl flex items-center" style={{ color: "#857C6A", fontWeight: 300 }}>
                   <span className="px-10">{mot}</span>
                   <span style={{ color: "#B5654A", fontSize: ".4em" }}>✦</span>
                 </span>
@@ -1979,10 +2144,10 @@ export default function App() {
       </div>
 
       {/* ── APPEL TOURNAGES ── */}
-      <section className="relative w-full overflow-hidden my-16">
+      <section className="relative w-full overflow-hidden mb-16">
         <button onClick={() => allerA("tournages")} className="block w-full text-left group">
           <VoletsReveal className="relative w-full h-[56vh] sm:h-[70vh]">
-            <img src={V_PERGOLA} alt={t.decors[0].t}
+            <img src={V_PERGOLA} alt={t.decors[0].t} loading="lazy" decoding="async"
               className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105"
               style={{ objectPosition: "center 55%" }} />
             <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(20,14,8,.30), rgba(20,14,8,.70))" }} />
@@ -2006,29 +2171,35 @@ export default function App() {
       {/* ── GALERIE ── */}
       <section id="galerie" className="pt-24">
         <div className="max-w-4xl mx-auto px-8 text-center">
-          <Reveal><Eyebrow>{t.galerie.eyebrow}</Eyebrow></Reveal>
+          <Reveal><Eyebrow ton={A_TERRE}>{t.galerie.eyebrow}</Eyebrow></Reveal>
           <WordReveal className="display text-4xl sm:text-6xl mb-6" style={{ fontWeight: 300 }}>
             {t.galerie.titre}
           </WordReveal>
           <Reveal delay={200}>
-            <p className="mono text-[10px] uppercase tracking-[0.24em] mb-4 tick flex items-center justify-center gap-3" style={{ color: "#9a8f76" }}>
+            <p className="mono text-[10px] uppercase tracking-[0.24em] mb-4 tick flex items-center justify-center gap-3" style={{ color: "#6D6654" }}>
               {t.galerie.faire} <ArrowRight size={12} />
             </p>
           </Reveal>
         </div>
-        <GalerieHorizontale items={[
-          { src: IMAGES.lieu, l: t.galerie.legendes[0], pos: "center 30%", w: "min(78vw,420px)", h: "min(64vh,560px)" },
-          { src: P_CHEVAL_BAR, l: t.galerie.legendes[1], pos: "45% center", w: "min(80vw,460px)", h: "min(58vh,510px)" },
-          { src: P_TERRASSE_VASQUE, l: t.galerie.legendes[2], pos: "center 60%", w: "min(86vw,600px)", h: "min(50vh,430px)" },
-          { src: P_SALLE, l: t.galerie.legendes[3], pos: "center 40%", w: "min(74vw,400px)", h: "min(66vh,575px)" },
-          { src: P_TROIS_CHEVAUX, l: t.galerie.legendes[4], pos: "center 62%", w: "min(82vw,520px)", h: "min(56vh,490px)" },
+        <GalerieHorizontale label={t.galerie.titre} items={[
+          { src: P_CHEVAL_NB, l: t.galerie.legendes[0], pos: "center 40%", w: "min(80vw,460px)", h: "min(58vh,510px)" },
+          { src: P_TERRASSE_VASQUE, l: t.galerie.legendes[1], pos: "center 60%", w: "min(86vw,600px)", h: "min(50vh,430px)" },
+          { src: P_SALLE, l: t.galerie.legendes[2], pos: "center 40%", w: "min(74vw,400px)", h: "min(66vh,575px)" },
+          { src: P_ALLEE_PORTAIL, l: t.galerie.legendes[3], pos: "center 50%", w: "min(76vw,420px)", h: "min(64vh,560px)" },
+          { src: P_SALON_JARDIN, l: t.galerie.legendes[4], pos: "center 60%", w: "min(84vw,520px)", h: "min(60vh,560px)" },
+          { src: P_CHEVAUX_ARBRES, l: t.galerie.legendes[5], pos: "center 55%", w: "min(80vw,460px)", h: "min(58vh,510px)" },
+          { src: P_FENETRE_BOIS, l: t.galerie.legendes[6], pos: "center 50%", w: "min(74vw,420px)", h: "min(62vh,540px)" },
+          /* Seule photo en paysage. Le cadre vertical du telephone en
+             perdait plus de la moitie (le poney ou le cheval, jamais les
+             deux) : elle garde son 4/3 partout, mw/mh sur telephone. */
+          { src: P_TERRASSE_NUIT, l: t.galerie.legendes[7], pos: "center", w: "min(88vw,680px)", h: "min(54vh,510px)", mw: "86vw", mh: "64.5vw" },
         ]} />
       </section>
 
       {/* ── LE REFUGE ── */}
       <section id="refuge" className="relative min-h-[92svh] lg:min-h-[85vh] flex items-center overflow-hidden">
         <Projecteur className="absolute inset-0">
-          <Photo src={IMAGES.animaux} alt={t.refuge.alt} className="w-full h-full" tone={3} zoom pos="center 40%" />
+          <Photo src={P_CHEVAL_BAR} alt={t.refuge.alt} className="w-full h-full" tone={3} zoom pos="center 45%" />
           <div className="absolute inset-0" style={{ background: "rgba(22,16,10,.44)" }} />
           <div className="absolute inset-0 hidden lg:block" style={{ background: "linear-gradient(to right, rgba(22,16,10,.66) 0%, rgba(22,16,10,.22) 62%, transparent 100%)" }} />
           <div className="absolute inset-0 lg:hidden" style={{ background: "linear-gradient(to bottom, rgba(22,16,10,.26) 0%, rgba(22,16,10,.6) 100%)" }} />
@@ -2049,9 +2220,12 @@ export default function App() {
             </p>
           </Reveal>
           <Reveal delay={340}>
-            <ul className="body-font text-sm mt-12 space-y-4" style={{ color: "rgba(246,241,231,.82)" }}>
+            <p className="body-font leading-relaxed mt-12" style={{ color: "rgba(246,241,231,.9)" }}>
+              {t.refuge.principes}
+            </p>
+            <ul className="body-font text-sm mt-5 space-y-4" style={{ color: "rgba(246,241,231,.82)" }}>
               {t.refuge.liste.map((x, i) => (
-                <li key={i}>{x}</li>
+                <li key={i} className="flex items-center gap-3.5"><PictoRefuge i={i} /><span>{x}</span></li>
               ))}
             </ul>
           </Reveal>
@@ -2063,7 +2237,7 @@ export default function App() {
       <section id="disponibilites" className="relative max-w-3xl mx-auto px-8 py-28 text-center">
         <FondAbstrait intensite={0.6} />
         <div className="relative">
-        <Reveal><Eyebrow>{t.dispo.eyebrow}</Eyebrow></Reveal>
+        <Reveal><Eyebrow ton={A_OLIVE}>{t.dispo.eyebrow}</Eyebrow></Reveal>
         <WordReveal className="display text-4xl sm:text-6xl mb-12" style={{ fontWeight: 300 }}>
           {t.dispo.titre}
         </WordReveal>
@@ -2075,7 +2249,7 @@ export default function App() {
                   if (isB) return; setSelectedDate(label); versDevis();
                 }} />
               </div>
-              <p className="mono text-[10px] uppercase tracking-[0.2em] mt-6" style={{ color: "#9a8f76" }}>
+              <p className="mono text-[10px] uppercase tracking-[0.2em] mt-6" style={{ color: "#6D6654" }}>
                 {t.dispo.note}
               </p>
             </>
@@ -2086,62 +2260,81 @@ export default function App() {
 
       {/* ── DEVIS ── */}
       <section id="devis" className="max-w-2xl mx-auto px-8 py-28 text-center">
-        <Reveal><Eyebrow>{t.devis.eyebrow}</Eyebrow></Reveal>
+        <Reveal><Eyebrow ton={A_TERRE}>{t.devis.eyebrow}</Eyebrow></Reveal>
         <WordReveal className="display text-4xl sm:text-6xl mb-6" style={{ fontWeight: 300 }}>
           {t.devis.titre}
         </WordReveal>
         <Reveal delay={150}>
-          <p className="body-font text-sm mb-14 leading-relaxed max-w-lg mx-auto" style={{ color: "#5a4f42" }}>
+          <p className="body-font mb-14 leading-relaxed max-w-lg mx-auto" style={{ color: "#5a4f42" }}>
             {t.devis.texte}
           </p>
           {submitted ? (
             <div className="fu py-10">
               <p className="display text-3xl mb-4" style={{ fontWeight: 300 }}>{t.devis.merci}</p>
-              <p className="body-font text-sm max-w-md mx-auto" style={{ color: "#5a4f42" }}>
+              <p className="body-font leading-relaxed max-w-md mx-auto" style={{ color: "#5a4f42" }}>
                 {t.devis.confirm1}{selectedDate ? ` ${t.devis.confirm2} ${selectedDate}` : ""}. {t.devis.confirm3}
               </p>
             </div>
           ) : (
-            <form onSubmit={envoyerDevis} className="space-y-8 text-left">
+            <form onSubmit={envoyerDevis} noValidate className="space-y-8 text-left">
               {/* Leurre : invisible pour les visiteurs, rempli par les robots */}
               <input type="text" name="_honey" tabIndex={-1} autoComplete="off"
                 aria-hidden="true" value={piege} onChange={(e) => setPiege(e.target.value)}
                 style={{ position: "absolute", left: "-9999px", opacity: 0, height: 0, width: 0 }} />
               <div>
-                <label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.date}</label>
+                {/* Un <span> et non un <label> : une etiquette ne peut pas
+                    designer un bouton. Le nom complet est porte par le bouton. */}
+                <span className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.date}</span>
                 {/* Bouton et non champ de saisie : la date se choisit dans le
                     calendrier, plus haut. Un clic y renvoie. */}
-                <button type="button" onClick={versCalendrier}
-                  className="body-font w-full mt-3 px-0 py-3 min-h-[44px] bg-transparent text-sm text-center transition-colors duration-300 hover:opacity-70"
-                  style={{ borderBottom: "1px solid #C7B79A", color: selectedDate ? "#2B2118" : "#9a8f76" }}>
-                  {selectedDate || t.devis.datePh}
+                <button type="button" id="champ-date" onClick={versCalendrier}
+                  aria-label={selectedDate ? `${t.devis.date}, ${selectedDate}, ${t.devis.dateModifier}` : `${t.devis.date}, ${t.devis.datePh}`}
+                  aria-describedby={erreurs.date ? "champ-date-erreur" : undefined}
+                  className={`champ-date body-font w-full mt-3 px-0 py-3 min-h-[44px] bg-transparent text-sm text-center flex items-center justify-center gap-2${selectedDate ? "" : " champ-date-vide"}`}
+                  style={erreurs.date ? { borderColor: "#97543E" } : undefined}>
+                  <CalendarDays size={13} aria-hidden="true" />
+                  <span>{selectedDate || t.devis.datePh}</span>
                 </button>
+                {messageChamp("date")}
               </div>
               <div className="grid sm:grid-cols-2 gap-8">
-                <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.nom}</label>
-                  <input id="champ-nom" type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
-                <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.email}</label>
-                  <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
+                <div><label htmlFor="champ-nom" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.nom}</label>
+                  <input id="champ-nom" type="text" required value={form.name} onChange={(e) => majChamp("name", e.target.value)}
+                    aria-invalid={erreurs.name ? true : undefined} aria-describedby={erreurs.name ? "champ-nom-erreur" : undefined}
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={bordure("name")} />
+                  {messageChamp("name")}</div>
+                <div><label htmlFor="champ-email" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.email}</label>
+                  <input id="champ-email" type="email" required value={form.email} onChange={(e) => majChamp("email", e.target.value)}
+                    aria-invalid={erreurs.email ? true : undefined} aria-describedby={erreurs.email ? "champ-email-erreur" : undefined}
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={bordure("email")} />
+                  {messageChamp("email")}</div>
               </div>
               <div className="grid sm:grid-cols-2 gap-8">
-                <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.tel}</label>
-                  <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
-                <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.invites}</label>
-                  <input type="number" min="1" value={form.guests} onChange={(e) => setForm({ ...form, guests: e.target.value })}
-                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
+                <div><label htmlFor="champ-tel" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.tel}</label>
+                  <input id="champ-tel" type="tel" required autoComplete="tel" value={form.phone} onChange={(e) => majChamp("phone", e.target.value)}
+                    aria-invalid={erreurs.phone ? true : undefined} aria-describedby={erreurs.phone ? "champ-tel-erreur" : undefined}
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={bordure("phone")} />
+                  {messageChamp("phone")}</div>
+                <div><label htmlFor="champ-invites" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.invites}</label>
+                  <input id="champ-invites" type="number" min="1" required inputMode="numeric" value={form.guests} onChange={(e) => majChamp("guests", e.target.value)}
+                    aria-invalid={erreurs.guests ? true : undefined} aria-describedby={erreurs.guests ? "champ-invites-erreur" : undefined}
+                    className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={bordure("guests")} />
+                  {messageChamp("guests")}</div>
               </div>
-              <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.type}</label>
-                <select value={form.type || t.prestations[0].t} onChange={(e) => setForm({ ...form, type: e.target.value })}
-                  className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #C7B79A" }}>
+              <div><label htmlFor="champ-type" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.type}</label>
+                {/* Aucune experience preselectionnee : la liste s'ouvre sur une
+                    invite, et le choix est demande avant l'envoi. */}
+                <select id="champ-type" required value={form.type} onChange={(e) => majChamp("type", e.target.value)}
+                  aria-invalid={erreurs.type ? true : undefined} aria-describedby={erreurs.type ? "champ-type-erreur" : undefined}
+                  className={`body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center${form.type ? "" : " champ-type-vide"}`} style={bordure("type")}>
+                  <option value="" disabled>{t.devis.typePh}</option>
                   {t.prestations.map((p) => <option key={p.t}>{p.t}</option>)}<option>{t.devis.autre}</option>
-                </select></div>
-              <div><label className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#6B7355" }}>{t.devis.projet}</label>
-                <textarea rows={3} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
+                </select>
+                {messageChamp("type")}</div>
+              <div><label htmlFor="champ-projet" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.projet}</label>
+                <textarea id="champ-projet" rows={3} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
                   placeholder={t.devis.projetPh}
-                  className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm resize-none text-center" style={{ borderBottom: "1px solid #C7B79A" }} /></div>
+                  className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm resize-none text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
               <div className="text-center pt-4">
                 <button type="submit" disabled={envoi === "envoi"}
                   className="btn btn-solid body-font px-12 py-4 text-[11px] uppercase tracking-[0.28em] disabled:opacity-60"
@@ -2151,10 +2344,15 @@ export default function App() {
                     {envoi === "envoi" ? t.devis.envoiEnCours : t.devis.envoyer}
                   </span>
                 </button>
+                {Object.values(erreurs).some(Boolean) && (
+                  <p className="body-font text-sm mt-6 max-w-sm mx-auto text-balance" style={{ color: "#97543E" }} role="alert">
+                    {t.devis.manqueResume}
+                  </p>
+                )}
                 {envoi === "erreur" && (
-                  <p className="body-font text-sm mt-6 max-w-sm mx-auto" style={{ color: "#B5654A" }} role="alert">
+                  <p className="body-font text-sm mt-6 max-w-sm mx-auto" style={{ color: "#97543E" }} role="alert">
                     {t.devis.erreur}{" "}
-                    <a href={`mailto:${ADRESSE_DEVIS}`} className="link-u" style={{ color: "#B5654A" }}>
+                    <a href={`mailto:${ADRESSE_DEVIS}`} className="link-u" style={{ color: "#97543E" }}>
                       {ADRESSE_DEVIS}
                     </a>
                   </p>
@@ -2169,7 +2367,7 @@ export default function App() {
       <section id="faq" className="relative max-w-2xl mx-auto px-8 py-28 text-center">
         <FondAbstrait intensite={0.5} />
         <div className="relative">
-        <Reveal><Eyebrow>{t.faqT.eyebrow}</Eyebrow></Reveal>
+        <Reveal><Eyebrow ton={A_OLIVE}>{t.faqT.eyebrow}</Eyebrow></Reveal>
         <WordReveal className="display text-4xl sm:text-6xl mb-14" style={{ fontWeight: 300 }}>
           {t.faqT.titre}
         </WordReveal>
@@ -2178,6 +2376,7 @@ export default function App() {
         </div>
         </div>
       </section>
+      </main>
 
       {/* ── CONTACT ── */}
       <footer id="contact" style={{ background: "#2B2118", color: "#EDE4D3" }}>

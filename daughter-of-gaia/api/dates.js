@@ -78,6 +78,41 @@ function dateValide(d) {
   return typeof d === "string" && /^\d{4}-\d{1,2}-\d{1,2}$/.test(d);
 }
 
+/* ─── Limitation des tentatives ──────────────────────────────────
+   Sans limite, un robot pouvait essayer des milliers de codes à la
+   suite. Au-delà de MAX_ESSAIS en FENETRE_S secondes, une adresse IP
+   est bloquée jusqu'à la fin de la fenêtre.
+
+   Le compteur est incrémenté AVANT la vérification du code : INCR est
+   atomique, donc une rafale de requêtes simultanées ne peut pas passer
+   entre les gouttes en lisant toutes un compteur encore à zéro. Un
+   code correct remet le compteur à zéro. */
+const MAX_ESSAIS = 5;
+const FENETRE_S = 15 * 60;
+
+function ipDe(req) {
+  const xff = req.headers["x-forwarded-for"];
+  if (typeof xff === "string" && xff) return xff.split(",")[0].trim();
+  return req.headers["x-real-ip"] || "inconnue";
+}
+
+async function compterEssai(ip) {
+  const c = await client();
+  const cle = `gaia-essais:${ip}`;
+  const n = await c.incr(cle);
+  if (n === 1) await c.expire(cle, FENETRE_S);
+  if (n <= MAX_ESSAIS) return { bloque: false, cle };
+
+  /* Filet : si l'expiration n'a jamais été posée (coupure entre INCR et
+     EXPIRE), le blocage serait définitif. On la pose ici. */
+  let restant = await c.ttl(cle);
+  if (restant < 0) {
+    await c.expire(cle, FENETRE_S);
+    restant = FENETRE_S;
+  }
+  return { bloque: true, restant, cle };
+}
+
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
@@ -92,11 +127,29 @@ export default async function handler(req, res) {
       return res.status(405).json({ erreur: "methode_non_autorisee" });
     }
 
-    const corps = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
+    /* Un corps illisible est une erreur de la requête, pas du serveur */
+    let corps;
+    try {
+      corps = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
+    } catch {
+      return res.status(400).json({ erreur: "requete_invalide" });
+    }
+    if (!corps || typeof corps !== "object") {
+      return res.status(400).json({ erreur: "requete_invalide" });
+    }
     const { code, action, date } = corps;
 
     if (!CODE) return res.status(500).json({ erreur: "code_non_configure" });
+
+    const essai = await compterEssai(ipDe(req));
+    if (essai.bloque) {
+      res.setHeader("Retry-After", String(essai.restant));
+      return res.status(429).json({ erreur: "trop_de_tentatives", reessayerDans: essai.restant });
+    }
+
     if (!codeValide(code)) return res.status(401).json({ erreur: "code_incorrect" });
+
+    await (await client()).del(essai.cle);   // code correct : compteur remis à zéro
 
     /* ── Vérification du code seule (écran de connexion) ── */
     if (action === "verifier") {
