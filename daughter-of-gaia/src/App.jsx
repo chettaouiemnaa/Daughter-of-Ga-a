@@ -80,14 +80,14 @@ function pageDepuisChemin(chemin) {
    dans ses résultats et ce que montrent les aperçus de partage. */
 const META = {
   accueil: {
-    titre: "Lieu événementiel à Tunis, près de La Marsa — Daughter of Gaïa",
+    titre: "Daughter of Gaïa, lieu événementiel à Tunis près de La Marsa",
     description:
-      "Domaine privé de 4 000 m² à La Soukra, tout près de La Marsa. Privatisation complète jusqu'à 100 invités : séminaires, anniversaires, brunchs, tournages.",
+      "Domaine privé de 4 000 m² à La Soukra, tout près de La Marsa. Privatisation complète jusqu'à 100 invités, pour vos séminaires, anniversaires, brunchs et tournages.",
   },
   tournages: {
-    titre: "Lieu de tournage près de Tunis — Daughter of Gaïa, La Soukra",
+    titre: "Daughter of Gaïa, lieu de tournage à La Soukra près de Tunis",
     description:
-      "Décor de tournage à 20 minutes de Tunis : des décors extérieurs variés, une maison entièrement filmable, lumière naturelle toute la journée et des chevaux sur place.",
+      "Décor de tournage à 20 minutes de Tunis, avec des décors extérieurs variés, une maison entièrement filmable, une lumière naturelle toute la journée et des chevaux sur place.",
   },
 };
 
@@ -135,7 +135,7 @@ fr: {
     p0: "Daughter of Gaïa est né d'un attachement profond à la nature et aux animaux, et de l'envie de créer un lieu où les rencontres et les célébrations trouvent leur place dans cet environnement.",
     p1: "Son nom s'inspire de Gaïa, déesse de la Terre dans la mythologie grecque, symbole de vie et de nature. Une philosophie qui guide chaque choix, du respect des animaux à la manière d'imaginer les événements.",
     p2: "Certains animaux y ont trouvé refuge, d'autres y sont nés. Tous font partie de l'histoire du domaine et de ce qui le rend si particulier.",
-    p3: "Chaque espace a été imaginé avec cette même attention : accueillir des événements dans un cadre singulier, tout en préservant l'équilibre et la tranquillité du lieu.",
+    p3: "Chaque espace a été imaginé avec cette même attention, pour accueillir des événements dans un cadre singulier tout en préservant l'équilibre et la tranquillité du lieu.",
     citation: "There are places you visit. And there are places you feel.",
     alt: "Deux chevaux pie qui broutent côte à côte" },
   experiences: { eyebrow: "Expériences", titre: "Ce que le domaine accueille", bientot: "bientôt",
@@ -146,14 +146,14 @@ fr: {
     { t: "Anniversaires", d: "Une célébration privée, en petit comité, avec la nature pour décor." },
     { t: "Événements enfants", d: "Un grand terrain, de la verdure, et des animaux à observer respectueusement." },
     { t: "Baby showers", d: "Un moment doux et intimiste, au jardin ou sous la terrasse couverte." },
-    { t: "Brunchs privés", d: "Cuisine équipée et terrasse — tout est là pour recevoir en toute liberté." },
+    { t: "Brunchs privés", d: "Cuisine équipée et terrasse. Tout est là pour recevoir en toute liberté." },
     { t: "Table d'hôte", d: "Une longue table dressée pour un repas partagé au rythme du domaine, entourée d'animaux en liberté et du chant des oiseaux." },
-    { t: "Shootings photo & vidéo", d: "Lumière naturelle, décors variés, présence animale — un terrain de jeu pour les créatifs." },
+    { t: "Shootings photo & vidéo", d: "Lumière naturelle, décors variés, présence animale. Un terrain de jeu pour les créatifs." },
     { t: "Tournages de films", d: "Décors multiples en extérieur, une maison entièrement filmable, et de la lumière naturelle toute la journée." },
     { t: "Mariages intimistes", d: "Petits mariages et événements liés au mariage.", soon: true },
   ],
   appel: { eyebrow: "Tournages & production", titre: "Une maison privée, réservée aux tournages.",
-    texte: "Elle s'ajoute au domaine et à ses chevaux pour accueillir les productions : intérieurs de caractère, piscine, jardins et pergola, entièrement filmables.",
+    texte: "Elle s'ajoute au domaine et à ses chevaux pour accueillir les productions, avec ses intérieurs de caractère, sa piscine, ses jardins et sa pergola, entièrement filmables.",
     lien: "Découvrir la page tournages" },
   bandeau: ["Respect du vivant", "Animaux sauvés", "Nature préservée", "Domaine privatisable", "Sur réservation"],
   galerie: { eyebrow: "Galerie", titre: "Le domaine en images", faire: "Faites défiler",
@@ -163,7 +163,7 @@ fr: {
   refuge: { eyebrow: "Le refuge", titre: "Leur maison, avant tout.",
     p1: "Daughter of Gaïa est aussi un refuge pour les chevaux, les chiens et les autres animaux qui y vivent. Certains ont été recueillis et soignés, d'autres y ont vu le jour. Chacun a son histoire et tous partagent aujourd'hui un environnement où leur bien-être est une priorité.",
     p2: "Au fil du temps, plusieurs chevaux ont retrouvé un nouveau foyer après avoir été remis sur pied. D'autres continuent de vivre paisiblement sur le domaine, à leur propre rythme.",
-    principes: "Les événements s'organisent dans le respect de leur tranquillité, avec quelques principes essentiels\u00a0:",
+    principes: "Les événements s'organisent dans le respect de leur tranquillité, avec quelques principes essentiels.",
     liste: ["Rencontres laissées à leur initiative", "Observation respectueuse, à distance", "Niveaux sonores et horaires encadrés", "Espaces de repos préservés"],
     alt: "Un cheval alezan à la fenêtre de l'espace couvert" },
   dispo: { eyebrow: "Disponibilités", titre: "Choisissez une date", note: "Les dates barrées sont déjà réservées" },
@@ -187,10 +187,10 @@ fr: {
     { q: "Le lieu est-il ouvert au public\u00a0?", r: "Daughter of Gaïa accueille uniquement des événements privés, sur réservation. Chaque réservation privatise entièrement le domaine, et vous êtes les seuls sur place." },
     { q: "Peut-on approcher les animaux\u00a0?", r: "Les animaux vivent chez eux. On les observe à distance, dans le respect de leur tranquillité, et la rencontre reste à leur initiative." },
     { q: "Pourquoi privilégier les événements en journée\u00a0?", r: "Pour préserver le calme des animaux et le repos du voisinage. Les formats en journée sont donc favorisés." },
-    { q: "Combien de personnes le lieu peut-il accueillir\u00a0?", r: "Jusqu'à 100 invités, avec un parking de 40 places à l'entrée. Ces 100 personnes se répartissent entre les 650 m² aménagés, la terrasse couverte de 70 m² et la salle de 45 m² : le domaine est un lieu de plein air, conçu pour des réceptions qui se vivent dehors, à l'abri quand il le faut. Décrivez-nous votre format, nous vous dirons ce qu'il permet." },
-    { q: "Quelle est la surface des espaces couverts\u00a0?", r: "135 m² au total : 70 m² de terrasse couverte ouverte sur l'extérieur, une salle de 45 m² et une cuisine de 20 m². Autour, 650 m² aménagés, et tout le reste des 4 000 m² en plein air." },
+    { q: "Combien de personnes le lieu peut-il accueillir\u00a0?", r: "Jusqu'à 100 invités, avec un parking de 40 places à l'entrée. Ces 100 personnes se répartissent entre les 650 m² aménagés, la terrasse couverte de 70 m² et la salle de 45 m². Le domaine est un lieu de plein air, conçu pour des réceptions qui se vivent dehors, à l'abri quand il le faut. Décrivez-nous votre format, nous vous dirons ce qu'il permet." },
+    { q: "Quelle est la surface des espaces couverts\u00a0?", r: "135 m² au total, avec 70 m² de terrasse couverte ouverte sur l'extérieur, une salle de 45 m² et une cuisine de 20 m². Autour, 650 m² aménagés, et tout le reste des 4 000 m² en plein air." },
     { q: "La cuisine est-elle utilisable\u00a0?", r: "Oui. Une cuisine de 20 m², entièrement équipée, fait partie de l'ensemble couvert. Vous pouvez y recevoir votre traiteur ou cuisiner sur place." },
-    { q: "La maison fait-elle partie du lieu de réception ?", r: "La maison et ses décors sont réservés aux tournages et aux prises de vue. Les événements privés se tiennent dans les espaces du domaine — jardin, terrasse et espace couvert." },
+    { q: "La maison fait-elle partie du lieu de réception ?", r: "La maison et ses décors sont réservés aux tournages et aux prises de vue. Les événements privés se tiennent dans le jardin, la terrasse et l'espace couvert du domaine." },
     { q: "Comment obtenir un devis\u00a0?", r: "Choisissez une date dans le calendrier, décrivez votre projet, et nous revenons vers vous avec une proposition adaptée." },
   ],
   contact: { sur: "Private Experiences \u00a0•\u00a0 By Reservation",
@@ -198,14 +198,14 @@ fr: {
   tournages: {
     sur: "Daughter of Gaïa \u00a0•\u00a0 Production",
     titre: "Un lieu à part, réservé aux tournages.",
-    accroche: "Villa coloniale, piscine, jardins, pergola et chevaux en liberté — plusieurs décors à quelques minutes de Tunis, distincts des espaces de réception.",
+    accroche: "Villa coloniale, piscine, jardins, pergola et chevaux en liberté. Plusieurs décors à quelques minutes de Tunis, distincts des espaces de réception.",
     btn: "Voir les décors",
     nav: { decors: "Les décors", maison: "La maison", pratique: "En pratique", domaine: "Le domaine", contact: "Contact" },
     introT: "Plusieurs univers sur un seul site, décors déjà en place.",
-    intro: "Une villa coloniale à voûtes de brique, une piscine bordée d'arcades en pierre, une pergola ouverte sur le jardin, des palmiers, des bougainvilliers — et des chevaux qui vivent là et entrent naturellement dans le cadre. Un vocabulaire assez large pour jouer l'Andalousie, le Maghreb ou le Levant.",
+    intro: "Une villa coloniale à voûtes de brique, une piscine bordée d'arcades en pierre, une pergola ouverte sur le jardin, des palmiers, des bougainvilliers, et des chevaux qui vivent là et entrent naturellement dans le cadre. Un vocabulaire assez large pour jouer l'Andalousie, le Maghreb ou le Levant.",
     decorsE: "Repérage", decorsT: "Du jardin au séjour",
     maisonE: "La maison", maisonT: "Un décor à part entière, et une base pour vos équipes",
-    maison1: "La maison est réservée aux productions et aux prises de vue. Elle se filme autant qu'elle s'utilise — séjour sous voûte de brique posée à chevrons, sol en marbre, lustre en cristal, portes cintrées ouvrant sur le jardin. Un intérieur colonial complet, disponible pour vos plans comme pour vos besoins techniques.",
+    maison1: "La maison est réservée aux productions et aux prises de vue. Elle se filme autant qu'elle s'utilise. Séjour sous voûte de brique posée à chevrons, sol en marbre, lustre en cristal, portes cintrées ouvrant sur le jardin. Un intérieur colonial complet, disponible pour vos plans comme pour vos besoins techniques.",
     maison2: "Elle accueille aussi vos loges, le maquillage, la régie, les repas d'équipe et le stockage du matériel, dans un espace couvert, climatisé et fermé, à quelques pas des décors extérieurs. Les tournages se déroulent en journée ; les nuitées se passent hors du domaine.",
     pratiqueE: "En pratique", pratiqueT: "Ce que le domaine vous apporte",
     pratiqueN: "Les tournages se déroulent en journée, afin de préserver la tranquillité des animaux et du voisinage. Chaque projet fait l'objet d'une visite technique préalable.",
@@ -214,7 +214,7 @@ fr: {
     retour: "Retour au domaine",
   },
   decors: [
-    { n: "01", t: "Le salon de jardin sous la pergola", d: "Canapés en teck, four à pain en pierre, bougainvilliers en fleur — et des chevaux qui broutent à quelques mètres, dans le même plan. Les figurants à quatre pattes sont déjà sur place." },
+    { n: "01", t: "Le salon de jardin sous la pergola", d: "Canapés en teck, four à pain en pierre, bougainvilliers en fleur, et des chevaux qui broutent à quelques mètres, dans le même plan. Les figurants à quatre pattes sont déjà sur place." },
     { n: "02", t: "La piscine et le bar extérieur", d: "Arcades en pierre, bar en brique, bassin turquoise. Plein sud, lumière franche du matin jusqu'en fin d'après-midi." },
     { n: "03", t: "Le jardin sous les bougainvilliers", d: "Un olivier centenaire, un mur de fleurs, des banquettes à l'ombre. Un décor plus intime, pour les plans rapprochés." },
     { n: "04", t: "La pelouse et les palmiers", d: "Un grand espace dégagé, praticable pour les travellings et l'installation du matériel, avec des ombres portées toute la journée." },
@@ -222,10 +222,10 @@ fr: {
   ],
   atouts: [
     { t: "Lumière naturelle", d: "Orientation dégagée, horizon libre. Le soleil traverse le domaine du matin au soir." },
-    { t: "Intérieur et extérieur", d: "Villa coloniale, jardin, piscine, pré et écuries — plusieurs univers sur un seul site." },
+    { t: "Intérieur et extérieur", d: "Villa coloniale, jardin, piscine, pré et écuries. Plusieurs univers sur un seul site." },
     { t: "Chevaux sur place", d: "Des chevaux qui vivent sur le domaine, disponibles à l'image, déjà chez eux." },
     { t: "Accès", d: "À quelques minutes du centre de Tunis, à La Soukra." },
-    { t: "Maison filmable", d: "Voûtes de brique, marbre et arcades — un décor intérieur complet, doublé d'une base technique." },
+    { t: "Maison filmable", d: "Voûtes de brique, marbre et arcades. Un décor intérieur complet, doublé d'une base technique." },
     { t: "Privatisation totale", d: "Le domaine est réservé à une seule production à la fois. Le site entier est à vous." },
   ],
   admin: { titre: "Daughter of Gaïa · Administration", quitter: "Quitter", acces: "Accès réservé",
@@ -266,12 +266,12 @@ en: {
     { t: "Covered space", v: "135 m²" }, { t: "Guest capacity", v: "100 guests" },
     { t: "Private parking", v: "40 cars" }, { t: "Rescued or born on the\u00a0estate", v: "7 horses" },
   ],
-  espacesNote: "At the heart of a 4,000 m² private estate, Daughter of Gaïa opens onto 650 m² of landscaped outdoor space, extended by 135 m² under cover: a 70 m² open terrace, a 45 m² indoor room and a 20 m² kitchen. A setting where inside and outside meet naturally, to host events in an atmosphere of their own.",
+  espacesNote: "At the heart of a 4,000 m² private estate, Daughter of Gaïa opens onto 650 m² of landscaped outdoor space, extended by 135 m² under cover, with a 70 m² open terrace, a 45 m² indoor room and a 20 m² kitchen. A setting where inside and outside meet naturally, to host events in an atmosphere of their own.",
   histoire: { eyebrow: "The story", titre: "Before it was a place, it was a conviction.",
     p0: "Daughter of Gaïa was born of a deep attachment to nature and animals, and of the wish to create a place where gatherings and celebrations find their place within this setting.",
     p1: "Its name is inspired by Gaia, goddess of the Earth in Greek mythology, a symbol of life and nature. A philosophy that guides every choice, from respect for the animals to the way events are imagined.",
     p2: "Some animals found refuge here, others were born here. All of them are part of the estate's story and of what makes it so special.",
-    p3: "Every space was designed with the same care: to host events in a distinctive setting while preserving the balance and tranquillity of the place.",
+    p3: "Every space was designed with the same care, to host events in a distinctive setting while preserving the balance and tranquillity of the place.",
     citation: "There are places you visit. And there are places you feel.",
     alt: "Two piebald horses grazing side by side" },
   experiences: { eyebrow: "Experiences", titre: "What the estate hosts", bientot: "soon",
@@ -282,14 +282,14 @@ en: {
     { t: "Birthdays", d: "A private celebration, in small numbers, with nature as the backdrop." },
     { t: "Children's events", d: "Open ground, greenery, and animals to observe respectfully." },
     { t: "Baby showers", d: "A gentle, intimate moment, in the garden or under the covered terrace." },
-    { t: "Private brunches", d: "Fitted kitchen and terrace — everything is here to host with ease." },
+    { t: "Private brunches", d: "Fitted kitchen and terrace. Everything is here to host with ease." },
     { t: "Table d'hôte", d: "One long table set for a shared meal at the estate's own pace, surrounded by free-roaming animals and birdsong." },
-    { t: "Photo & video shoots", d: "Natural light, varied settings, animals on site — a playground for creatives." },
+    { t: "Photo & video shoots", d: "Natural light, varied settings, animals on site. A playground for creatives." },
     { t: "Film shoots", d: "Multiple outdoor locations, a house you can film throughout, and natural light all day long." },
     { t: "Intimate weddings", d: "Small weddings and wedding-related events.", soon: true },
   ],
   appel: { eyebrow: "Filming & production", titre: "A private house, reserved for filming.",
-    texte: "It joins the estate and its horses to welcome productions: characterful interiors, a pool, gardens and a pergola, all ready to film.",
+    texte: "It joins the estate and its horses to welcome productions, with characterful interiors, a pool, gardens and a pergola, all ready to film.",
     lien: "See the filming page" },
   bandeau: ["Respect for the living", "Rescued animals", "Protected nature", "Exclusive hire", "By reservation"],
   galerie: { eyebrow: "Gallery", titre: "The estate in pictures", faire: "Scroll across",
@@ -299,7 +299,7 @@ en: {
   refuge: { eyebrow: "The sanctuary", titre: "Their home, above all.",
     p1: "Daughter of Gaïa is also a sanctuary for the horses, dogs and other animals that live here. Some were taken in and cared for, others were born here. Each has its own story, and all of them now share surroundings where their wellbeing comes first.",
     p2: "Over time, several horses have found a new home once back on their feet. Others continue to live peacefully on the estate, at their own pace.",
-    principes: "Events are organised with respect for their peace, following a few essential principles:",
+    principes: "Events are organised with respect for their peace, following a few essential principles.",
     liste: ["Encounters left to their initiative", "Respectful observation, from a distance", "Sound levels and hours kept in check", "Resting areas preserved"],
     alt: "A chestnut horse at the window of the covered space" },
   dispo: { eyebrow: "Availability", titre: "Choose a date", note: "Crossed-out dates are already booked" },
@@ -323,10 +323,10 @@ en: {
     { q: "Is the estate open to the public?", r: "Daughter of Gaïa hosts private events by reservation only. Each booking privatises the entire estate, and you are the only ones on site." },
     { q: "Can we approach the animals?", r: "The animals are at home here. They are observed from a distance, with respect for their quiet, and any encounter is left to their initiative." },
     { q: "Why favour daytime events?", r: "To preserve the calm of the animals and the rest of the neighbourhood. Daytime formats are therefore preferred." },
-    { q: "How many people can the estate host?", r: "Up to 100 guests, with 40 parking spaces at the entrance. Those 100 people spread across the 650 m² laid out for events, the 70 m² covered terrace and the 45 m² room: this is an open-air estate, built for receptions that happen outdoors, with shelter when it is needed. Tell us your format and we will tell you what it allows." },
-    { q: "How big are the covered spaces?", r: "135 m² in all: a 70 m² covered terrace open to the outside, a 45 m² room and a 20 m² kitchen. Around them, 650 m² laid out for events, and all the rest of the 4,000 m² in the open air." },
+    { q: "How many people can the estate host?", r: "Up to 100 guests, with 40 parking spaces at the entrance. Those 100 people spread across the 650 m² laid out for events, the 70 m² covered terrace and the 45 m² room. This is an open-air estate, built for receptions that happen outdoors, with shelter when it is needed. Tell us your format and we will tell you what it allows." },
+    { q: "How big are the covered spaces?", r: "135 m² in all, with a 70 m² covered terrace open to the outside, a 45 m² room and a 20 m² kitchen. Around them, 650 m² laid out for events, and all the rest of the 4,000 m² in the open air." },
     { q: "Can we use the kitchen?", r: "Yes. A fully fitted kitchen of 20 m² is part of the covered space. You are welcome to bring your caterer or cook on site." },
-    { q: "Is the house part of the event venue?", r: "The house and its locations are reserved for filming and photo shoots. Private events take place in the estate's own spaces — garden, terrace and covered area." },
+    { q: "Is the house part of the event venue?", r: "The house and its locations are reserved for filming and photo shoots. Private events take place in the estate's garden, terrace and covered area." },
     { q: "How do I get a quote?", r: "Choose a date in the calendar, describe your project, and we will come back to you with a tailored proposal." },
   ],
   contact: { sur: "Private Experiences \u00a0•\u00a0 By Reservation",
@@ -334,14 +334,14 @@ en: {
   tournages: {
     sur: "Daughter of Gaïa \u00a0•\u00a0 Production",
     titre: "A place apart, reserved for filming.",
-    accroche: "Colonial villa, pool, gardens, pergola and free-roaming horses — several locations minutes from Tunis, separate from the event spaces.",
+    accroche: "Colonial villa, pool, gardens, pergola and free-roaming horses. Several locations minutes from Tunis, separate from the event spaces.",
     btn: "See the locations",
     nav: { decors: "Locations", maison: "The house", pratique: "Practical", domaine: "The estate", contact: "Contact" },
     introT: "Several worlds on a single site, every set already standing.",
-    intro: "A colonial villa with brick vaulting, a pool framed by stone arcades, a pergola opening onto the garden, palms, bougainvillea — and horses that live here and walk naturally into frame. A vocabulary broad enough to play Andalusia, the Maghreb or the Levant.",
+    intro: "A colonial villa with brick vaulting, a pool framed by stone arcades, a pergola opening onto the garden, palms, bougainvillea, and horses that live here and walk naturally into frame. A vocabulary broad enough to play Andalusia, the Maghreb or the Levant.",
     decorsE: "Location scout", decorsT: "From the garden to the drawing room",
     maisonE: "The house", maisonT: "A location in its own right, and a base for your crew",
-    maison1: "The house is reserved for productions and photo shoots. It is as much to film as to use — a living room under herringbone brick vaulting, marble floors, a crystal chandelier, arched doors opening onto the garden. A complete colonial interior, available for your shots as much as for your technical needs.",
+    maison1: "The house is reserved for productions and photo shoots. It is as much to film as to use. A living room under herringbone brick vaulting, marble floors, a crystal chandelier, arched doors opening onto the garden. A complete colonial interior, available for your shots as much as for your technical needs.",
     maison2: "It also takes your dressing rooms, make-up, production office, crew meals and equipment storage, in a covered, air-conditioned and secure space a few steps from the outdoor locations. Shoots run by day; nights are spent off the estate.",
     pratiqueE: "Practical", pratiqueT: "What the estate gives you",
     pratiqueN: "Shoots take place during the day, to preserve the peace of the animals and of the neighbourhood. Every project begins with a technical visit.",
@@ -350,7 +350,7 @@ en: {
     retour: "Back to the estate",
   },
   decors: [
-    { n: "01", t: "The garden lounge under the pergola", d: "Teak sofas, a stone bread oven, bougainvillea in flower — and horses grazing a few metres away, in the same shot. The four-legged extras already live here." },
+    { n: "01", t: "The garden lounge under the pergola", d: "Teak sofas, a stone bread oven, bougainvillea in flower, and horses grazing a few metres away, in the same shot. The four-legged extras already live here." },
     { n: "02", t: "The pool and outdoor bar", d: "Stone arcades, a brick bar, a turquoise basin. Due south, with clean light from morning until late afternoon." },
     { n: "03", t: "The garden under the bougainvillea", d: "A century-old olive tree, a wall of flowers, benches in the shade. A more intimate setting, for close shots." },
     { n: "04", t: "The lawn and the palms", d: "A large open area, workable for dolly shots and equipment set-up, with cast shadows throughout the day." },
@@ -358,10 +358,10 @@ en: {
   ],
   atouts: [
     { t: "Natural light", d: "Open orientation, clear horizon. The sun crosses the estate from morning to evening." },
-    { t: "Indoors and out", d: "Colonial villa, garden, pool, paddock and stables — several worlds on a single site." },
+    { t: "Indoors and out", d: "Colonial villa, garden, pool, paddock and stables. Several worlds on a single site." },
     { t: "Horses on site", d: "Horses that live on the estate, ready for camera, already at home." },
     { t: "Access", d: "Minutes from central Tunis, in La Soukra." },
-    { t: "A house you can film", d: "Brick vaulting, marble and arcades — a complete interior location, doubling as a technical base." },
+    { t: "A house you can film", d: "Brick vaulting, marble and arcades. A complete interior location, doubling as a technical base." },
     { t: "Full privatisation", d: "The estate is reserved for one production at a time. The whole site is yours." },
   ],
   admin: { titre: "Daughter of Gaïa · Administration", quitter: "Exit", acces: "Restricted access",
@@ -1294,7 +1294,7 @@ export default function App() {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          _subject: `Demande de devis — ${form.name || "sans nom"}`,
+          _subject: `Demande de devis, ${form.name || "sans nom"}`,
           _template: "table",
           _captcha: "false",
           "Date souhaitée": selectedDate || "non précisée",
@@ -1641,7 +1641,7 @@ export default function App() {
               {saving && <p className="mono text-[10px] flex items-center gap-2 mt-2" style={{ color: "#626A4E" }}><Loader2 size={11} className="animate-spin" /> {t.admin.enreg}</p>}
               {adminErreur && <p className="body-font text-sm mt-3" style={{ color: "#97543E" }} role="alert">{adminErreur}</p>}
               <div className="mt-12 max-w-xl">
-                <p className="mono text-[10px] uppercase tracking-[0.25em] mb-4" style={{ color: "#626A4E" }}>{t.admin.bloquees} — {blocked.size}</p>
+                <p className="mono text-[10px] uppercase tracking-[0.25em] mb-4" style={{ color: "#626A4E" }}>{t.admin.bloquees} ({blocked.size})</p>
                 {blocked.size === 0 ? <p className="body-font text-sm" style={{ color: "#5a4f42" }}>{t.admin.aucune}</p> : (
                   <div className="flex flex-wrap gap-2">
                     {[...blocked].sort().map((k) => { const [y, m, d] = k.split("-");
@@ -2277,7 +2277,7 @@ export default function App() {
                 {/* Bouton et non champ de saisie : la date se choisit dans le
                     calendrier, plus haut. Un clic y renvoie. */}
                 <button type="button" id="champ-date" onClick={versCalendrier}
-                  aria-label={selectedDate ? `${t.devis.date} : ${selectedDate} — ${t.devis.dateModifier}` : `${t.devis.date} : ${t.devis.datePh}`}
+                  aria-label={selectedDate ? `${t.devis.date}, ${selectedDate}, ${t.devis.dateModifier}` : `${t.devis.date}, ${t.devis.datePh}`}
                   aria-describedby={erreurs.date ? "champ-date-erreur" : undefined}
                   className={`champ-date body-font w-full mt-3 px-0 py-3 min-h-[44px] bg-transparent text-sm text-center flex items-center justify-center gap-2${selectedDate ? "" : " champ-date-vide"}`}
                   style={erreurs.date ? { borderColor: "#97543E" } : undefined}>
