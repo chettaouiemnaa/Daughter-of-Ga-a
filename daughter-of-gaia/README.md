@@ -170,6 +170,12 @@ mentions en **IBM Plex Mono**. Appelées depuis Google Fonts par un
 `<link rel="stylesheet">` dans le `<head>` d'`index.html`. Les héberger en
 `@font-face` local reste le prochain gain.
 
+**Tailles.** Tout texte placé sous un titre suit le même style :
+`body-font leading-relaxed`, soit Jost 300 en 16 px, interligne 26 px, sur
+téléphone comme sur ordinateur. Le 14 px (`text-sm`) est réservé aux notes
+grises, à la liste du refuge, aux coordonnées, aux champs du formulaire et aux
+messages d'erreur.
+
 Parti pris visuel : aucun trait de séparation, tout centré sauf la section
 « Le refuge », photographies plutôt qu'illustrations, mouvement lent et continu.
 

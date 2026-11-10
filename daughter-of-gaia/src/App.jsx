@@ -1074,7 +1074,7 @@ function FaqItem({ q, r, i }) {
           </span>
         </button>
         <div style={{ maxHeight: open ? 260 : 0, opacity: open ? 1 : 0, overflow: "hidden", transition: "max-height .6s cubic-bezier(.22,1,.36,1), opacity .5s" }}>
-          <p className="body-font text-sm pb-8 leading-relaxed max-w-md mx-auto" style={{ color: "#5a4f42" }}>{r}</p>
+          <p className="body-font pb-8 leading-relaxed max-w-md mx-auto" style={{ color: "#5a4f42" }}>{r}</p>
         </div>
       </div>
     </Reveal>
@@ -1589,7 +1589,7 @@ export default function App() {
               </WordReveal>
             </Reveal>
             <Reveal delay={350}>
-              <p className="body-font text-sm sm:text-base mt-10 max-w-xl mx-auto leading-relaxed" style={{ color: "#5a4f42" }}>
+              <p className="body-font mt-10 max-w-xl mx-auto leading-relaxed" style={{ color: "#5a4f42" }}>
                 {t.tournages.intro}
               </p>
             </Reveal>
@@ -1657,7 +1657,7 @@ export default function App() {
                   <div className="text-center">
                     <span className="mono text-[10px]" style={{ color: A_TERRE }}>{String(i + 1).padStart(2, "0")}</span>
                     <h3 className="display text-2xl mt-4 mb-3" style={{ fontWeight: 400 }}>{a.t}</h3>
-                    <p className="body-font text-sm leading-relaxed" style={{ color: "#5a4f42" }}>{a.d}</p>
+                    <p className="body-font leading-relaxed" style={{ color: "#5a4f42" }}>{a.d}</p>
                   </div>
                 </Reveal>
               ))}
@@ -1679,7 +1679,7 @@ export default function App() {
               <p className="display text-4xl sm:text-6xl leading-tight" style={{ fontWeight: 300 }}>
                 {t.tournages.contactT}
               </p>
-              <p className="body-font text-sm mt-8 max-w-lg mx-auto leading-relaxed" style={{ color: "rgba(237,228,211,.75)" }}>
+              <p className="body-font mt-8 max-w-lg mx-auto leading-relaxed" style={{ color: "rgba(237,228,211,.75)" }}>
                 {t.tournages.contactP}
               </p>
             </Reveal>
@@ -1818,7 +1818,7 @@ export default function App() {
           </WordReveal>
         </Reveal>
         <Reveal delay={400}>
-          <p className="body-font text-sm sm:text-base mt-10 max-w-xl mx-auto leading-relaxed" style={{ color: "#5a4f42" }}>
+          <p className="body-font mt-10 max-w-xl mx-auto leading-relaxed" style={{ color: "#5a4f42" }}>
             {t.mission.texte}
           </p>
         </Reveal>
@@ -1833,7 +1833,7 @@ export default function App() {
               <div className="text-center px-2">
                 <span className="mono text-[10px]" style={{ color: A_TERRE }}>{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="display text-2xl mt-4 mb-3" style={{ fontWeight: 400 }}>{v.t}</h3>
-                <p className="body-font text-sm leading-relaxed" style={{ color: "#5a4f42" }}>{v.d}</p>
+                <p className="body-font leading-relaxed" style={{ color: "#5a4f42" }}>{v.d}</p>
               </div>
             </Reveal>
           ))}
@@ -1946,7 +1946,7 @@ export default function App() {
                   <h3 className="display text-2xl sm:text-3xl" style={{ fontWeight: 400 }}>{p.t}</h3>
                   {p.soon && <span className="mono text-[8px] uppercase tracking-[0.2em] px-2 py-1" style={{ color: "#626A4E", background: "#e5dcc8" }}>{t.experiences.bientot}</span>}
                 </div>
-                <p className="body-font text-sm mt-3 leading-relaxed max-w-lg mx-auto" style={{ color: "#5a4f42" }}>{p.d}</p>
+                <p className="body-font mt-3 leading-relaxed max-w-lg mx-auto" style={{ color: "#5a4f42" }}>{p.d}</p>
               </div>
             </Reveal>
           ))}
@@ -2094,13 +2094,13 @@ export default function App() {
           {t.devis.titre}
         </WordReveal>
         <Reveal delay={150}>
-          <p className="body-font text-sm mb-14 leading-relaxed max-w-lg mx-auto" style={{ color: "#5a4f42" }}>
+          <p className="body-font mb-14 leading-relaxed max-w-lg mx-auto" style={{ color: "#5a4f42" }}>
             {t.devis.texte}
           </p>
           {submitted ? (
             <div className="fu py-10">
               <p className="display text-3xl mb-4" style={{ fontWeight: 300 }}>{t.devis.merci}</p>
-              <p className="body-font text-sm max-w-md mx-auto" style={{ color: "#5a4f42" }}>
+              <p className="body-font leading-relaxed max-w-md mx-auto" style={{ color: "#5a4f42" }}>
                 {t.devis.confirm1}{selectedDate ? ` ${t.devis.confirm2} ${selectedDate}` : ""}. {t.devis.confirm3}
               </p>
             </div>
