@@ -172,8 +172,8 @@ mentions en **IBM Plex Mono**. Appelées depuis Google Fonts par un
 
 **Tailles.** Tout texte placé sous un titre suit le même style :
 `body-font leading-relaxed`, soit Jost 300 en 16 px, interligne 26 px, sur
-téléphone comme sur ordinateur. Le 14 px (`text-sm`) est réservé aux notes
-grises, à la liste du refuge, aux coordonnées, aux champs du formulaire et aux
+téléphone comme sur ordinateur. Le 14 px (`text-sm`) est réservé à la note
+sous les chiffres du domaine, aux notes grises, à la liste du refuge, aux coordonnées, aux champs du formulaire et aux
 messages d'erreur.
 
 Parti pris visuel : aucun trait de séparation, tout centré sauf la section
