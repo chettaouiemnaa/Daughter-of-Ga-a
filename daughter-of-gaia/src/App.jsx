@@ -140,7 +140,7 @@ fr: {
     note: "Les événements en journée sont privilégiés, afin de préserver la tranquillité des animaux et du voisinage." },
   prestations: [
     { t: "Lancements de produits & de marques", d: "Un écrin naturel qui met votre marque en valeur, avec le jardin pour scénographie." },
-    { t: "Événements corporate", d: "Séminaires, journées d'équipe, lancements de produits et réceptions d'entreprise dans un cadre naturel et singulier, propice aux rencontres et aux échanges." },
+    { t: "Événements corporate", d: "Séminaires, journées d'équipe et réceptions d'entreprise dans un cadre naturel et singulier, propice aux rencontres et aux échanges." },
     { t: "Anniversaires", d: "Une célébration privée, en petit comité, avec la nature pour décor." },
     { t: "Événements enfants", d: "Un grand terrain, de la verdure, et des animaux à observer respectueusement." },
     { t: "Baby showers", d: "Un moment doux et intimiste, au jardin ou sous la terrasse couverte." },
@@ -271,7 +271,7 @@ en: {
     note: "Daytime events are favoured, to preserve the peace of the animals and of the neighbourhood." },
   prestations: [
     { t: "Product & brand launches", d: "A natural setting that puts your brand forward, with the garden as its stage." },
-    { t: "Corporate events", d: "Seminars, team days, product launches and corporate receptions in a natural, distinctive setting, ideal for meeting and exchanging ideas." },
+    { t: "Corporate events", d: "Seminars, team days and corporate receptions in a natural, distinctive setting, ideal for meeting and exchanging ideas." },
     { t: "Birthdays", d: "A private celebration, in small numbers, with nature as the backdrop." },
     { t: "Children's events", d: "Open ground, greenery, and animals to observe respectfully." },
     { t: "Baby showers", d: "A gentle, intimate moment, in the garden or under the covered terrace." },
