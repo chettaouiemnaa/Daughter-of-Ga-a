@@ -153,7 +153,7 @@ fr: {
   appel: { eyebrow: "Tournages & production", titre: "Une maison privée, réservée aux tournages.",
     texte: "Elle s'ajoute au domaine et à ses chevaux pour accueillir les productions : intérieurs de caractère, piscine, jardins et pergola, entièrement filmables.",
     lien: "Découvrir la page tournages" },
-  bandeau: ["Respect du vivant", "Animaux sauvés", "Nature préservée", "Domaine privatisé", "Sur réservation"],
+  bandeau: ["Respect du vivant", "Animaux sauvés", "Nature préservée", "Domaine privatisable", "Sur réservation"],
   galerie: { eyebrow: "Galerie", titre: "Le domaine en images", faire: "Faites défiler",
     legendes: ["Ils sont chez eux", "La terrasse", "L'espace couvert",
       "Un cheval au bout de l'allée", "Le salon, face à la maison", "Ils broutent entre les arbres",
@@ -284,7 +284,7 @@ en: {
   appel: { eyebrow: "Filming & production", titre: "A private house, reserved for filming.",
     texte: "It joins the estate and its horses to welcome productions: characterful interiors, a pool, gardens and a pergola, all ready to film.",
     lien: "See the filming page" },
-  bandeau: ["Respect for the living", "Rescued animals", "Protected nature", "Private estate", "By reservation"],
+  bandeau: ["Respect for the living", "Rescued animals", "Protected nature", "Exclusive hire", "By reservation"],
   galerie: { eyebrow: "Gallery", titre: "The estate in pictures", faire: "Scroll across",
     legendes: ["They live here", "The terrace", "The covered space",
       "A horse at the end of the path", "The lounge, facing the house", "Grazing between the trees",
@@ -1851,10 +1851,10 @@ export default function App() {
 
       {/* ── VALEURS ── */}
       <section className="max-w-6xl mx-auto px-8 pt-20 sm:pt-28 pb-36">
-        <div className="relative grid sm:grid-cols-2 lg:grid-cols-4 gap-y-16 gap-x-10">
+        <div className="relative grid sm:grid-cols-2 xl:grid-cols-4 gap-y-16 gap-x-10">
           {t.valeurs.map((v, i) => (
             <Reveal key={i} delay={i * 130}>
-              <div className="text-center px-2">
+              <div className="text-center px-2 xl:px-0">
                 <span className="mono text-[10px]" style={{ color: A_TERRE }}>{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="display text-2xl mt-4 mb-3" style={{ fontWeight: 400 }}>{v.t}</h3>
                 <p className="body-font leading-relaxed" style={{ color: "#5a4f42" }}>{v.d}</p>
