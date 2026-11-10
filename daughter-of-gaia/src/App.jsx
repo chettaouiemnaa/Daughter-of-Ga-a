@@ -130,11 +130,10 @@ fr: {
   ],
   espacesNote: "Au cœur d'un domaine privé de 4 000 m², Daughter of Gaïa dévoile 650 m² d'espaces extérieurs aménagés, prolongés par 135 m² couverts comprenant une terrasse ouverte de 70 m², un espace intérieur de 45 m² et une cuisine de 20 m². Un cadre où intérieur et extérieur se rencontrent naturellement, pour accueillir des événements dans une atmosphère singulière.",
   histoire: { eyebrow: "L'histoire", titre: "Avant d'être un lieu, une conviction.",
-    p0: "Dès le premier jour, l'idée a été de créer bien plus qu'un lieu événementiel.",
-    p1: "Daughter of Gaïa est née d'une envie simple — imaginer un domaine où les événements épousent le lieu. Un endroit où la nature et les animaux restent au cœur de chaque expérience.",
-    p2: "Le nom trouve son origine dans Gaïa, déesse de la Terre dans la mythologie grecque. Il rappelle une conviction simple. Le respect du vivant guide chacune de nos décisions.",
-    p3: "C'est pourquoi nous privilégions des événements qui s'intègrent naturellement au domaine, dans le respect de son environnement et du bien-être des animaux qui y vivent.",
-    p4: "Ici, chaque détail a été imaginé avec une même intention — offrir des moments d'exception en préservant l'essentiel.",
+    p0: "Daughter of Gaïa est né d'un attachement profond à la nature et aux animaux, et de l'envie de créer un lieu où les rencontres et les célébrations trouvent leur place dans cet environnement.",
+    p1: "Son nom s'inspire de Gaïa, déesse de la Terre dans la mythologie grecque, symbole de vie et de nature. Une philosophie qui guide chaque choix, du respect des animaux à la manière d'imaginer les événements.",
+    p2: "Certains animaux y ont trouvé refuge, d'autres y sont nés. Tous font partie de l'histoire du domaine et de ce qui le rend si particulier.",
+    p3: "Chaque espace a été imaginé avec cette même attention : accueillir des événements dans un cadre singulier, tout en préservant l'équilibre et la tranquillité du lieu.",
     citation: "There are places you visit. And there are places you feel.",
     alt: "Deux chevaux pie qui broutent côte à côte" },
   experiences: { eyebrow: "Expériences", titre: "Ce que le domaine accueille", bientot: "bientôt",
@@ -261,11 +260,10 @@ en: {
   ],
   espacesNote: "At the heart of a 4,000 m² private estate, Daughter of Gaïa opens onto 650 m² of landscaped outdoor space, extended by 135 m² under cover: a 70 m² open terrace, a 45 m² indoor room and a 20 m² kitchen. A setting where inside and outside meet naturally, to host events in an atmosphere of their own.",
   histoire: { eyebrow: "The story", titre: "Before it was a place, it was a conviction.",
-    p0: "From the very first day, the idea was to create far more than an event venue.",
-    p1: "Daughter of Gaïa was born of a simple ambition — to imagine an estate where events take the shape of the place. Somewhere nature and animals stay at the heart of every experience.",
-    p2: "The name comes from Gaia, goddess of the Earth in Greek mythology. It stands for a simple conviction. Respect for the living guides every decision we make.",
-    p3: "That is why we favour events that fit naturally into the estate, with respect for its environment and for the wellbeing of the animals who live here.",
-    p4: "Here, every detail was imagined with a single intention — to offer exceptional moments while preserving what matters.",
+    p0: "Daughter of Gaïa was born of a deep attachment to nature and animals, and of the wish to create a place where gatherings and celebrations find their place within this setting.",
+    p1: "Its name is inspired by Gaia, goddess of the Earth in Greek mythology, a symbol of life and nature. A philosophy that guides every choice, from respect for the animals to the way events are imagined.",
+    p2: "Some animals found refuge here, others were born here. All of them are part of the estate's story and of what makes it so special.",
+    p3: "Every space was designed with the same care: to host events in a distinctive setting while preserving the balance and tranquillity of the place.",
     citation: "There are places you visit. And there are places you feel.",
     alt: "Two piebald horses grazing side by side" },
   experiences: { eyebrow: "Experiences", titre: "What the estate hosts", bientot: "soon",
@@ -1916,9 +1914,6 @@ export default function App() {
               </p>
               <p>
                 {t.histoire.p3}
-              </p>
-              <p>
-                {t.histoire.p4}
               </p>
             </div>
             <p className="display italic text-xl sm:text-2xl mt-14 max-w-xl mx-auto" style={{ color: "#B5654A", fontWeight: 300 }}>
