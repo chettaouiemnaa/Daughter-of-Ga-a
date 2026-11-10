@@ -169,7 +169,7 @@ fr: {
     texte: "Chaque événement est étudié individuellement. Décrivez-nous ce que vous imaginez, nous revenons vers vous avec une proposition adaptée.",
     date: "Date souhaitée", datePh: "Sélectionnez une date dans le calendrier",
     dateModifier: "modifier la date", nom: "Nom", email: "Email",
-    tel: "Téléphone", invites: "Invités", type: "Type d'expérience", autre: "Autre", projet: "Votre projet",
+    tel: "Téléphone", invites: "Invités", type: "Type d'expérience", typePh: "Choisissez une expérience", autre: "Autre", projet: "Votre projet",
     projetPh: "Horaires envisagés, ambiance recherchée, besoins particuliers…", envoyer: "Envoyer ma demande",
     envoiEnCours: "Envoi en cours…",
     erreur: "L'envoi a rencontré un incident. Réessayez, ou écrivez-nous directement à",
@@ -300,7 +300,7 @@ en: {
     texte: "Every event is considered individually. Describe what you have in mind and we will come back to you with a tailored proposal.",
     date: "Preferred date", datePh: "Select a date in the calendar",
     dateModifier: "change the date", nom: "Name", email: "Email",
-    tel: "Phone", invites: "Guests", type: "Type of experience", autre: "Other", projet: "Your project",
+    tel: "Phone", invites: "Guests", type: "Type of experience", typePh: "Choose an experience", autre: "Other", projet: "Your project",
     projetPh: "Timings, atmosphere, particular requirements…", envoyer: "Send my request",
     envoiEnCours: "Sending…",
     erreur: "Something interrupted the sending. Please try again, or write to us directly at",
@@ -1189,7 +1189,7 @@ export default function App() {
           Email: form.email,
           Téléphone: form.phone || "non précisé",
           "Nombre d'invités": form.guests || "non précisé",
-          "Type d'expérience": form.type || t.prestations[0].t,
+          "Type d'expérience": form.type || "non précisé",
           Projet: form.message || "non précisé",
           Langue: lang,
         }),
@@ -1419,6 +1419,10 @@ export default function App() {
          déroulante : c'est text-align-last qui gouverne cette ligne. */
       select{text-align:center;text-align-last:center;}
       select option{text-align:center;}
+      /* Invite « Choisissez une experience » : meme gris que l'invite de date.
+         Les choix de la liste gardent la couleur du texte. */
+      .champ-type-vide{color:#6D6654;}
+      .champ-type-vide option{color:#2B2118;}
 
       /* Les mentions à 9-10px sont illisibles sur téléphone. Relevées au
          minimum lisible sur petit écran seulement : le rendu bureau,
@@ -2167,8 +2171,11 @@ export default function App() {
                     className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }} /></div>
               </div>
               <div><label htmlFor="champ-type" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.type}</label>
-                <select id="champ-type" value={form.type || t.prestations[0].t} onChange={(e) => setForm({ ...form, type: e.target.value })}
-                  className="body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center" style={{ borderBottom: "1px solid #8C816D" }}>
+                {/* Aucune experience preselectionnee : la liste s'ouvre sur une
+                    invite, et le choix est demande avant l'envoi. */}
+                <select id="champ-type" required value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}
+                  className={`body-font w-full mt-3 px-0 py-3 bg-transparent text-sm text-center${form.type ? "" : " champ-type-vide"}`} style={{ borderBottom: "1px solid #8C816D" }}>
+                  <option value="" disabled>{t.devis.typePh}</option>
                   {t.prestations.map((p) => <option key={p.t}>{p.t}</option>)}<option>{t.devis.autre}</option>
                 </select></div>
               <div><label htmlFor="champ-projet" className="mono text-[9px] uppercase tracking-[0.25em] block text-center" style={{ color: "#626A4E" }}>{t.devis.projet}</label>
