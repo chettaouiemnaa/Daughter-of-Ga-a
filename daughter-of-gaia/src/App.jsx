@@ -1328,6 +1328,12 @@ export default function App() {
       .display{font-family:'Cormorant Garamond',serif;}
       .body-font{font-family:'Jost',sans-serif;font-weight:300;}
       .mono{font-family:'IBM Plex Mono',monospace;}
+      /* Phrase de fin de « L'histoire » : sur une seule ligne. 20 px sur
+         telephone tant qu'elle tient (elle demande 19,5 fois sa taille en
+         largeur), un peu moins sur les ecrans les plus etroits ; 24 px
+         ailleurs. balance evite un mot seul si elle devait passer a la ligne. */
+      .citation-ligne{font-size:min(1.25rem,calc((100vw - 2rem) / 20));line-height:1.4;text-wrap:balance;}
+      @media (min-width:640px){.citation-ligne{font-size:1.5rem;line-height:2rem;}}
       html{scroll-behavior:smooth;}
 
       @keyframes fadeUp{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:none;}}
@@ -1932,7 +1938,7 @@ export default function App() {
                 {t.histoire.p3}
               </p>
             </div>
-            <p className="display italic text-xl sm:text-2xl mt-14 max-w-xl mx-auto" style={{ color: "#B5654A", fontWeight: 300 }}>
+            <p className="display italic citation-ligne mt-14 max-w-xl -mx-4 sm:mx-auto" style={{ color: "#B5654A", fontWeight: 300 }}>
               {t.histoire.citation}
             </p>
           </Reveal>
