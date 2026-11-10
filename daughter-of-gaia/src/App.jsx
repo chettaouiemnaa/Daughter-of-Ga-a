@@ -126,7 +126,7 @@ fr: {
   espaces: [
     { t: "Le domaine", v: "4 000 m²" }, { t: "Espace aménagé", v: "650 m²" },
     { t: "Espace couvert", v: "135 m²" }, { t: "Capacité d'accueil", v: "100 invités" },
-    { t: "Parking privé", v: "40 voitures" }, { t: "Sauvés et réhabilités", v: "7 chevaux" },
+    { t: "Parking privé", v: "40 voitures" }, { t: "Sauvés ou nés au\u00a0domaine", v: "7 chevaux" },
   ],
   espacesNote: "Au cœur d'un domaine privé de 4 000 m², Daughter of Gaïa dévoile 650 m² d'espaces extérieurs aménagés, prolongés par 135 m² couverts comprenant une terrasse ouverte de 70 m², un espace intérieur de 45 m² et une cuisine de 20 m². Un cadre où intérieur et extérieur se rencontrent naturellement, pour accueillir des événements dans une atmosphère singulière.",
   histoire: { eyebrow: "L'histoire", titre: "Avant d'être un lieu, une conviction.",
@@ -257,7 +257,7 @@ en: {
   espaces: [
     { t: "The estate", v: "4 000 m²" }, { t: "Landscaped area", v: "650 m²" },
     { t: "Covered space", v: "135 m²" }, { t: "Guest capacity", v: "100 guests" },
-    { t: "Private parking", v: "40 cars" }, { t: "Rescued and rehabilitated", v: "7 horses" },
+    { t: "Private parking", v: "40 cars" }, { t: "Rescued or born on the\u00a0estate", v: "7 horses" },
   ],
   espacesNote: "At the heart of a 4,000 m² private estate, Daughter of Gaïa opens onto 650 m² of landscaped outdoor space, extended by 135 m² under cover: a 70 m² open terrace, a 45 m² indoor room and a 20 m² kitchen. A setting where inside and outside meet naturally, to host events in an atmosphere of their own.",
   histoire: { eyebrow: "The story", titre: "Before it was a place, it was a conviction.",
