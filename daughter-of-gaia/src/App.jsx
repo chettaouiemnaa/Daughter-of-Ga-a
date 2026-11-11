@@ -525,6 +525,9 @@ function MenuMobile({ ouvert, fermer, t, lang, setLang, entrees = [], masqueDes 
 /* Rideau d'ouverture : le nom apparaît, puis le voile se lève */
 function Rideau() {
   const [phase, setPhase] = useState(0);
+  /* Le voile sombre pose par index.html s'efface au moment precis ou ce
+     rideau est peint par-dessus : aucun flash entre les deux. */
+  useLayoutEffect(() => { document.documentElement.classList.add("pret"); }, []);
   useEffect(() => {
     const a = setTimeout(() => setPhase(1), 1150);
     const b = setTimeout(() => setPhase(2), 2400);
@@ -533,8 +536,8 @@ function Rideau() {
   if (phase === 2) return null;
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none" aria-hidden="true"
-      style={{ background: "#1a130c", clipPath: phase >= 1 ? "inset(0 0 100% 0)" : "inset(0 0 0 0)",
-               transition: "clip-path 1.4s cubic-bezier(.76,0,.24,1)" }}>
+      style={{ background: "#1a130c", transform: phase >= 1 ? "translate3d(0,-100%,0)" : "none",
+               transition: "transform 1.4s cubic-bezier(.76,0,.24,1)", willChange: "transform" }}>
       <div style={{ opacity: phase >= 1 ? 0 : 1, transition: "opacity .7s ease" }} className="text-center">
         <p className="display text-3xl sm:text-5xl intro-name" style={{ color: "#EDE4D3", fontWeight: 300 }}>Daughter of Gaïa</p>
         <div className="intro-rule h-px mt-6 mx-auto" style={{ background: "#B5654A", width: 90 }} />
@@ -1278,6 +1281,12 @@ export default function App() {
     if (selectedDate) setErreurs((er) => (er.date ? { ...er, date: undefined } : er));
   }, [selectedDate]);
 
+  /* Hors accueil, pas de rideau : le voile sombre pose par index.html
+     s'efface des le premier affichage. */
+  useLayoutEffect(() => {
+    if (page !== "accueil") document.documentElement.classList.add("pret");
+  }, [page]);
+
   /* Le titre de l'onglet et la description suivent la page consultée. */
   useEffect(() => {
     const m = META[page] || META.accueil;
@@ -1538,7 +1547,7 @@ export default function App() {
       @keyframes tick{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
 
       .mote{position:absolute;border-radius:9999px;animation-name:moteFloat;animation-timing-function:ease-out;animation-iteration-count:infinite;filter:blur(.4px);}
-      .grain{opacity:.055;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");animation:grainShift 1s steps(2) infinite;}
+      .grain{opacity:.045;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");animation:grainShift 1s steps(2) infinite;}
       .letter{animation:letterIn 1.1s cubic-bezier(.22,1,.36,1) both;}
       .intro-name{animation:introName 1.6s cubic-bezier(.22,1,.36,1) both;}
       .intro-rule{animation:introRule 1.4s cubic-bezier(.22,1,.36,1) both .6s;transform-origin:center;}
@@ -1553,21 +1562,26 @@ export default function App() {
       @keyframes derive3{0%{transform:translate3d(4%,-16%,0) scale(1.2);}50%{transform:translate3d(-8%,14%,0) scale(1.45);}100%{transform:translate3d(4%,-16%,0) scale(1.2);}}
       @keyframes passage{0%{transform:translateX(-130%) skewX(-14deg);opacity:0;}8%{opacity:.5;}22%{opacity:.5;}34%{transform:translateX(130%) skewX(-14deg);opacity:0;}100%{transform:translateX(130%) skewX(-14deg);opacity:0;}}
 
-      .nappe{position:absolute;border-radius:50%;filter:blur(70px);will-change:transform;}
-      .nappe-a{width:75%;height:85%;left:-10%;top:-14%;background:radial-gradient(circle,rgba(20,14,8,.42),transparent 66%);animation:derive1 46s ease-in-out infinite;}
-      .nappe-b{width:70%;height:80%;right:-12%;bottom:-16%;background:radial-gradient(circle,rgba(20,14,8,.34),transparent 64%);animation:derive2 62s ease-in-out infinite;}
-      .nappe-c{width:60%;height:70%;left:26%;top:8%;background:radial-gradient(circle,rgba(243,220,174,.20),transparent 62%);animation:derive3 54s ease-in-out infinite;}
+      /* Les taches de lumiere etaient des degrades floutes par filter:blur(70-90px),
+         recalcule a chaque image pendant qu'elles derivent : l'ouverture
+         tombait a 15 images/s sur iPhone. Le flou est remplace par un degrade
+         deja adouci, qui va jusqu'au bord d'un cadre agrandi de la largeur de
+         l'ancien flou (padding + marge negative) : meme halo, sans calcul. */
+      .nappe{position:absolute;box-sizing:content-box;padding:70px;margin:-70px;will-change:transform;}
+      .nappe-a{width:75%;height:85%;left:-10%;top:-14%;background:radial-gradient(closest-side,rgba(20,14,8,0.344) 0%,rgba(20,14,8,0.334) 12%,rgba(20,14,8,0.303) 24%,rgba(20,14,8,0.255) 36%,rgba(20,14,8,0.196) 48%,rgba(20,14,8,0.134) 60%,rgba(20,14,8,0.076) 72%,rgba(20,14,8,0.031) 84%,rgba(20,14,8,0) 100%);animation:derive1 46s ease-in-out infinite;}
+      .nappe-b{width:70%;height:80%;right:-12%;bottom:-16%;background:radial-gradient(closest-side,rgba(20,14,8,0.279) 0%,rgba(20,14,8,0.27) 12%,rgba(20,14,8,0.245) 24%,rgba(20,14,8,0.206) 36%,rgba(20,14,8,0.159) 48%,rgba(20,14,8,0.109) 60%,rgba(20,14,8,0.061) 72%,rgba(20,14,8,0.025) 84%,rgba(20,14,8,0) 100%);animation:derive2 62s ease-in-out infinite;}
+      .nappe-c{width:60%;height:70%;left:26%;top:8%;background:radial-gradient(closest-side,rgba(243,220,174,0.164) 0%,rgba(243,220,174,0.159) 12%,rgba(243,220,174,0.144) 24%,rgba(243,220,174,0.121) 36%,rgba(243,220,174,0.093) 48%,rgba(243,220,174,0.064) 60%,rgba(243,220,174,0.036) 72%,rgba(243,220,174,0.015) 84%,rgba(243,220,174,0) 100%);animation:derive3 54s ease-in-out infinite;}
       .balayage{position:absolute;inset:-25% -60%;background:linear-gradient(100deg,transparent 38%,rgba(248,231,196,.16) 48%,rgba(248,231,196,.26) 52%,rgba(248,231,196,.16) 56%,transparent 66%);animation:passage 20s ease-in-out infinite;will-change:transform;}
       .sep-col{border-right:none;}
       @media (min-width:1024px){ .sep-col{border-right:1px solid #C7B79A;} }
       @keyframes washA{0%{transform:translate3d(-12%,-6%,0) scale(1.1);}50%{transform:translate3d(14%,8%,0) scale(1.4);}100%{transform:translate3d(-12%,-6%,0) scale(1.1);}}
       @keyframes washB{0%{transform:translate3d(16%,10%,0) scale(1.35);}50%{transform:translate3d(-10%,-8%,0) scale(1.1);}100%{transform:translate3d(16%,10%,0) scale(1.35);}}
       @keyframes washC{0%{transform:translate3d(2%,-14%,0) scale(1.2);}50%{transform:translate3d(-6%,12%,0) scale(1.5);}100%{transform:translate3d(2%,-14%,0) scale(1.2);}}
-      .wash{position:absolute;border-radius:50%;filter:blur(90px);will-change:transform;}
-      .wash-a{width:70%;height:80%;left:-14%;top:-18%;background:radial-gradient(circle,rgba(107,115,85,.20),transparent 68%);animation:washA 58s ease-in-out infinite;}
-      .wash-b{width:66%;height:76%;right:-16%;bottom:-20%;background:radial-gradient(circle,rgba(181,101,74,.16),transparent 66%);animation:washB 74s ease-in-out infinite;}
-      .wash-c{width:58%;height:66%;left:30%;top:12%;background:radial-gradient(circle,rgba(199,183,154,.30),transparent 64%);animation:washC 66s ease-in-out infinite;}
-      .grain-doux{position:absolute;inset:0;opacity:.05;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");}
+      .wash{position:absolute;box-sizing:content-box;padding:90px;margin:-90px;will-change:transform;}
+      .wash-a{width:70%;height:80%;left:-14%;top:-18%;background:radial-gradient(closest-side,rgba(107,115,85,0.164) 0%,rgba(107,115,85,0.159) 12%,rgba(107,115,85,0.144) 24%,rgba(107,115,85,0.121) 36%,rgba(107,115,85,0.093) 48%,rgba(107,115,85,0.064) 60%,rgba(107,115,85,0.036) 72%,rgba(107,115,85,0.015) 84%,rgba(107,115,85,0) 100%);animation:washA 58s ease-in-out infinite;}
+      .wash-b{width:66%;height:76%;right:-16%;bottom:-20%;background:radial-gradient(closest-side,rgba(181,101,74,0.131) 0%,rgba(181,101,74,0.127) 12%,rgba(181,101,74,0.115) 24%,rgba(181,101,74,0.097) 36%,rgba(181,101,74,0.075) 48%,rgba(181,101,74,0.051) 60%,rgba(181,101,74,0.029) 72%,rgba(181,101,74,0.012) 84%,rgba(181,101,74,0) 100%);animation:washB 74s ease-in-out infinite;}
+      .wash-c{width:58%;height:66%;left:30%;top:12%;background:radial-gradient(closest-side,rgba(199,183,154,0.246) 0%,rgba(199,183,154,0.239) 12%,rgba(199,183,154,0.216) 24%,rgba(199,183,154,0.182) 36%,rgba(199,183,154,0.14) 48%,rgba(199,183,154,0.096) 60%,rgba(199,183,154,0.054) 72%,rgba(199,183,154,0.022) 84%,rgba(199,183,154,0) 100%);animation:washC 66s ease-in-out infinite;}
+      .grain-doux{position:absolute;inset:0;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");}
       .day-cell{transition:color .3s,transform .25s;}
       .day-cell:hover:not(:disabled){transform:scale(1.25);color:#B5654A;}
       .champ-date{color:#2B2118;border-bottom:1px solid #8C816D;transition:color .35s,border-color .35s;}
