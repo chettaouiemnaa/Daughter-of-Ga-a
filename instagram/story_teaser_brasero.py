@@ -73,6 +73,9 @@ coins = Image.new("L", POST, 0)
 ImageDraw.Draw(coins).rounded_rectangle((0, 0, C - 1, POST[1] - 1), radius=30, fill=255)
 im.putalpha(coins)
 im.save(OUT / "teaser-brasero-4x5.png")
+# Sans transparence ni coins arrondis : Instagram arrondit lui-même les
+# autocollants photo, et certains téléphones remplissent la transparence de blanc.
+sauver(Image.alpha_composite(post.convert("RGBA"), ombre(calque)).convert("RGB"), OUT / "teaser-brasero-4x5.jpg")
 
 # 2. Plein écran, pour une story seule.
 W, H = STORY
