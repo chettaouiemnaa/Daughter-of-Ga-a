@@ -35,7 +35,8 @@ const IMAGES = {
   histoire: P_CHEVAUX_PIE,
   /* Sur ordinateur, la photo des chevaux pie, retouchee, s'affiche en grand
      et la retouche se voit : on montre a la place l'alezan et le gris devant
-     la fenetre de la maison. Le telephone garde la photo des chevaux pie. */
+     la fenetre de l'espace couvert du domaine (mur ocre). Le telephone garde
+     la photo des chevaux pie. */
   histoireOrdi: P_CHEVAUX_FENETRE,
 };
 
@@ -128,7 +129,7 @@ fr: {
   domaine: { eyebrow: "Le domaine", titre: "4 000 m² où la ville disparaît",
     texte: "Une propriété privée où la nature occupe toute sa place. Des espaces pensés pour recevoir, dans un environnement qui se prête aussi bien aux événements professionnels qu'aux célébrations privées.",
     citation: "Un domaine où la nature et l'art de recevoir se rencontrent.",
-    alt: "Trois chevaux au repos devant la maison, à l'ombre d'un arbre" },
+    alt: "Trois chevaux au repos devant l'espace couvert, à l'ombre d'un arbre" },
   espaces: [
     { t: "Le domaine", v: "4 000 m²" }, { t: "Espace aménagé", v: "650 m²" },
     { t: "Espace couvert", v: "135 m²" }, { t: "Capacité d'accueil", v: "100 invités" },
@@ -142,7 +143,7 @@ fr: {
     p3: "Chaque espace a été imaginé avec cette même attention, pour accueillir des événements dans un cadre singulier tout en préservant l'équilibre et la tranquillité du lieu.",
     citation: "There are places you visit. And there are places you feel.",
     alt: "Deux chevaux pie qui broutent côte à côte",
-    altOrdi: "Un cheval alezan et un cheval gris devant la fenêtre de la maison" },
+    altOrdi: "Un cheval alezan et un cheval gris devant la fenêtre de l'espace couvert" },
   experiences: { eyebrow: "Expériences", titre: "Ce que le domaine accueille", bientot: "bientôt",
     note: "Les événements en journée sont privilégiés, afin de préserver la tranquillité des animaux et du voisinage." },
   prestations: [
@@ -266,7 +267,7 @@ en: {
   domaine: { eyebrow: "The estate", titre: "4,000 m² where the city disappears",
     texte: "A private estate where nature has all the room it needs. Spaces designed for hosting, in a setting suited as much to professional events as to private celebrations.",
     citation: "An estate where nature and the art of hosting meet.",
-    alt: "Three horses at rest in front of the house, in the shade of a tree" },
+    alt: "Three horses at rest in front of the covered space, in the shade of a tree" },
   espaces: [
     { t: "The estate", v: "4 000 m²" }, { t: "Landscaped area", v: "650 m²" },
     { t: "Covered space", v: "135 m²" }, { t: "Guest capacity", v: "100 guests" },
@@ -280,7 +281,7 @@ en: {
     p3: "Every space was designed with the same care, to host events in a distinctive setting while preserving the balance and tranquillity of the place.",
     citation: "There are places you visit. And there are places you feel.",
     alt: "Two piebald horses grazing side by side",
-    altOrdi: "A chestnut horse and a grey horse by the window of the house" },
+    altOrdi: "A chestnut horse and a grey horse by the window of the covered space" },
   experiences: { eyebrow: "Experiences", titre: "What the estate hosts", bientot: "soon",
     note: "Daytime events are favoured, to preserve the peace of the animals and of the neighbourhood." },
   prestations: [
