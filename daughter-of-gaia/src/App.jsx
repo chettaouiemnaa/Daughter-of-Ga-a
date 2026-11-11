@@ -167,7 +167,7 @@ fr: {
     liste: ["Rencontres laissées à leur initiative", "Observation respectueuse, à distance", "Niveaux sonores et horaires encadrés", "Espaces de repos préservés"],
     alt: "Un cheval alezan à la fenêtre de l'espace couvert" },
   dispo: { eyebrow: "Disponibilités", titre: "Choisissez une date", note: "Les dates barrées sont déjà réservées" },
-  devis: { eyebrow: "Demande de devis", titre: "Parlez-nous de votre projet",
+  devis: { eyebrow: "Demande de devis", titre: "Parlez-nous\nde votre projet",
     texte: "Chaque événement est étudié individuellement. Décrivez-nous ce que vous imaginez, nous revenons vers vous avec une proposition adaptée.",
     date: "Date souhaitée", datePh: "Sélectionnez une date dans le calendrier",
     dateModifier: "modifier la date", nom: "Nom", email: "Email",
@@ -303,7 +303,7 @@ en: {
     liste: ["Encounters left to their initiative", "Respectful observation, from a distance", "Sound levels and hours kept in check", "Resting areas preserved"],
     alt: "A chestnut horse at the window of the covered space" },
   dispo: { eyebrow: "Availability", titre: "Choose a date", note: "Crossed-out dates are already booked" },
-  devis: { eyebrow: "Request a quote", titre: "Tell us about your project",
+  devis: { eyebrow: "Request a quote", titre: "Tell us\nabout your project",
     texte: "Every event is considered individually. Describe what you have in mind and we will come back to you with a tailored proposal.",
     date: "Preferred date", datePh: "Select a date in the calendar",
     dateModifier: "change the date", nom: "Name", email: "Email",
@@ -1465,13 +1465,15 @@ export default function App() {
          largeur), un peu moins sur les ecrans les plus etroits ; 24 px
          ailleurs. balance evite un mot seul si elle devait passer a la ligne. */
       .citation-ligne{font-size:min(1.25rem,calc((100vw - 2rem) / 20));line-height:1.4;text-wrap:balance;}
-      /* Titre de l'histoire, coupe apres la virgule : la ligne la plus longue
-         (« Before it was a place, ») mesure 8,32 em. Sur les petits telephones
-         la taille se reduit juste assez pour que chaque ligne tienne ; des
-         360 px environ, c'est la taille des autres titres (text-4xl, puis
-         text-6xl des 640 px). */
-      .titre-histoire{font-size:min(2.25rem,calc((100vw - 4rem) / 8.4));line-height:1.11;}
-      @media (min-width:640px){.titre-histoire{font-size:3.75rem;line-height:1;}}
+      /* Titres coupes a un endroit choisi (« \n » dans le texte). --ligne-em
+         est la largeur de leur plus longue ligne, en em, avec une petite marge :
+         sur les petits telephones la taille se reduit juste assez pour que
+         chaque ligne tienne ; au-dela, c'est la taille des autres titres
+         (text-4xl, puis text-6xl des 640 px).
+         Histoire : « Before it was a place, » = 8,32 em -> 8,4.
+         Devis : « about your project » = 7,43 em -> 7,5. */
+      .titre-coupe{font-size:min(2.25rem,calc((100vw - 4rem) / var(--ligne-em)));line-height:1.11;}
+      @media (min-width:640px){.titre-coupe{font-size:3.75rem;line-height:1;}}
       @media (min-width:640px){.citation-ligne{font-size:1.5rem;line-height:2rem;}}
       html{scroll-behavior:smooth;}
 
@@ -2063,7 +2065,7 @@ export default function App() {
       <section id="histoire" className="py-24">
         <div className="max-w-3xl mx-auto px-8 text-center">
           <Reveal><Eyebrow ton={A_TERRE}>{t.histoire.eyebrow}</Eyebrow></Reveal>
-          <WordReveal className="display titre-histoire mb-10" style={{ fontWeight: 300 }}>
+          <WordReveal className="display titre-coupe mb-10" style={{ fontWeight: 300, "--ligne-em": 8.4 }}>
             {t.histoire.titre}
           </WordReveal>
           <Reveal delay={240}>
@@ -2261,7 +2263,7 @@ export default function App() {
       {/* ── DEVIS ── */}
       <section id="devis" className="max-w-2xl mx-auto px-8 py-28 text-center">
         <Reveal><Eyebrow ton={A_TERRE}>{t.devis.eyebrow}</Eyebrow></Reveal>
-        <WordReveal className="display text-4xl sm:text-6xl mb-6" style={{ fontWeight: 300 }}>
+        <WordReveal className="display titre-coupe mb-6" style={{ fontWeight: 300, "--ligne-em": 7.5 }}>
           {t.devis.titre}
         </WordReveal>
         <Reveal delay={150}>
