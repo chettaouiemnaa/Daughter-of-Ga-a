@@ -546,9 +546,11 @@ function Rideau() {
   );
 }
 
-/* Grain de pellicule sur toute la page */
+/* Grain de pellicule sur toute la page. La couche déborde de 10 % de chaque
+   côté : l'animation la déplace jusqu'à 8 %, et sans ce débord elle laissait
+   un bord d'écran sans grain, plus sombre, une bande d'ombre sur le pied de page. */
 function Grain() {
-  return <div className="fixed inset-0 z-[60] pointer-events-none grain" aria-hidden="true" />;
+  return <div className="fixed z-[60] pointer-events-none grain" style={{ inset: "-10%" }} aria-hidden="true" />;
 }
 
 /* Fond abstrait : nappes de couleur très floues qui dérivent lentement.
