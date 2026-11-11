@@ -22,9 +22,15 @@ const P_FENETRE_BOIS = "/images/fenetre-chevaux-bois.jpg";
 const P_TERRASSE_NUIT = "/images/terrasse-nuit.jpg";
 
 
-/* Les photos de l'espace tournages ont ete retirees : elles montraient la
-   maison privee de la proprietaire, pas le domaine Daughter of Gaïa. */
+const V_HERO = "/images/tournage-hero.jpg";
+const V_PERGOLA = "/images/pergola.jpg";
+const V_PISCINE = "/images/piscine.jpg";
+const V_JARDIN_V = "/images/jardin-bougainvilliers.jpg";
+const V_PALMIERS = "/images/palmiers.jpg";
+const V_SALON = "/images/salon.jpg";
 
+/* Declare apres les constantes V_ : une const n'est pas lisible avant sa
+   ligne, et IMAGES lisait V_PALMIERS. La page ne s'affichait plus. */
 const IMAGES = {
   histoire: P_CHEVAUX_PIE,
   /* Sur ordinateur, la photo des chevaux pie, retouchee, s'affiche en grand
@@ -33,6 +39,13 @@ const IMAGES = {
   histoireOrdi: P_CHEVAUX_FENETRE,
 };
 
+const DECOR_IMG = [
+  { src: V_PERGOLA,  pos: "center 55%" },
+  { src: V_PISCINE,  pos: "center 45%" },
+  { src: V_JARDIN_V, pos: "center 40%" },
+  { src: V_PALMIERS, pos: "center 50%" },
+  { src: V_SALON,    pos: "center 45%" },
+];
 
 /* ═══════════════════════════════════════════════════════════
    ACCENTS DE TEXTE
@@ -1702,8 +1715,13 @@ export default function App() {
         <Progression />
 
         <main>
-        {/* HERO : fond encre, comme le pied de page, avec la lumiere filtree */}
-        <section className="relative h-[100svh] w-full overflow-hidden" style={{ background: "#2B2118" }}>
+        {/* HERO */}
+        <section className="relative h-[100svh] w-full overflow-hidden">
+          <div className="absolute inset-0" style={{ transform: `translate3d(0,${scrollY * 0.3}px,0)` }}>
+            <img src={V_HERO} alt={t.decors[1].t}
+              className="w-full h-full object-cover slow-zoom" style={{ objectPosition: "center 55%" }} />
+          </div>
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(20,14,8,.56) 0%, rgba(20,14,8,.28) 36%, rgba(20,14,8,.44) 68%, rgba(20,14,8,.76) 100%)" }} />
           <LumiereFiltree />
 
           <div className="relative h-full flex flex-col items-center justify-center text-center px-6 pb-20"
@@ -1789,11 +1807,16 @@ export default function App() {
               {t.tournages.decorsT}
             </WordReveal>
           </div>
-          <div className="space-y-16">
+          <div className="space-y-24">
             {t.decors.map((d, i) => (
               <div key={i}>
+                <VoletsReveal className="relative w-full h-[50vh] sm:h-[74vh] zoom-wrap">
+                  <Parallax speed={-0.06} className="absolute inset-0 -top-14 -bottom-14">
+                    <img src={DECOR_IMG[i].src} alt={d.t} loading="lazy" decoding="async" className="w-full h-full object-cover" style={{ objectPosition: DECOR_IMG[i].pos }} />
+                  </Parallax>
+                </VoletsReveal>
                 <Reveal delay={120}>
-                  <div className="max-w-2xl mx-auto px-8 text-center">
+                  <div className="max-w-2xl mx-auto px-8 mt-10 text-center">
                     <span className="mono text-[10px]" style={{ color: A_TERRE }}>{d.n}</span>
                     <h3 className="display text-2xl sm:text-4xl mt-3 mb-4" style={{ fontWeight: 300 }}>{d.t}</h3>
                     <p className="body-font leading-relaxed max-w-xl mx-auto" style={{ color: "#5a4f42" }}>{d.d}</p>
@@ -2164,13 +2187,14 @@ export default function App() {
       </div>
 
       {/* ── APPEL TOURNAGES ── */}
-      {/* Fond encre, comme le pied de page : la photo montrait la maison
-          privee de la proprietaire, pas le domaine. */}
       <section className="relative w-full overflow-hidden mb-16">
         <button onClick={() => allerA("tournages")} className="block w-full text-left group">
-          <div className="relative w-full overflow-hidden" style={{ background: "#2B2118" }}>
-            <LumiereFiltree />
-            <div className="relative flex flex-col items-center justify-center text-center px-8 py-28 sm:py-36">
+          <VoletsReveal className="relative w-full h-[56vh] sm:h-[70vh]">
+            <img src={V_PERGOLA} alt={t.decors[0].t} loading="lazy" decoding="async"
+              className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105"
+              style={{ objectPosition: "center 55%" }} />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(20,14,8,.30), rgba(20,14,8,.70))" }} />
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8">
               <Reveal><Eyebrow light>{t.appel.eyebrow}</Eyebrow></Reveal>
               <WordReveal className="display text-4xl sm:text-6xl mb-6 max-w-3xl" style={{ color: "#F6F1E7", fontWeight: 300 }}>
                 {t.appel.titre}
@@ -2183,7 +2207,7 @@ export default function App() {
                   style={{ color: "#F6F1E7" }}>{t.appel.lien} <ArrowRight size={14} /></span>
               </Reveal>
             </div>
-          </div>
+          </VoletsReveal>
         </button>
       </section>
 
