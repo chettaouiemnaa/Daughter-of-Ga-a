@@ -8,7 +8,8 @@ Sortie : instagram/posts, instagram/stories, instagram/profil, instagram/plus-ta
 """
 from pathlib import Path
 import sys
-from PIL import Image, ImageChops, ImageColor, ImageDraw, ImageFilter, ImageFont, ImageOps, ImageStat
+import io
+from PIL import Image, ImageChops, ImageColor, ImageCms, ImageDraw, ImageFilter, ImageFont, ImageOps, ImageStat
 
 RACINE = Path(__file__).resolve().parent
 PHOTOS = RACINE.parent / "daughter-of-gaia" / "public" / "images"
@@ -36,9 +37,23 @@ def italique(t, g=300): return police("CormorantGaramond-Italic[wght].ttf", t, g
 def sans(t, g=300): return police("Jost[wght].ttf", t, g)
 
 
+SRGB = ImageCms.createProfile("sRGB")
+
+
+def en_srgb(im):
+    """Convertit vers sRGB une photo qui porte un autre profil (Display P3 des
+    iPhone) : sans cela, ses couleurs sortent ternes une fois le profil perdu."""
+    icc = im.info.get("icc_profile")
+    im = im.convert("RGB")
+    if icc:
+        im = ImageCms.profileToProfile(im, ImageCms.ImageCmsProfile(io.BytesIO(icc)), SRGB,
+                                       renderingIntent=ImageCms.Intent.PERCEPTUAL)
+    return im
+
+
 def photo(nom, taille, centre=(0.5, 0.5)):
     src = PHOTOS_KIT / nom if (PHOTOS_KIT / nom).exists() else PHOTOS / nom
-    im = ImageOps.exif_transpose(Image.open(src)).convert("RGB")
+    im = en_srgb(ImageOps.exif_transpose(Image.open(src)))
     return ImageOps.fit(im, taille, Image.LANCZOS, centering=centre)
 
 
@@ -117,7 +132,8 @@ def avec_ombre(fond, dessiner, force=0.75, flou=26):
 
 def sauver(im, chemin):
     chemin.parent.mkdir(parents=True, exist_ok=True)
-    im.save(chemin, quality=92, optimize=True)
+    im.save(chemin, quality=92, optimize=True,
+            icc_profile=ImageCms.ImageCmsProfile(SRGB).tobytes())
 
 
 # La phrase sous le nom. Une seule ligne à changer pour en essayer une autre
