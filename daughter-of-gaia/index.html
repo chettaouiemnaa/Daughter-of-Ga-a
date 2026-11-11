@@ -30,6 +30,20 @@
     <meta name="twitter:description" content="Un domaine privé de 4 000 m² à La Soukra, tout près de La Marsa, où chaque expérience célèbre le vivant. Événements, tournages, chevaux recueillis." />
     <meta name="twitter:image" content="https://www.daughterofgaia.com/images/partage.jpg" />
 
+    <!-- Ouverture sans flash : avant que le script arrive, le telephone
+         affichait du blanc, puis la page sable, puis le rideau sombre. Le
+         voile sombre est pose des le premier affichage ; le rideau du site
+         le retire au moment ou il apparait lui-meme (classe « pret »). Il
+         s'efface seul apres 6 s si le script ne se charge pas. -->
+    <style>
+      html{background:#1a130c}
+      body::before{content:"";position:fixed;inset:0;z-index:99;background:#1a130c;pointer-events:none;animation:voile-secours .6s ease 6s forwards}
+      @keyframes voile-secours{to{opacity:0;visibility:hidden}}
+      html.pret{background:#EDE4D3}
+      html.pret body::before{display:none}
+    </style>
+    <noscript><style>html{background:#EDE4D3}body::before{display:none}</style></noscript>
+
     <!-- Les polices sont demandees ici, et non depuis la feuille generee par
          React : appelees en @import au coeur du JavaScript, elles attendaient
          le telechargement et l'execution de tout le script avant de partir. -->
