@@ -578,11 +578,8 @@ function LumiereFiltree() {
   );
 }
 
-/* Écran tactile (téléphone, tablette) : Safari y fait défiler la page sur un
-   circuit à part, et un décalage calculé en JavaScript arrive toujours avec
-   une image de retard : les photos tressautaient. Sur ces écrans, pas de
-   parallaxe : les photos défilent avec la page. */
-const ecranTactile = () => typeof window !== "undefined" && !!window.matchMedia && window.matchMedia("(hover: none)").matches;
+/* Pas de parallaxe sur le site : les photos defilent avec la page, sur
+   telephone comme sur ordinateur (demande de la proprietaire). */
 
 /* Appelle maj() au plus une fois par image affichée pendant le défilement,
    sans passer par l'état React : rien n'est recalculé d'autre que le style
@@ -1011,22 +1008,6 @@ function WipeIn({ children, delay = 0, className = "", style = {} }) {
   );
 }
 
-function Parallax({ children, speed = 0.07, className = "" }) {
-  const ref = useRef(null);
-  /* Mesure sur le cadre parent (non deplace), decalage ecrit directement.
-     Sur ecran tactile, pas de parallaxe (voir ecranTactile). */
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || ecranTactile()) return;
-    const cadre = el.parentElement || el;
-    return suivreDefilement(() => {
-      const r = cadre.getBoundingClientRect();
-      el.style.transform = `translate3d(0,${-(r.top + r.height / 2 - window.innerHeight / 2) * speed}px,0)`;
-    });
-  }, [speed]);
-  return <div ref={ref} className={className}>{children}</div>;
-}
-
 function CountUp({ value, delay = 0 }) {
   const ref = useRef(null);
   const [n, setN] = useState(0);
@@ -1259,10 +1240,9 @@ export default function App() {
   const [envoi, setEnvoi] = useState("repos");   // repos | envoi | erreur
   const [piege, setPiege] = useState("");         // champ leurre anti-robot
   const ouvertureRef = useRef(Date.now());        // pour mesurer le temps de remplissage
-  /* Fond de l'ouverture (parallaxe) et textes (fondu) : ecrits directement
-     pendant le defilement. Avant, chaque defilement passait par l'etat
-     React et recalculait toute la page. */
-  const heroFond = useRef(null);
+  /* Texte de l'ouverture (fondu) : ecrit directement pendant le defilement.
+     Avant, chaque defilement passait par l'etat React et recalculait toute
+     la page. */
   const heroTexte = useRef(null);
   const [navSolid, setNavSolid] = useState(false);
   /* La page courante découle de l'adresse : /tournages est une vraie page,
@@ -1469,11 +1449,9 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const tactile = ecranTactile();
     return suivreDefilement(() => {
       const y = window.scrollY;
-      const fond = heroFond.current, texte = heroTexte.current;
-      if (fond && !tactile) fond.style.transform = `translate3d(0,${y * (parseFloat(fond.dataset.vitesse) || 0.3)}px,0)`;
+      const texte = heroTexte.current;
       if (texte) texte.style.opacity = String(Math.max(0, 1 - y / 620));
       setNavSolid(y > window.innerHeight * 0.85);
     });
@@ -1753,7 +1731,7 @@ export default function App() {
         <main>
         {/* HERO */}
         <section className="relative h-[100svh] w-full overflow-hidden">
-          <div ref={heroFond} data-vitesse="0.3" className="absolute inset-0">
+          <div className="absolute inset-0">
             <img src={V_HERO} alt={t.decors[1].t}
               className="w-full h-full object-cover slow-zoom" style={{ objectPosition: "center 55%" }} />
           </div>
@@ -1850,9 +1828,9 @@ export default function App() {
             {t.decors.map((d, i) => (
               <div key={i}>
                 <VoletsReveal className="relative w-full h-[50vh] sm:h-[74vh] zoom-wrap">
-                  <Parallax speed={-0.06} className="absolute inset-0 -top-14 -bottom-14">
+                  <div className="absolute inset-0 -top-14 -bottom-14">
                     <img src={DECOR_IMG[i].src} alt={d.t} loading="lazy" decoding="async" className="w-full h-full object-cover" style={{ objectPosition: DECOR_IMG[i].pos }} />
-                  </Parallax>
+                  </div>
                 </VoletsReveal>
                 <Reveal delay={120}>
                   <div className="max-w-2xl mx-auto px-8 mt-10 text-center">
@@ -1962,7 +1940,7 @@ export default function App() {
       <main>
       {/* ── HERO ── */}
       <section className="relative h-[100svh] w-full overflow-hidden">
-        <div ref={heroFond} data-vitesse="0.32" className="absolute inset-0">
+        <div className="absolute inset-0">
           <Diaporama images={[
             { src: P_CHEVAL_BAR, alt: t.refuge.alt, pos: "center 45%" },
           ]} />
@@ -2170,12 +2148,12 @@ export default function App() {
         </div>
 
         <VoletsReveal className="relative w-full h-[48vh] sm:h-[66vh] mt-20 overflow-hidden">
-          <Parallax speed={-0.06} className="absolute inset-0 -top-16 -bottom-16">
+          <div className="absolute inset-0 -top-16 -bottom-16">
             {/* Une photo par format : celle qui est masquee (display:none)
                 n'est pas telechargee, grace a loading="lazy". */}
             <Photo src={IMAGES.histoire} alt={t.histoire.alt} className="w-full h-full lg:hidden" tone={2} pos="center 80%" />
             <Photo src={IMAGES.histoireOrdi} alt={t.histoire.altOrdi} className="w-full h-full hidden lg:block" tone={2} pos="center 54%" />
-          </Parallax>
+          </div>
         </VoletsReveal>
       </section>
 
