@@ -565,18 +565,36 @@ function FondAbstrait({ intensite = 1 }) {
   );
 }
 
-/* Ombres portées : lumière filtrée par le feuillage, comme au soleil couchant.
-   Trois nappes très floues qui dérivent lentement et se croisent, plus un
-   passage de lumière chaude toutes les vingt secondes. */
+/* Lumière filtrée : une nappe de lumière chaude qui dérive lentement, plus
+   un passage de lumière toutes les vingt secondes. Les deux nappes sombres
+   (« ombres portées ») ont été retirées : sur téléphone, elles se lisaient
+   comme des ombres noires qui passaient sur les photos. */
 function LumiereFiltree() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-      <div className="nappe nappe-a" />
-      <div className="nappe nappe-b" />
       <div className="nappe nappe-c" />
       <div className="balayage" />
     </div>
   );
+}
+
+/* Écran tactile (téléphone, tablette) : Safari y fait défiler la page sur un
+   circuit à part, et un décalage calculé en JavaScript arrive toujours avec
+   une image de retard : les photos tressautaient. Sur ces écrans, pas de
+   parallaxe : les photos défilent avec la page. */
+const ecranTactile = () => typeof window !== "undefined" && !!window.matchMedia && window.matchMedia("(hover: none)").matches;
+
+/* Appelle maj() au plus une fois par image affichée pendant le défilement,
+   sans passer par l'état React : rien n'est recalculé d'autre que le style
+   visé. Renvoie la fonction de nettoyage. */
+function suivreDefilement(maj) {
+  let attente = false;
+  const image = () => { attente = false; maj(); };
+  const on = () => { if (!attente) { attente = true; requestAnimationFrame(image); } };
+  maj();
+  window.addEventListener("scroll", on, { passive: true });
+  window.addEventListener("resize", on);
+  return () => { window.removeEventListener("scroll", on); window.removeEventListener("resize", on); };
 }
 
 /* Photos qui se succèdent en fondu, avec zoom lent */
@@ -679,8 +697,9 @@ function GalerieHorizontale({ items, label, suivante, precedente }) {
   const outer = useRef(null);
   const track = useRef(null);
   const [dist, setDist] = useState(0);
-  const [x, setX] = useState(0);
-  const [p, setP] = useState(0);
+  /* Seules les bornes (debut / fin) passent par l'etat React, pour les
+     fleches ; le deplacement de la bande est ecrit directement. */
+  const [bornes, setBornes] = useState({ debut: true, fin: false });
 
   useEffect(() => {
     const measure = () => {
@@ -693,18 +712,16 @@ function GalerieHorizontale({ items, label, suivante, precedente }) {
     return () => { window.removeEventListener("resize", measure); clearTimeout(t); };
   }, [items.length]);
 
-  useEffect(() => {
-    const on = () => {
-      const el = outer.current; if (!el) return;
-      const r = el.getBoundingClientRect();
-      const total = r.height - window.innerHeight;
-      if (total <= 0) return;
-      const k = Math.min(1, Math.max(0, -r.top / total));
-      setP(k); setX(-k * dist);
-    };
-    on(); window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
-  }, [dist]);
+  useEffect(() => suivreDefilement(() => {
+    const el = outer.current; if (!el) return;
+    const r = el.getBoundingClientRect();
+    const total = r.height - window.innerHeight;
+    if (total <= 0) return;
+    const k = Math.min(1, Math.max(0, -r.top / total));
+    if (track.current) track.current.style.transform = `translate3d(${-k * dist}px,0,0)`;
+    const debut = k <= 0.005, fin = k >= 0.995;
+    setBornes((b) => (b.debut === debut && b.fin === fin ? b : { debut, fin }));
+  }), [dist]);
 
   /* Aligne la photo suivante (ou precedente) sur la marge gauche. */
   const aller = (sens) => {
@@ -743,7 +760,7 @@ function GalerieHorizontale({ items, label, suivante, precedente }) {
       <div ref={outer} style={{ height: `calc(100vh + ${dist}px)` }} className="relative hidden lg:block">
         <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
         <div ref={track} className="flex items-center gap-5 sm:gap-8 px-8 will-change-transform"
-          style={{ transform: `translate3d(${x}px,0,0)`, width: "max-content" }}>
+          style={{ width: "max-content" }}>
           {items.map((g, i) => (
             <figure key={i} className="shrink-0 relative overflow-hidden gal-fig group" style={CADRE_GALERIE}>
               <img src={g.src} alt={g.l} loading="lazy" decoding="async" className="w-full h-full object-cover gal-img"
@@ -751,7 +768,7 @@ function GalerieHorizontale({ items, label, suivante, precedente }) {
             </figure>
           ))}
         </div>
-        {[[-1, precedente, ArrowLeft, "left-6", p > 0.005], [1, suivante, ArrowRight, "right-6", p < 0.995]].map(([sens, nom, Icone, cote, actif]) => (
+        {[[-1, precedente, ArrowLeft, "left-6", !bornes.debut], [1, suivante, ArrowRight, "right-6", !bornes.fin]].map(([sens, nom, Icone, cote, actif]) => (
           <button key={sens} type="button" onClick={() => aller(sens)} aria-label={nom} title={nom}
             tabIndex={actif ? 0 : -1} aria-hidden={actif ? undefined : true}
             className={`fleche-galerie absolute top-1/2 -translate-y-1/2 ${cote} w-12 h-12 rounded-full flex items-center justify-center transition-opacity duration-500 ${actif ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
@@ -792,18 +809,16 @@ function Curseur() {
 
 /* Fine ligne de progression de lecture */
 function Progression() {
-  const [p, setP] = useState(0);
-  useEffect(() => {
-    const on = () => {
-      const h = document.body.scrollHeight - window.innerHeight;
-      setP(h > 0 ? (window.scrollY / h) * 100 : 0);
-    };
-    on(); window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
-  }, []);
+  const barre = useRef(null);
+  /* Etiree par transform (calcule par la carte graphique) au lieu de sa
+     largeur, et sans passer par l'etat React. */
+  useEffect(() => suivreDefilement(() => {
+    const h = document.body.scrollHeight - window.innerHeight;
+    if (barre.current) barre.current.style.transform = `scaleX(${h > 0 ? Math.min(1, window.scrollY / h) : 0})`;
+  }), []);
   return (
     <div className="fixed top-0 left-0 right-0 z-[70] h-[2px] pointer-events-none" aria-hidden="true">
-      <div style={{ width: `${p}%`, height: "100%", background: "linear-gradient(90deg,#626A4E,#B5654A)", transition: "width .1s linear" }} />
+      <div ref={barre} style={{ height: "100%", background: "linear-gradient(90deg,#626A4E,#B5654A)", transform: "scaleX(0)", transformOrigin: "0 50%", willChange: "transform" }} />
     </div>
   );
 }
@@ -998,17 +1013,18 @@ function WipeIn({ children, delay = 0, className = "", style = {} }) {
 
 function Parallax({ children, speed = 0.07, className = "" }) {
   const ref = useRef(null);
-  const [off, setOff] = useState(0);
+  /* Mesure sur le cadre parent (non deplace), decalage ecrit directement.
+     Sur ecran tactile, pas de parallaxe (voir ecranTactile). */
   useEffect(() => {
-    const on = () => {
-      const el = ref.current; if (!el) return;
-      const r = el.getBoundingClientRect();
-      setOff(-(r.top + r.height / 2 - window.innerHeight / 2) * speed);
-    };
-    on(); window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
+    const el = ref.current;
+    if (!el || ecranTactile()) return;
+    const cadre = el.parentElement || el;
+    return suivreDefilement(() => {
+      const r = cadre.getBoundingClientRect();
+      el.style.transform = `translate3d(0,${-(r.top + r.height / 2 - window.innerHeight / 2) * speed}px,0)`;
+    });
   }, [speed]);
-  return <div ref={ref} className={className} style={{ transform: `translate3d(0,${off}px,0)` }}>{children}</div>;
+  return <div ref={ref} className={className}>{children}</div>;
 }
 
 function CountUp({ value, delay = 0 }) {
@@ -1243,7 +1259,11 @@ export default function App() {
   const [envoi, setEnvoi] = useState("repos");   // repos | envoi | erreur
   const [piege, setPiege] = useState("");         // champ leurre anti-robot
   const ouvertureRef = useRef(Date.now());        // pour mesurer le temps de remplissage
-  const [scrollY, setScrollY] = useState(0);
+  /* Fond de l'ouverture (parallaxe) et textes (fondu) : ecrits directement
+     pendant le defilement. Avant, chaque defilement passait par l'etat
+     React et recalculait toute la page. */
+  const heroFond = useRef(null);
+  const heroTexte = useRef(null);
   const [navSolid, setNavSolid] = useState(false);
   /* La page courante découle de l'adresse : /tournages est une vraie page,
      indexable et partageable, au lieu d'un simple état interne. */
@@ -1449,10 +1469,15 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const on = () => { setScrollY(window.scrollY); setNavSolid(window.scrollY > window.innerHeight * 0.85); };
-    on(); window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
-  }, []);
+    const tactile = ecranTactile();
+    return suivreDefilement(() => {
+      const y = window.scrollY;
+      const fond = heroFond.current, texte = heroTexte.current;
+      if (fond && !tactile) fond.style.transform = `translate3d(0,${y * (parseFloat(fond.dataset.vitesse) || 0.3)}px,0)`;
+      if (texte) texte.style.opacity = String(Math.max(0, 1 - y / 620));
+      setNavSolid(y > window.innerHeight * 0.85);
+    });
+  }, [page]);
 
   /* Les dates bloquées viennent de la base commune : tous les visiteurs
      voient les mêmes. Auparavant elles ne vivaient que dans le navigateur
@@ -1557,8 +1582,6 @@ export default function App() {
       .gal-fig:hover{transform:translateY(-10px);}
       .gal-img{transition:transform 1.6s cubic-bezier(.22,1,.36,1),filter 1s;filter:saturate(.94);}
       .gal-fig:hover .gal-img{transform:scale(1.08);filter:saturate(1.1);}
-      @keyframes derive1{0%{transform:translate3d(-14%,-8%,0) scale(1.15);}50%{transform:translate3d(16%,10%,0) scale(1.35);}100%{transform:translate3d(-14%,-8%,0) scale(1.15);}}
-      @keyframes derive2{0%{transform:translate3d(18%,12%,0) scale(1.3);}50%{transform:translate3d(-12%,-10%,0) scale(1.1);}100%{transform:translate3d(18%,12%,0) scale(1.3);}}
       @keyframes derive3{0%{transform:translate3d(4%,-16%,0) scale(1.2);}50%{transform:translate3d(-8%,14%,0) scale(1.45);}100%{transform:translate3d(4%,-16%,0) scale(1.2);}}
       @keyframes passage{0%{transform:translateX(-130%) skewX(-14deg);opacity:0;}8%{opacity:.5;}22%{opacity:.5;}34%{transform:translateX(130%) skewX(-14deg);opacity:0;}100%{transform:translateX(130%) skewX(-14deg);opacity:0;}}
 
@@ -1568,8 +1591,6 @@ export default function App() {
          deja adouci, qui va jusqu'au bord d'un cadre agrandi de la largeur de
          l'ancien flou (padding + marge negative) : meme halo, sans calcul. */
       .nappe{position:absolute;box-sizing:content-box;padding:70px;margin:-70px;will-change:transform;}
-      .nappe-a{width:75%;height:85%;left:-10%;top:-14%;background:radial-gradient(closest-side,rgba(20,14,8,0.344) 0%,rgba(20,14,8,0.334) 12%,rgba(20,14,8,0.303) 24%,rgba(20,14,8,0.255) 36%,rgba(20,14,8,0.196) 48%,rgba(20,14,8,0.134) 60%,rgba(20,14,8,0.076) 72%,rgba(20,14,8,0.031) 84%,rgba(20,14,8,0) 100%);animation:derive1 46s ease-in-out infinite;}
-      .nappe-b{width:70%;height:80%;right:-12%;bottom:-16%;background:radial-gradient(closest-side,rgba(20,14,8,0.279) 0%,rgba(20,14,8,0.27) 12%,rgba(20,14,8,0.245) 24%,rgba(20,14,8,0.206) 36%,rgba(20,14,8,0.159) 48%,rgba(20,14,8,0.109) 60%,rgba(20,14,8,0.061) 72%,rgba(20,14,8,0.025) 84%,rgba(20,14,8,0) 100%);animation:derive2 62s ease-in-out infinite;}
       .nappe-c{width:60%;height:70%;left:26%;top:8%;background:radial-gradient(closest-side,rgba(243,220,174,0.164) 0%,rgba(243,220,174,0.159) 12%,rgba(243,220,174,0.144) 24%,rgba(243,220,174,0.121) 36%,rgba(243,220,174,0.093) 48%,rgba(243,220,174,0.064) 60%,rgba(243,220,174,0.036) 72%,rgba(243,220,174,0.015) 84%,rgba(243,220,174,0) 100%);animation:derive3 54s ease-in-out infinite;}
       .balayage{position:absolute;inset:-25% -60%;background:linear-gradient(100deg,transparent 38%,rgba(248,231,196,.16) 48%,rgba(248,231,196,.26) 52%,rgba(248,231,196,.16) 56%,transparent 66%);animation:passage 20s ease-in-out infinite;will-change:transform;}
       .sep-col{border-right:none;}
@@ -1732,7 +1753,7 @@ export default function App() {
         <main>
         {/* HERO */}
         <section className="relative h-[100svh] w-full overflow-hidden">
-          <div className="absolute inset-0" style={{ transform: `translate3d(0,${scrollY * 0.3}px,0)` }}>
+          <div ref={heroFond} data-vitesse="0.3" className="absolute inset-0">
             <img src={V_HERO} alt={t.decors[1].t}
               className="w-full h-full object-cover slow-zoom" style={{ objectPosition: "center 55%" }} />
           </div>
@@ -1740,7 +1761,7 @@ export default function App() {
           <LumiereFiltree />
 
           <div className="relative h-full flex flex-col items-center justify-center text-center px-6 pb-20"
-            style={{ opacity: Math.max(0, 1 - scrollY / 620) }}>
+            ref={heroTexte}>
             {selecteurHero}
             <p className="fi mono uppercase tracking-[0.45em] text-[9px] sm:text-[11px] mb-9"
               style={{ color: "rgba(246,241,231,.82)", animationDelay: ".3s" }}>
@@ -1938,7 +1959,7 @@ export default function App() {
       <main>
       {/* ── HERO ── */}
       <section className="relative h-[100svh] w-full overflow-hidden">
-        <div className="absolute inset-0" style={{ transform: `translate3d(0,${scrollY * 0.32}px,0)` }}>
+        <div ref={heroFond} data-vitesse="0.32" className="absolute inset-0">
           <Diaporama images={[
             { src: P_CHEVAL_BAR, alt: t.refuge.alt, pos: "center 45%" },
           ]} />
@@ -1947,7 +1968,7 @@ export default function App() {
         <LumiereFiltree />
 
         <div className="relative h-full flex flex-col items-center justify-center text-center px-6 pb-20 sm:pb-14"
-          style={{ opacity: Math.max(0, 1 - scrollY / 620) }}>
+          ref={heroTexte}>
           {selecteurHero}
           {/* Sur mobile, le fort interlettrage faisait revenir la mention à la
               ligne n'importe où. Les deux membres sont donc empilés
