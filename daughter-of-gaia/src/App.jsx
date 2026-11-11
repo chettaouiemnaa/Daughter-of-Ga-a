@@ -33,6 +33,10 @@ const V_SALON = "/images/salon.jpg";
    ligne, et IMAGES lisait V_PALMIERS. La page ne s'affichait plus. */
 const IMAGES = {
   histoire: P_CHEVAUX_PIE,
+  /* Sur ordinateur, la photo des chevaux pie, retouchee, s'affiche en grand
+     et la retouche se voit : on montre a la place l'alezan et le gris devant
+     la fenetre de la maison. Le telephone garde la photo des chevaux pie. */
+  histoireOrdi: P_CHEVAUX_FENETRE,
 };
 
 const DECOR_IMG = [
@@ -137,7 +141,8 @@ fr: {
     p2: "Certains animaux y ont trouvé refuge, d'autres y sont nés. Tous font partie de l'histoire du domaine et de ce qui le rend si particulier.",
     p3: "Chaque espace a été imaginé avec cette même attention, pour accueillir des événements dans un cadre singulier tout en préservant l'équilibre et la tranquillité du lieu.",
     citation: "There are places you visit. And there are places you feel.",
-    alt: "Deux chevaux pie qui broutent côte à côte" },
+    alt: "Deux chevaux pie qui broutent côte à côte",
+    altOrdi: "Un cheval alezan et un cheval gris devant la fenêtre de la maison" },
   experiences: { eyebrow: "Expériences", titre: "Ce que le domaine accueille", bientot: "bientôt",
     note: "Les événements en journée sont privilégiés, afin de préserver la tranquillité des animaux et du voisinage." },
   prestations: [
@@ -157,6 +162,7 @@ fr: {
     lien: "Découvrir la page tournages" },
   bandeau: ["Respect du vivant", "Animaux sauvés", "Nature préservée", "Domaine privatisable", "Sur réservation"],
   galerie: { eyebrow: "Galerie", titre: "Le domaine en images", faire: "Faites défiler",
+    suivante: "Photo suivante", precedente: "Photo précédente",
     legendes: ["Ils sont chez eux", "La terrasse", "L'espace couvert",
       "Un cheval au bout de l'allée", "Le salon, face à la maison", "Ils broutent entre les arbres",
       "Chevaux de bois à la fenêtre", "La terrasse, le soir"] },
@@ -273,7 +279,8 @@ en: {
     p2: "Some animals found refuge here, others were born here. All of them are part of the estate's story and of what makes it so special.",
     p3: "Every space was designed with the same care, to host events in a distinctive setting while preserving the balance and tranquillity of the place.",
     citation: "There are places you visit. And there are places you feel.",
-    alt: "Two piebald horses grazing side by side" },
+    alt: "Two piebald horses grazing side by side",
+    altOrdi: "A chestnut horse and a grey horse by the window of the house" },
   experiences: { eyebrow: "Experiences", titre: "What the estate hosts", bientot: "soon",
     note: "Daytime events are favoured, to preserve the peace of the animals and of the neighbourhood." },
   prestations: [
@@ -293,6 +300,7 @@ en: {
     lien: "See the filming page" },
   bandeau: ["Respect for the living", "Rescued animals", "Protected nature", "Exclusive hire", "By reservation"],
   galerie: { eyebrow: "Gallery", titre: "The estate in pictures", faire: "Scroll across",
+    suivante: "Next photo", precedente: "Previous photo",
     legendes: ["They live here", "The terrace", "The covered space",
       "A horse at the end of the path", "The lounge, facing the house", "Grazing between the trees",
       "Wooden horses in the window", "The terrace at night"] },
@@ -658,7 +666,12 @@ function LetterReveal({ children, className = "", style = {}, delay = 0 }) {
 }
 
 /* Galerie qui défile horizontalement au scroll */
-function GalerieHorizontale({ items, label }) {
+/* Ecran large : toutes les photos ont le meme cadre vertical 3:4, a la
+   meme hauteur. Les fleches font avancer d'une photo en faisant defiler la
+   page (1 px de defilement = 1 px de deplacement), comme la molette. */
+const CADRE_GALERIE = { height: "min(64vh, 560px)", aspectRatio: "3 / 4" };
+
+function GalerieHorizontale({ items, label, suivante, precedente }) {
   const outer = useRef(null);
   const track = useRef(null);
   const [dist, setDist] = useState(0);
@@ -689,6 +702,20 @@ function GalerieHorizontale({ items, label }) {
     return () => window.removeEventListener("scroll", on);
   }, [dist]);
 
+  /* Aligne la photo suivante (ou precedente) sur la marge gauche. */
+  const aller = (sens) => {
+    const el = outer.current, tr = track.current;
+    if (!el || !tr) return;
+    const r = el.getBoundingClientRect();
+    const actuel = Math.min(dist, Math.max(0, -r.top));
+    const bords = [...tr.children].map((f) => f.offsetLeft - 32);
+    let cible = sens > 0 ? bords.find((b) => b > actuel + 4) : [...bords].reverse().find((b) => b < actuel - 4);
+    if (cible === undefined) cible = sens > 0 ? dist : 0;
+    cible = Math.min(dist, Math.max(0, cible));
+    const reduit = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: r.top + window.scrollY + cible, behavior: reduit ? "auto" : "smooth" });
+  };
+
   return (
     <>
       {/* Mobile : défilement tactile classique.
@@ -711,16 +738,22 @@ function GalerieHorizontale({ items, label }) {
       {/* Écran large : défilement piloté par le scroll */}
       <div ref={outer} style={{ height: `calc(100vh + ${dist}px)` }} className="relative hidden lg:block">
         <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
-        <div ref={track} className="flex gap-5 sm:gap-8 px-8 will-change-transform"
+        <div ref={track} className="flex items-center gap-5 sm:gap-8 px-8 will-change-transform"
           style={{ transform: `translate3d(${x}px,0,0)`, width: "max-content" }}>
           {items.map((g, i) => (
-            <figure key={i} className="shrink-0 relative overflow-hidden gal-fig group"
-              style={{ width: g.w, height: g.h }}>
+            <figure key={i} className="shrink-0 relative overflow-hidden gal-fig group" style={CADRE_GALERIE}>
               <img src={g.src} alt={g.l} loading="lazy" decoding="async" className="w-full h-full object-cover gal-img"
-                style={{ objectPosition: g.pos || "center" }} />
+                style={{ objectPosition: g.opos || g.pos || "center" }} />
             </figure>
           ))}
         </div>
+        {[[-1, precedente, ArrowLeft, "left-6", p > 0.005], [1, suivante, ArrowRight, "right-6", p < 0.995]].map(([sens, nom, Icone, cote, actif]) => (
+          <button key={sens} type="button" onClick={() => aller(sens)} aria-label={nom} title={nom}
+            tabIndex={actif ? 0 : -1} aria-hidden={actif ? undefined : true}
+            className={`fleche-galerie absolute top-1/2 -translate-y-1/2 ${cote} w-12 h-12 rounded-full flex items-center justify-center transition-opacity duration-500 ${actif ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+            <Icone size={18} strokeWidth={1.3} aria-hidden="true" />
+          </button>
+        ))}
         </div>
       </div>
     </>
@@ -1473,6 +1506,9 @@ export default function App() {
          Histoire : « Before it was a place, » = 8,32 em -> 8,4.
          Devis : « about your project » = 7,43 em -> 7,5. */
       .titre-coupe{font-size:min(2.25rem,calc((100vw - 4rem) / var(--ligne-em)));line-height:1.11;}
+      /* Fleches de la galerie (ordinateur) : rond sable, trait encre, inverse au survol */
+      .fleche-galerie{background:rgba(246,241,231,.92);color:#2B2118;border:1px solid #C7B79A;box-shadow:0 6px 24px rgba(43,33,24,.12);backdrop-filter:blur(6px);}
+      .fleche-galerie:hover,.fleche-galerie:focus-visible{background:#2B2118;color:#F6F1E7;border-color:#2B2118;}
       @media (min-width:640px){.titre-coupe{font-size:3.75rem;line-height:1;}}
       @media (min-width:640px){.citation-ligne{font-size:1.5rem;line-height:2rem;}}
       html{scroll-behavior:smooth;}
@@ -2030,10 +2066,12 @@ export default function App() {
             grand ecran et n'en montrait que 43 % : floue et coupee. Elle
             garde donc son format. Le cadre suit son ratio 3/4 et ne depasse
             jamais 780 px, donc la source n'est plus jamais agrandie. Sur
-            telephone il occupe toute la largeur, comme avant. */}
-        <VoletsReveal className="relative mx-auto mt-16 w-full max-w-[780px] aspect-[3/4] overflow-hidden">
+            telephone il occupe toute la largeur, comme avant.
+            Sur ordinateur (lg), le cadre passe en 5/4 : 624 px de haut au
+            lieu de 1 040, de la fenetre entiere aux sabots des trois chevaux. */}
+        <VoletsReveal className="relative mx-auto mt-16 w-full max-w-[780px] aspect-[3/4] lg:aspect-[5/4] overflow-hidden">
           <LumiereFiltree />
-          <Photo src={P_TROIS_CHEVAUX} alt={t.domaine.alt} className="w-full h-full" tone={1} />
+          <Photo src={P_TROIS_CHEVAUX} alt={t.domaine.alt} className="w-full h-full" tone={1} pos="center 76%" />
         </VoletsReveal>
 
         <div className="relative max-w-5xl mx-auto px-8 mt-16">
@@ -2091,7 +2129,10 @@ export default function App() {
 
         <VoletsReveal className="relative w-full h-[48vh] sm:h-[66vh] mt-20 overflow-hidden">
           <Parallax speed={-0.06} className="absolute inset-0 -top-16 -bottom-16">
-            <Photo src={IMAGES.histoire} alt={t.histoire.alt} className="w-full h-full" tone={2} pos="center 80%" />
+            {/* Une photo par format : celle qui est masquee (display:none)
+                n'est pas telechargee, grace a loading="lazy". */}
+            <Photo src={IMAGES.histoire} alt={t.histoire.alt} className="w-full h-full lg:hidden" tone={2} pos="center 80%" />
+            <Photo src={IMAGES.histoireOrdi} alt={t.histoire.altOrdi} className="w-full h-full hidden lg:block" tone={2} pos="center 54%" />
           </Parallax>
         </VoletsReveal>
       </section>
@@ -2183,18 +2224,21 @@ export default function App() {
             </p>
           </Reveal>
         </div>
-        <GalerieHorizontale label={t.galerie.titre} items={[
-          { src: P_CHEVAL_NB, l: t.galerie.legendes[0], pos: "center 40%", w: "min(80vw,460px)", h: "min(58vh,510px)" },
-          { src: P_TERRASSE_VASQUE, l: t.galerie.legendes[1], pos: "center 60%", w: "min(86vw,600px)", h: "min(50vh,430px)" },
-          { src: P_SALLE, l: t.galerie.legendes[2], pos: "center 40%", w: "min(74vw,400px)", h: "min(66vh,575px)" },
-          { src: P_ALLEE_PORTAIL, l: t.galerie.legendes[3], pos: "center 50%", w: "min(76vw,420px)", h: "min(64vh,560px)" },
-          { src: P_SALON_JARDIN, l: t.galerie.legendes[4], pos: "center 60%", w: "min(84vw,520px)", h: "min(60vh,560px)" },
-          { src: P_CHEVAUX_ARBRES, l: t.galerie.legendes[5], pos: "center 55%", w: "min(80vw,460px)", h: "min(58vh,510px)" },
-          { src: P_FENETRE_BOIS, l: t.galerie.legendes[6], pos: "center 50%", w: "min(74vw,420px)", h: "min(62vh,540px)" },
+        <GalerieHorizontale label={t.galerie.titre} suivante={t.galerie.suivante} precedente={t.galerie.precedente} items={[
+          { src: P_CHEVAL_NB, l: t.galerie.legendes[0], pos: "center 40%" },
+          { src: P_TERRASSE_VASQUE, l: t.galerie.legendes[1], pos: "center 60%" },
+          { src: P_SALLE, l: t.galerie.legendes[2], pos: "center 40%" },
+          { src: P_ALLEE_PORTAIL, l: t.galerie.legendes[3], pos: "center 50%" },
+          { src: P_SALON_JARDIN, l: t.galerie.legendes[4], pos: "center 60%" },
+          { src: P_CHEVAUX_ARBRES, l: t.galerie.legendes[5], pos: "center 55%" },
+          { src: P_FENETRE_BOIS, l: t.galerie.legendes[6], pos: "center 50%" },
           /* Seule photo en paysage. Le cadre vertical du telephone en
              perdait plus de la moitie (le poney ou le cheval, jamais les
-             deux) : elle garde son 4/3 partout, mw/mh sur telephone. */
-          { src: P_TERRASSE_NUIT, l: t.galerie.legendes[7], pos: "center", w: "min(88vw,680px)", h: "min(54vh,510px)", mw: "86vw", mh: "64.5vw" },
+             deux) : elle garde son 4/3 sur telephone (mw/mh). Sur
+             ordinateur, toutes les photos ont le meme cadre 3:4 ; cale a
+             17 % depuis la gauche (opos), il garde le poney (10-22 % de la
+             largeur) et le cheval (48-61 %). */
+          { src: P_TERRASSE_NUIT, l: t.galerie.legendes[7], pos: "center", opos: "17% center", mw: "86vw", mh: "64.5vw" },
         ]} />
       </section>
 
