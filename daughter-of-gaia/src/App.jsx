@@ -1757,7 +1757,10 @@ export default function App() {
             <img src={V_HERO} alt={t.decors[1].t}
               className="w-full h-full object-cover slow-zoom" style={{ objectPosition: "center 55%" }} />
           </div>
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(20,14,8,.56) 0%, rgba(20,14,8,.28) 36%, rgba(20,14,8,.44) 68%, rgba(20,14,8,.76) 100%)" }} />
+          {/* Voile de lisibilite : une ombre douce seulement derriere le texte,
+              bords presque clairs. L'ancien degrade assombrissait toute la photo
+              (jusqu'a 74 % en bas) et se lisait comme des ombres noires. */}
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 90% 46% at 50% 50%, rgba(20,14,8,.38) 0%, rgba(20,14,8,.26) 60%, rgba(20,14,8,0) 100%), linear-gradient(to bottom, rgba(20,14,8,.22) 0%, rgba(20,14,8,.06) 25%, rgba(20,14,8,.06) 75%, rgba(20,14,8,.20) 100%)" }} />
           <LumiereFiltree />
 
           <div className="relative h-full flex flex-col items-center justify-center text-center px-6 pb-20"
@@ -1964,7 +1967,10 @@ export default function App() {
             { src: P_CHEVAL_BAR, alt: t.refuge.alt, pos: "center 45%" },
           ]} />
         </div>
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(20,14,8,.52) 0%, rgba(20,14,8,.26) 34%, rgba(20,14,8,.42) 66%, rgba(20,14,8,.74) 100%)" }} />
+        {/* Voile de lisibilite : une ombre douce seulement derriere le texte,
+            bords presque clairs. L'ancien degrade assombrissait toute la photo
+            (jusqu'a 74 % en bas) et se lisait comme des ombres noires. */}
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 90% 46% at 50% 50%, rgba(20,14,8,.38) 0%, rgba(20,14,8,.26) 60%, rgba(20,14,8,0) 100%), linear-gradient(to bottom, rgba(20,14,8,.22) 0%, rgba(20,14,8,.06) 25%, rgba(20,14,8,.06) 75%, rgba(20,14,8,.20) 100%)" }} />
         <LumiereFiltree />
 
         <div className="relative h-full flex flex-col items-center justify-center text-center px-6 pb-20 sm:pb-14"
